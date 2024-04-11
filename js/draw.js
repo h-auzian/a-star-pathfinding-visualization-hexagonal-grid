@@ -16,7 +16,8 @@ function draw(canvas, context, info) {
         }
     }
 
-    info.innerHTML = "Camera: " + Math.round(state.camera.x) + "x" + Math.round(state.camera.y) + "<br>";
+    info.innerHTML = "Canvas: " + Math.round(canvas.width) + "x" + Math.round(canvas.height) + "<br>";
+    info.innerHTML += "Camera: " + Math.round(state.camera.x) + "x" + Math.round(state.camera.y) + "<br>";
 }
 
 export default draw;

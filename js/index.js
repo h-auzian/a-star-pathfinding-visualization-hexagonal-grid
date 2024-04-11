@@ -1,4 +1,5 @@
 import draw from "./draw.js";
+import {resizeCanvas} from "./events.js";
 import update from "./update.js";
 
 function init() {
@@ -6,10 +7,15 @@ function init() {
     let context = canvas.getContext("2d");
     let info = document.getElementById("info");
 
-    canvas.width = 500;
-    canvas.height = 400;
-
+    resizeCanvas(canvas);
+    listenToEvents(canvas);
     mainLoop(canvas, context, info);
+}
+
+function listenToEvents(canvas) {
+    window.addEventListener("resize", function() {
+        resizeCanvas(canvas);
+    });
 }
 
 function mainLoop(canvas, context, info) {
