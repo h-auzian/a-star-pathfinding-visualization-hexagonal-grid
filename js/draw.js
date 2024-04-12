@@ -13,6 +13,7 @@ function clear(canvas, context) {
 }
 
 function applyTransformations(context) {
+    context.scale(state.scale.value, state.scale.value);
     context.translate(-state.camera.x, -state.camera.y);
 }
 
@@ -31,6 +32,7 @@ function drawScene(context) {
 function updateInfo(info) {
     info.innerHTML = "Canvas: " + Math.round(canvas.width) + "x" + Math.round(canvas.height) + "<br>";
     info.innerHTML += "Camera: " + Math.round(state.camera.x) + "x" + Math.round(state.camera.y) + "<br>";
+    info.innerHTML += "Scale: " + state.scale.value.toPrecision(3);
 }
 
 export default draw;
