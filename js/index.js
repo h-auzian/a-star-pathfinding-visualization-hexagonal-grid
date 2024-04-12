@@ -23,8 +23,8 @@ function mainLoop(canvas, context, info) {
         mainLoop(canvas, context, info);
     });
 
-    update();
-    draw(canvas, context, info);
+    update(info);
+    draw(canvas, context);
 }
 
 export default init;

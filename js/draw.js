@@ -5,7 +5,7 @@ const LINE_WIDTH = 5;
 const LINE_COLOR = "#000";
 const FILL_COLOR = "#F00";;
 
-function draw(canvas, context, info) {
+function draw(canvas, context) {
     clear(canvas, context);
     applyTransformations(context);
 
@@ -17,8 +17,6 @@ function draw(canvas, context, info) {
             drawHexagon(context, centerX, centerY);
         }
     }
-
-    updateInfo(info);
 }
 
 function clear(canvas, context) {
@@ -47,12 +45,6 @@ function drawHexagon(context, centerX, centerY) {
     context.closePath();
     context.fill();
     context.stroke();
-}
-
-function updateInfo(info) {
-    info.innerHTML = "Canvas: " + Math.round(canvas.width) + "x" + Math.round(canvas.height) + "<br>";
-    info.innerHTML += "Camera: " + Math.round(state.camera.x) + "x" + Math.round(state.camera.y) + "<br>";
-    info.innerHTML += "Scale: " + state.scale.value.toPrecision(3);
 }
 
 export default draw;
