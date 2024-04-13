@@ -1,13 +1,10 @@
 import state from "./state.js";
 
+/**
+ * Main logic update function.
+ */
 function update(info) {
-    updateCamera();
     updateInfo(info);
-}
-
-function updateCamera() {
-    state.camera.x += 0.1;
-    state.camera.y += 0.1;
 }
 
 function updateInfo(info) {

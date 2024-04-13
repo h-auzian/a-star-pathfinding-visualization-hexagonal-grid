@@ -3,4 +3,4 @@ function resizeCanvas(canvas) {
     canvas.height = window.innerHeight;
 }
 
-export {resizeCanvas};
+export { resizeCanvas };
