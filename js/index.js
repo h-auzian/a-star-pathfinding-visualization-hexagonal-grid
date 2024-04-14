@@ -1,6 +1,6 @@
 import { centerCameraOnMap } from "./camera.js";
 import draw from "./draw.js";
-import { resizeCanvas } from "./events.js";
+import { resizeCanvas, updateMousePosition } from "./events.js";
 import { initializeMap } from "./map.js";
 import update from "./update.js";
 
@@ -14,6 +14,7 @@ function init() {
 
     resizeCanvas(canvas);
     listenToEvents(canvas);
+
     mainLoop(canvas, context, info);
 }
 
@@ -23,6 +24,10 @@ function init() {
 function listenToEvents(canvas) {
     window.addEventListener("resize", function() {
         resizeCanvas(canvas);
+    });
+
+    window.addEventListener('mousemove', function(event) {
+        updateMousePosition(event.pageX, event.pageY);
     });
 }
 
@@ -34,7 +39,7 @@ function mainLoop(canvas, context, info) {
         mainLoop(canvas, context, info);
     });
 
-    update(info);
+    update(canvas, info);
     draw(canvas, context);
 }
 

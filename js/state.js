@@ -5,8 +5,12 @@
  */
 let state = {
     camera: {
-        x: 0,
-        y: 0,
+        width: 0,
+        height: 0,
+        center: {
+            x: 200,
+            y: 0,
+        },
     },
     scale: {
         value: 1,
@@ -16,6 +20,18 @@ let state = {
         width: 7,
         height: 5,
         tiles: [],
+    },
+    mouse: {
+        position: {
+            window: {
+                x: 0,
+                y: 0,
+            },
+            map: {
+                x: 0,
+                y: 0,
+            },
+        },
     },
 };
 

@@ -5,8 +5,8 @@ function centerCameraOnMap() {
     const tileY = Math.floor(state.map.height / 2);
 
     const tile = state.map.tiles[tileX][tileY];
-    state.camera.x = tile.center.x;
-    state.camera.y = tile.center.y;
+    state.camera.center.x = tile.center.x;
+    state.camera.center.y = tile.center.y;
 }
 
 export { centerCameraOnMap };
