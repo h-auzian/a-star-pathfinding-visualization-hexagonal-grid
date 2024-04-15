@@ -5,8 +5,16 @@
  */
 let state = {
     camera: {
-        width: 0,
-        height: 0,
+        size: {
+            raw: {
+                width: 0,
+                height: 0,
+            },
+            scaled: {
+                width: 0,
+                height: 0,
+            },
+        },
         center: {
             x: 200,
             y: 0,
@@ -15,10 +23,11 @@ let state = {
             x: 0,
             y: 0,
         },
-    },
-    scale: {
-        value: 1,
-        direction: 1,
+        scale: {
+            value: 1,
+            destination: 1,
+            speed: 0,
+        },
     },
     map: {
         width: 30,
@@ -39,11 +48,18 @@ let state = {
         buttons: {
             middle: false,
         },
+        wheel: {
+            y: 0,
+        },
     },
     controls: {
         scroll: {
             previous: false,
             current: false,
+        },
+        scale: {
+            previous: 0,
+            current: 0,
         },
     },
 };

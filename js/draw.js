@@ -23,7 +23,7 @@ function clearCanvas(canvas, context) {
 }
 
 function applyCanvasTransformations(context) {
-    context.scale(state.scale.value, state.scale.value);
+    context.scale(state.camera.scale.value, state.camera.scale.value);
     context.translate(-state.camera.center.x, -state.camera.center.y);
 }
 

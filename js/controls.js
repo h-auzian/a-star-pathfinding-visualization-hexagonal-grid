@@ -1,10 +1,10 @@
 import state from "./state.js";
 
 /**
- * Returns if the control was just pressed this frame.
+ * Returns if the control was just pressed or changed this frame.
  */
 function justPressed(control) {
-    return !control.previous && control.current;
+    return control.previous == 0 && control.current != 0;
 }
 
 /**
@@ -12,6 +12,15 @@ function justPressed(control) {
  */
 function updateControls() {
     updateControl(state.controls.scroll, state.mouse.buttons.middle);
+    updateControl(state.controls.scale, state.mouse.wheel.y);
+    resetInputs();
+}
+
+/**
+ * Resets inputs that are not normally reset via events.
+ */
+function resetInputs() {
+    state.mouse.wheel.y = 0;
 }
 
 /**

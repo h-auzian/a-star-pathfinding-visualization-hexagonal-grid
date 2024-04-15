@@ -1,3 +1,4 @@
+import { updateCameraScaledSize } from "./camera.js";
 import state from "./state.js";
 
 /**
@@ -8,8 +9,9 @@ function resizeCanvas(canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    state.camera.width = canvas.width / state.scale.value;
-    state.camera.height = canvas.height / state.scale.value;
+    state.camera.size.raw.width = canvas.width;
+    state.camera.size.raw.height = canvas.height;
+    updateCameraScaledSize();
 }
 
 /**
@@ -18,14 +20,14 @@ function resizeCanvas(canvas) {
  */
 function updateMousePosition(x, y) {
     const camera = state.camera;
-    const scale = state.scale.value;
+    const scale = state.camera.scale.value;
     const pos = state.mouse.position;
 
     pos.window.x = x;
     pos.window.y = y;
 
-    pos.map.x = pos.window.x / scale - camera.width/2 + camera.center.x;
-    pos.map.y = pos.window.y / scale - camera.height/2 + camera.center.y;
+    pos.map.x = pos.window.x / scale - camera.size.scaled.width/2 + camera.center.x;
+    pos.map.y = pos.window.y / scale - camera.size.scaled.height/2 + camera.center.y;
 }
 
 /**
@@ -39,8 +41,16 @@ function setRawMouseButton(buttonIndex, pressed) {
     }
 }
 
+/**
+ * Sets the mouse wheel delta, which can be a negative or positive integer.
+ */
+function setMouseWheelDirection(delta) {
+    state.mouse.wheel.y = Math.sign(delta);
+}
+
 export {
     resizeCanvas,
     updateMousePosition,
     setRawMouseButton,
+    setMouseWheelDirection,
 };

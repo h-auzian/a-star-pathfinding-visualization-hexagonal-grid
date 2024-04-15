@@ -1,6 +1,6 @@
 import { centerCameraOnMap } from "./camera.js";
 import draw from "./draw.js";
-import { resizeCanvas, setRawMouseButton, updateMousePosition } from "./events.js";
+import { resizeCanvas, setMouseWheelDirection, setRawMouseButton, updateMousePosition } from "./events.js";
 import { initializeMap } from "./map.js";
 import update from "./update.js";
 
@@ -36,6 +36,10 @@ function listenToEvents(canvas) {
 
     window.addEventListener('mouseup', function(event) {
         setRawMouseButton(event.button, false);
+    });
+
+    window.addEventListener('wheel', function(event) {
+        setMouseWheelDirection(event.deltaY);
     });
 
     // Disable middle click default scrolling.
