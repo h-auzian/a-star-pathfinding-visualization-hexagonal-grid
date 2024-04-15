@@ -1,6 +1,6 @@
 import { centerCameraOnMap } from "./camera.js";
 import draw from "./draw.js";
-import { resizeCanvas, updateMousePosition } from "./events.js";
+import { resizeCanvas, setRawMouseButton, updateMousePosition } from "./events.js";
 import { initializeMap } from "./map.js";
 import update from "./update.js";
 
@@ -29,6 +29,21 @@ function listenToEvents(canvas) {
     window.addEventListener('mousemove', function(event) {
         updateMousePosition(event.pageX, event.pageY);
     });
+
+    window.addEventListener('mousedown', function(event) {
+        setRawMouseButton(event.button, true);
+    });
+
+    window.addEventListener('mouseup', function(event) {
+        setRawMouseButton(event.button, false);
+    });
+
+    // Disable middle click default scrolling.
+    document.body.onmousedown = function(e) {
+        if (e.button == 1) {
+            return false;
+        }
+    }
 }
 
 /**

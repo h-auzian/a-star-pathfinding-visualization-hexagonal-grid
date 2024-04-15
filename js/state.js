@@ -11,14 +11,18 @@ let state = {
             x: 200,
             y: 0,
         },
+        scrollPosition: {
+            x: 0,
+            y: 0,
+        },
     },
     scale: {
         value: 1,
         direction: 1,
     },
     map: {
-        width: 7,
-        height: 5,
+        width: 30,
+        height: 20,
         tiles: [],
     },
     mouse: {
@@ -31,6 +35,15 @@ let state = {
                 x: 0,
                 y: 0,
             },
+        },
+        buttons: {
+            middle: false,
+        },
+    },
+    controls: {
+        scroll: {
+            previous: false,
+            current: false,
         },
     },
 };

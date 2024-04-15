@@ -28,4 +28,19 @@ function updateMousePosition(x, y) {
     pos.map.y = pos.window.y / scale - camera.height/2 + camera.center.y;
 }
 
-export { resizeCanvas, updateMousePosition };
+/**
+ * Sets in the state whether a mouse button is currently pressed or not.
+ */
+function setRawMouseButton(buttonIndex, pressed) {
+    const buttons = state.mouse.buttons;
+
+    if (buttonIndex == 1) {
+        buttons.middle = pressed;
+    }
+}
+
+export {
+    resizeCanvas,
+    updateMousePosition,
+    setRawMouseButton,
+};
