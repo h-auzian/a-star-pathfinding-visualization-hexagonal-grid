@@ -5,7 +5,8 @@ const SCALE_SPEED = 0.05;
 const SCALE_MULTIPLIER = 2;
 const SCALE_LOWER_LIMIT = Math.pow(1/SCALE_MULTIPLIER, 3);
 const SCALE_UPPER_LIMIT = Math.pow(SCALE_MULTIPLIER, 3);
-const DIRECTIONAL_SCROLL_SPEED = 10;
+const GENERAL_SCROLL_SPEED = 0.5;
+const DIRECTIONAL_SCROLL_SPEED = 15;
 
 /**
  * Updates the camera scaled size.
@@ -82,8 +83,9 @@ function scrollCameraGeneralControls() {
         camera.scrollPosition.x = mousePosition.x;
         camera.scrollPosition.y = mousePosition.y;
     } else if (scrollControl.current) {
-        camera.center.x += mousePosition.x - camera.scrollPosition.x;
-        camera.center.y += mousePosition.y - camera.scrollPosition.y;
+        const speed = GENERAL_SCROLL_SPEED / camera.scale.value;
+        camera.center.x += (mousePosition.x - camera.scrollPosition.x) * speed;
+        camera.center.y += (mousePosition.y - camera.scrollPosition.y) * speed;
     }
 }
 
@@ -93,17 +95,18 @@ function scrollCameraGeneralControls() {
 function scrollCameraDirectionalControls() {
     const camera = state.camera;
     const controls = state.controls.scroll.individual;
+    const speed = DIRECTIONAL_SCROLL_SPEED / camera.scale.value;
 
     if (controls.up.current) {
-        camera.center.y -= DIRECTIONAL_SCROLL_SPEED;
+        camera.center.y -= speed;
     } else if (controls.down.current) {
-        camera.center.y += DIRECTIONAL_SCROLL_SPEED;
+        camera.center.y += speed;
     }
 
     if (controls.left.current) {
-        camera.center.x -= DIRECTIONAL_SCROLL_SPEED;
+        camera.center.x -= speed;
     } else if (controls.right.current) {
-        camera.center.x += DIRECTIONAL_SCROLL_SPEED;
+        camera.center.x += speed;
     }
 }
 
