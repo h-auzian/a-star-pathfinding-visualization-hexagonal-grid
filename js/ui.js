@@ -17,10 +17,10 @@ function updateStateInformation() {
     dom.info.innerHTML += "Camera (scaled size): " + Math.round(state.camera.size.scaled.width) + "x" + Math.round(state.camera.size.scaled.height) + "<br>";
     dom.info.innerHTML += "Camera (center): " + Math.round(state.camera.center.x) + "x" + Math.round(state.camera.center.y) + "<br>";
     dom.info.innerHTML += "Camera (scroll pos):" + Math.round(state.camera.scrollPosition.x) + "x" + Math.round(state.camera.scrollPosition.y) + "<br>";
-    dom.info.innerHTML += "Mouse (window): " + Math.round(state.mouse.position.window.x) + "x" + Math.round(state.mouse.position.window.y) + "<br>";
-    dom.info.innerHTML += "Mouse (map): " + Math.round(state.mouse.position.map.x) + "x" + Math.round(state.mouse.position.map.y) + "<br>";
-    dom.info.innerHTML += "Controls (scroll): " + state.controls.scroll.current + "<br>";
+    dom.info.innerHTML += "Mouse (window): " + Math.round(state.input.mouse.position.window.x) + "x" + Math.round(state.input.mouse.position.window.y) + "<br>";
+    dom.info.innerHTML += "Mouse (map): " + Math.round(state.input.mouse.position.map.x) + "x" + Math.round(state.input.mouse.position.map.y) + "<br>";
     dom.info.innerHTML += "Controls (scale): " + state.controls.scale.current + "<br>";
+    dom.info.innerHTML += "Controls (scroll): " + state.controls.scroll.general.current + "<br>";
 }
 
 export default updateUI;

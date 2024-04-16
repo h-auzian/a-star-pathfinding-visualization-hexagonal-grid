@@ -6,8 +6,8 @@ import { updateControls } from "./logic/controls.js";
  */
 function updateLogic() {
     updateControls();
-    scrollCamera();
     scaleCamera();
+    scrollCamera();
 }
 
 export default updateLogic;

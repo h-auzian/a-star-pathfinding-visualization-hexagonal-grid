@@ -34,28 +34,58 @@ export default {
         height: 20,
         tiles: [],
     },
-    mouse: {
-        position: {
-            window: {
-                x: 0,
-                y: 0,
+    input: {
+        mouse: {
+            position: {
+                window: {
+                    x: 0,
+                    y: 0,
+                },
+                map: {
+                    x: 0,
+                    y: 0,
+                },
             },
-            map: {
-                x: 0,
+            buttons: {
+                middle: false,
+            },
+            wheel: {
                 y: 0,
             },
         },
-        buttons: {
-            middle: false,
-        },
-        wheel: {
-            y: 0,
+        keyboard: {
+            buttons: {
+                w: false,
+                a: false,
+                s: false,
+                d: false,
+            },
         },
     },
     controls: {
         scroll: {
-            previous: false,
-            current: false,
+            general: {
+                previous: false,
+                current: false,
+            },
+            individual: {
+                up: {
+                    previous: false,
+                    current: false,
+                },
+                left: {
+                    previous: false,
+                    current: false,
+                },
+                down: {
+                    previous: false,
+                    current: false,
+                },
+                right: {
+                    previous: false,
+                    current: false,
+                },
+            },
         },
         scale: {
             previous: 0,

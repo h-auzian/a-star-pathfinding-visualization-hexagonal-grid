@@ -26,6 +26,14 @@ function listenToEvents() {
         setMouseWheelDirection(event.deltaY);
     });
 
+    window.addEventListener('keydown', function(event) {
+        setRawKeyboardButton(event.code, true);
+    });
+
+    window.addEventListener('keyup', function(event) {
+        setRawKeyboardButton(event.code, false);
+    });
+
     // Disable middle click default scrolling.
     document.body.onmousedown = function(e) {
         if (e.button == 1) {
@@ -54,20 +62,37 @@ function resizeCanvas() {
 function updateMousePosition(x, y) {
     const camera = state.camera;
     const scale = state.camera.scale.value;
-    const pos = state.mouse.position;
+    const mousePosition = state.input.mouse.position;
 
-    pos.window.x = x;
-    pos.window.y = y;
+    mousePosition.window.x = x;
+    mousePosition.window.y = y;
 
-    pos.map.x = pos.window.x / scale - camera.size.scaled.width/2 + camera.center.x;
-    pos.map.y = pos.window.y / scale - camera.size.scaled.height/2 + camera.center.y;
+    mousePosition.map.x = mousePosition.window.x / scale - camera.size.scaled.width/2 + camera.center.x;
+    mousePosition.map.y = mousePosition.window.y / scale - camera.size.scaled.height/2 + camera.center.y;
+}
+
+/**
+ * Sets in the state whether a keyboard button is currently pressed or not.
+ */
+function setRawKeyboardButton(buttonCode, pressed) {
+    const buttons = state.input.keyboard.buttons;
+
+    if (buttonCode == "KeyW") {
+        buttons.w = pressed;
+    } else if (buttonCode == "KeyA") {
+        buttons.a = pressed;
+    } else if (buttonCode == "KeyS") {
+        buttons.s = pressed;
+    } else if (buttonCode == "KeyD") {
+        buttons.d = pressed;
+    }
 }
 
 /**
  * Sets in the state whether a mouse button is currently pressed or not.
  */
 function setRawMouseButton(buttonIndex, pressed) {
-    const buttons = state.mouse.buttons;
+    const buttons = state.input.mouse.buttons;
 
     if (buttonIndex == 1) {
         buttons.middle = pressed;
@@ -78,7 +103,7 @@ function setRawMouseButton(buttonIndex, pressed) {
  * Sets the mouse wheel delta, which can be a negative or positive integer.
  */
 function setMouseWheelDirection(delta) {
-    state.mouse.wheel.y = Math.sign(delta);
+    state.input.mouse.wheel.y = Math.sign(delta);
 }
 
 export {

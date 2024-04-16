@@ -11,8 +11,17 @@ function justPressed(control) {
  * Sets all controls. This has to be called every frame.
  */
 function updateControls() {
-    updateControl(state.controls.scroll, state.mouse.buttons.middle);
-    updateControl(state.controls.scale, state.mouse.wheel.y);
+    const controls = state.controls;
+    const mouse = state.input.mouse;
+    const keyboard = state.input.keyboard;
+
+    updateControl(controls.scale, mouse.wheel.y);
+    updateControl(controls.scroll.general, mouse.buttons.middle);
+    updateControl(controls.scroll.individual.up, keyboard.buttons.w);
+    updateControl(controls.scroll.individual.left, keyboard.buttons.a);
+    updateControl(controls.scroll.individual.down, keyboard.buttons.s);
+    updateControl(controls.scroll.individual.right, keyboard.buttons.d);
+
     resetInputs();
 }
 
@@ -20,7 +29,7 @@ function updateControls() {
  * Resets inputs that are not normally reset via events.
  */
 function resetInputs() {
-    state.mouse.wheel.y = 0;
+    state.input.mouse.wheel.y = 0;
 }
 
 /**
