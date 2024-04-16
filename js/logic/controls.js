@@ -1,4 +1,4 @@
-import state from "./state.js";
+import state from "../references/state.js";
 
 /**
  * Returns if the control was just pressed or changed this frame.

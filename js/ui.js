@@ -1,5 +1,5 @@
-import dom from "./dom.js";
-import state from "./state.js";
+import dom from "./references/dom.js";
+import state from "./references/state.js";
 
 /**
  * Main UI update function.
@@ -23,4 +23,4 @@ function updateStateInformation() {
     dom.info.innerHTML += "Controls (scale): " + state.controls.scale.current + "<br>";
 }
 
-export { updateUI };
+export default updateUI;

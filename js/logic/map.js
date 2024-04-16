@@ -1,8 +1,11 @@
-import state from "./state.js";
+import state from "../references/state.js";
 
 const RADIANS = Math.PI / 180;
 const HEXAGON_RADIUS = 50;
 
+/**
+ * Initializes the map state data as a two dimensional array.
+ */
 function initializeMap() {
     state.map.tiles = new Array(state.map.width);
     for (let i = 0; i < state.map.width; i++) {
@@ -15,6 +18,10 @@ function initializeMap() {
     state.map.tiles[5][3].type = "impassable";
 }
 
+/**
+ * Initializes a tile state data, calculating its center position acorrding to
+ * the X and Y index.
+ */
 function initializeTile(indexX, indexY) {
     let angle = 60 * RADIANS;
     const centerX = (HEXAGON_RADIUS + Math.cos(angle) * HEXAGON_RADIUS) * indexX;

@@ -1,16 +1,13 @@
-import { scaleCamera, scrollCamera } from "./camera.js";
-import { updateControls } from "./controls.js";
-import { updateUI } from "./ui.js";
+import { scaleCamera, scrollCamera } from "./logic/camera.js";
+import { updateControls } from "./logic/controls.js";
 
 /**
  * Main logic update function.
  */
-function update() {
+function updateLogic() {
     updateControls();
     scrollCamera();
     scaleCamera();
-    updateUI();
 }
 
-
-export default update;
+export default updateLogic;

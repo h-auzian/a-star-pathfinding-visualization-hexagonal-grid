@@ -1,9 +1,13 @@
-import { centerCameraOnMap } from "./camera.js";
-import draw from "./draw.js";
-import { resizeCanvas, setMouseWheelDirection, setRawMouseButton, updateMousePosition } from "./events.js";
-import { initializeMap } from "./map.js";
-import update from "./update.js";
+import { listenToEvents, resizeCanvas } from "./events.js";
+import { centerCameraOnMap } from "./logic/camera.js";
+import { initializeMap } from "./logic/map.js";
+import render from "./render.js";
+import updateUI from "./ui.js";
+import updateLogic from "./update.js";
 
+/**
+ * Initialization function that ties everything together.
+ */
 function init() {
     initializeMap();
     centerCameraOnMap();
@@ -14,37 +18,6 @@ function init() {
     mainLoop();
 }
 
-/**
- * Setup all event listeners, useful for canvas resize or user input.
- */
-function listenToEvents() {
-    window.addEventListener("resize", function() {
-        resizeCanvas();
-    });
-
-    window.addEventListener('mousemove', function(event) {
-        updateMousePosition(event.pageX, event.pageY);
-    });
-
-    window.addEventListener('mousedown', function(event) {
-        setRawMouseButton(event.button, true);
-    });
-
-    window.addEventListener('mouseup', function(event) {
-        setRawMouseButton(event.button, false);
-    });
-
-    window.addEventListener('wheel', function(event) {
-        setMouseWheelDirection(event.deltaY);
-    });
-
-    // Disable middle click default scrolling.
-    document.body.onmousedown = function(e) {
-        if (e.button == 1) {
-            return false;
-        }
-    }
-}
 
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
@@ -54,8 +27,9 @@ function mainLoop() {
         mainLoop();
     });
 
-    update();
-    draw();
+    updateLogic();
+    updateUI();
+    render();
 }
 
 export default init;

@@ -1,6 +1,38 @@
-import dom from "./dom.js";
-import { updateCameraScaledSize } from "./camera.js";
-import state from "./state.js";
+import dom from "./references/dom.js";
+import state from "./references/state.js";
+import { updateCameraScaledSize } from "./logic/camera.js";
+
+/**
+ * Setup all event listeners, useful for canvas resize and user input.
+ */
+function listenToEvents() {
+    window.addEventListener("resize", function() {
+        resizeCanvas();
+    });
+
+    window.addEventListener('mousemove', function(event) {
+        updateMousePosition(event.pageX, event.pageY);
+    });
+
+    window.addEventListener('mousedown', function(event) {
+        setRawMouseButton(event.button, true);
+    });
+
+    window.addEventListener('mouseup', function(event) {
+        setRawMouseButton(event.button, false);
+    });
+
+    window.addEventListener('wheel', function(event) {
+        setMouseWheelDirection(event.deltaY);
+    });
+
+    // Disable middle click default scrolling.
+    document.body.onmousedown = function(e) {
+        if (e.button == 1) {
+            return false;
+        }
+    }
+}
 
 /**
  * Sets the canvas size to the window size, and also updates the camera
@@ -50,8 +82,6 @@ function setMouseWheelDirection(delta) {
 }
 
 export {
+    listenToEvents,
     resizeCanvas,
-    updateMousePosition,
-    setRawMouseButton,
-    setMouseWheelDirection,
 };

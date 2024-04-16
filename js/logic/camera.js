@@ -1,5 +1,5 @@
+import state from "../references/state.js";
 import { justPressed } from "./controls.js";
-import state from "./state.js";
 
 const SCALE_SPEED = 0.05;
 const SCALE_MULTIPLIER = 2;
