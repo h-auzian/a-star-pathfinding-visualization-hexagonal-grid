@@ -1,3 +1,4 @@
+import dom from "./dom.js";
 import { updateCameraScaledSize } from "./camera.js";
 import state from "./state.js";
 
@@ -5,12 +6,12 @@ import state from "./state.js";
  * Sets the canvas size to the window size, and also updates the camera
  * dimensions according to the current scale.
  */
-function resizeCanvas(canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function resizeCanvas() {
+    dom.canvas.width = window.innerWidth;
+    dom.canvas.height = window.innerHeight;
 
-    state.camera.size.raw.width = canvas.width;
-    state.camera.size.raw.height = canvas.height;
+    state.camera.size.raw.width = dom.canvas.width;
+    state.camera.size.raw.height = dom.canvas.height;
     updateCameraScaledSize();
 }
 

@@ -5,11 +5,11 @@ import { updateUI } from "./ui.js";
 /**
  * Main logic update function.
  */
-function update(info) {
+function update() {
     updateControls();
     scrollCamera();
     scaleCamera();
-    updateUI(info);
+    updateUI();
 }
 
 

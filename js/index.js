@@ -5,25 +5,21 @@ import { initializeMap } from "./map.js";
 import update from "./update.js";
 
 function init() {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
-    const info = document.getElementById("info");
-
     initializeMap();
     centerCameraOnMap();
 
-    resizeCanvas(canvas);
-    listenToEvents(canvas);
+    resizeCanvas();
+    listenToEvents();
 
-    mainLoop(canvas, context, info);
+    mainLoop();
 }
 
 /**
  * Setup all event listeners, useful for canvas resize or user input.
  */
-function listenToEvents(canvas) {
+function listenToEvents() {
     window.addEventListener("resize", function() {
-        resizeCanvas(canvas);
+        resizeCanvas();
     });
 
     window.addEventListener('mousemove', function(event) {
@@ -53,13 +49,13 @@ function listenToEvents(canvas) {
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
  */
-function mainLoop(canvas, context, info) {
+function mainLoop() {
     window.requestAnimationFrame(function() {
-        mainLoop(canvas, context, info);
+        mainLoop();
     });
 
-    update(info);
-    draw(canvas, context);
+    update();
+    draw();
 }
 
 export default init;

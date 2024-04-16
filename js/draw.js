@@ -1,3 +1,4 @@
+import dom from "./dom.js";
 import { getHexagonPoints } from "./map.js";
 import state from "./state.js";
 
@@ -11,53 +12,53 @@ const HEGAXON_TYPE_FILL_COLORS = {
 /**
  * Main canvas draw function.
  */
-function draw(canvas, context) {
-    clearCanvas(canvas, context);
-    applyCanvasTransformations(context);
-    drawMap(context);
+function draw() {
+    clearCanvas();
+    applyCanvasTransformations();
+    drawMap();
 }
 
-function clearCanvas(canvas, context) {
-    context.setTransform(1, 0, 0, 1, canvas.width/2, canvas.height/2);
-    context.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+function clearCanvas() {
+    dom.context.setTransform(1, 0, 0, 1, dom.canvas.width/2, dom.canvas.height/2);
+    dom.context.clearRect(-dom.canvas.width/2, -dom.canvas.height/2, dom.canvas.width, dom.canvas.height);
 }
 
-function applyCanvasTransformations(context) {
-    context.scale(state.camera.scale.value, state.camera.scale.value);
-    context.translate(-state.camera.center.x, -state.camera.center.y);
+function applyCanvasTransformations() {
+    dom.context.scale(state.camera.scale.value, state.camera.scale.value);
+    dom.context.translate(-state.camera.center.x, -state.camera.center.y);
 }
 
-function drawMap(context) {
+function drawMap() {
     for (let x = 0; x < state.map.width; x++) {
         let column = state.map.tiles[x];
         for (let y = 0; y < state.map.height; y++) {
             let tile = column[y];
-            drawTile(context, tile);
+            drawTile(tile);
         }
     }
 }
 
-function drawTile(context, tile) {
+function drawTile(tile) {
     let fillColor = HEGAXON_TYPE_FILL_COLORS[tile.type];
-    drawHexagon(context, tile.center.x, tile.center.y, fillColor);
+    drawHexagon(tile.center.x, tile.center.y, fillColor);
 }
 
-function drawHexagon(context, centerX, centerY, fillColor) {
-    context.lineWidth = HEXAGON_OUTLINE_WIDTH;
-    context.lineStyle = HEXAGON_OUTLINE_COLOR;
-    context.fillStyle = fillColor;
+function drawHexagon(centerX, centerY, fillColor) {
+    dom.context.lineWidth = HEXAGON_OUTLINE_WIDTH;
+    dom.context.lineStyle = HEXAGON_OUTLINE_COLOR;
+    dom.context.fillStyle = fillColor;
 
     const points = getHexagonPoints(centerX, centerY);
-    context.beginPath();
-    context.moveTo(points[0].x, points[0].y);
+    dom.context.beginPath();
+    dom.context.moveTo(points[0].x, points[0].y);
     for (let i = 1; i < points.length; i++) {
         const point = points[i];
-        context.lineTo(point.x, point.y);
+        dom.context.lineTo(point.x, point.y);
     }
 
-    context.closePath();
-    context.fill();
-    context.stroke();
+    dom.context.closePath();
+    dom.context.fill();
+    dom.context.stroke();
 }
 
 export default draw;

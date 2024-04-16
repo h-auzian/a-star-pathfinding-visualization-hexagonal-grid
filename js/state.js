@@ -3,7 +3,7 @@
  * Each frame, the `update` method will make changes to this state, while the
  * 'draw' method will draw the canvas according to the state values.
  */
-let state = {
+export default {
     camera: {
         size: {
             raw: {
@@ -63,5 +63,3 @@ let state = {
         },
     },
 };
-
-export default state;
