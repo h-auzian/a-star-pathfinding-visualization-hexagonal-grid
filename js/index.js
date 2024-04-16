@@ -58,7 +58,7 @@ function mainLoop(canvas, context, info) {
         mainLoop(canvas, context, info);
     });
 
-    update(canvas, info);
+    update(info);
     draw(canvas, context);
 }
 
