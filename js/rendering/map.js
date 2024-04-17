@@ -1,6 +1,6 @@
 import dom from "../references/dom.js";
 import state from "../references/state.js";
-import { getHexagonPoints } from "../logic/map.js";
+import { getHexagonPoints, getVisibleTiles } from "../logic/map.js";
 
 const HEXAGON_OUTLINE_WIDTH = 5;
 const HEXAGON_OUTLINE_COLOR = "#000";
@@ -10,12 +10,13 @@ const HEGAXON_TYPE_FILL_COLORS = {
 };
 
 /**
- * Renders the hexagonal map.
+ * Renders the visible tiles of the hexagonal map.
  */
 function renderMap() {
-    for (let x = 0; x < state.map.width; x++) {
+    let visibleTiles = getVisibleTiles();
+    for (let x = visibleTiles.x1; x <= visibleTiles.x2; x++) {
         let column = state.map.tiles[x];
-        for (let y = 0; y < state.map.height; y++) {
+        for (let y = visibleTiles.y1; y <= visibleTiles.y2; y++) {
             let tile = column[y];
             renderTile(tile);
         }

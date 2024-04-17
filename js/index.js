@@ -18,7 +18,6 @@ function init() {
     mainLoop();
 }
 
-
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
  */

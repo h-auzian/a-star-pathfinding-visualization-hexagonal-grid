@@ -16,8 +16,16 @@ export default {
             },
         },
         center: {
-            x: 200,
+            x: 0,
             y: 0,
+        },
+        rectangle: {
+            scaled: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+            },
         },
         scrollPosition: {
             x: 0,
@@ -33,6 +41,7 @@ export default {
         width: 30,
         height: 20,
         tiles: [],
+        debugVisibleTiles: false,
     },
     input: {
         mouse: {

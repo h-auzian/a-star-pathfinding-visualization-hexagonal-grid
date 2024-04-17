@@ -9,17 +9,6 @@ const GENERAL_SCROLL_SPEED = 0.5;
 const DIRECTIONAL_SCROLL_SPEED = 15;
 
 /**
- * Updates the camera scaled size.
- * Useful after resizing the camera or changing the scale.
- */
-function updateCameraScaledSize() {
-    const scale = state.camera.scale.value;
-    const size = state.camera.size;
-    size.scaled.width = size.raw.width / scale;
-    size.scaled.height = size.raw.height / scale;
-}
-
-/**
  * Positions the camera on the central tile (or closest to it).
  */
 function centerCameraOnMap() {
@@ -27,8 +16,7 @@ function centerCameraOnMap() {
     const tileY = Math.floor(state.map.height / 2);
 
     const tile = state.map.tiles[tileX][tileY];
-    state.camera.center.x = tile.center.x;
-    state.camera.center.y = tile.center.y;
+    setCameraCenter(tile.center.x, tile.center.y);
 }
 
 /**
@@ -42,11 +30,10 @@ function scaleCamera() {
     if (scale.value != scale.destination) {
         if (getScaleDifference() > scale.speed) {
             let direction = scale.value < scale.destination ? 1 : -1;
-            scale.value += scale.speed * direction;
+            setCameraScale(scale.value + scale.speed * direction);
         } else {
-            scale.value = scale.destination;
+            setCameraScale(scale.destination);
         }
-        updateCameraScaledSize();
     } else if (justPressed(control)) {
         const direction = Math.sign(control.current);
         if (direction == 1 && scale.destination > SCALE_LOWER_LIMIT) {
@@ -84,8 +71,9 @@ function scrollCameraGeneralControls() {
         camera.scrollPosition.y = mousePosition.y;
     } else if (scrollControl.current) {
         const speed = GENERAL_SCROLL_SPEED / camera.scale.value;
-        camera.center.x += (mousePosition.x - camera.scrollPosition.x) * speed;
-        camera.center.y += (mousePosition.y - camera.scrollPosition.y) * speed;
+        const newX = camera.center.x + (mousePosition.x - camera.scrollPosition.x) * speed;
+        const newY = camera.center.y + (mousePosition.y - camera.scrollPosition.y) * speed;
+        setCameraCenter(newX, newY);
     }
 }
 
@@ -97,17 +85,76 @@ function scrollCameraDirectionalControls() {
     const controls = state.controls.scroll.individual;
     const speed = DIRECTIONAL_SCROLL_SPEED / camera.scale.value;
 
-    if (controls.up.current) {
-        camera.center.y -= speed;
-    } else if (controls.down.current) {
-        camera.center.y += speed;
-    }
+    let newX = camera.center.x;
+    let newY = camera.center.y;
 
     if (controls.left.current) {
-        camera.center.x -= speed;
+        newX -= speed;
     } else if (controls.right.current) {
-        camera.center.x += speed;
+        newX += speed;
     }
+
+    if (controls.up.current) {
+        newY -= speed;
+    } else if (controls.down.current) {
+        newY += speed;
+    }
+
+    setCameraCenter(newX, newY);
+}
+
+/**
+ * Sets the camera center position and updates dependant values.
+ */
+function setCameraCenter(x, y) {
+    if (x != state.camera.center.x || y != state.camera.center.y) {
+        state.camera.center.x = x;
+        state.camera.center.y = y;
+        updateCameraScaledRectangle();
+    }
+}
+
+/**
+ * Sets the camera scale value and updates dependant values.
+ */
+function setCameraScale(scale) {
+    if (scale != state.camera.scale.value) {
+        state.camera.scale.value = scale;
+        updateCameraScaledSize();
+    }
+}
+
+/**
+ * Sets the camera raw size and updates dependant values.
+ */
+function setCameraRawSize(width, height) {
+    const size = state.camera.size.raw;
+    if (width != size.width || height != size.height) {
+        size.width = width;
+        size.height = height;
+        updateCameraScaledSize();
+    }
+}
+
+/**
+ * Updates the camera scaled size.
+ */
+function updateCameraScaledSize() {
+    const camera = state.camera;
+    camera.size.scaled.width = camera.size.raw.width / camera.scale.value;
+    camera.size.scaled.height = camera.size.raw.height / camera.scale.value;
+    updateCameraScaledRectangle();
+}
+
+/**
+ * Updates the camera scaled rectangle coordinates.
+ */
+function updateCameraScaledRectangle() {
+    const camera = state.camera;
+    camera.rectangle.scaled.left = camera.center.x - camera.size.scaled.width / 2;
+    camera.rectangle.scaled.right = camera.center.x + camera.size.scaled.width / 2,
+    camera.rectangle.scaled.top = camera.center.y - camera.size.scaled.height / 2;
+    camera.rectangle.scaled.bottom = camera.center.y + camera.size.scaled.height / 2;
 }
 
 /**
@@ -118,8 +165,10 @@ function getScaleDifference() {
 }
 
 export {
-    updateCameraScaledSize,
     centerCameraOnMap,
     scaleCamera,
     scrollCamera,
+    setCameraCenter,
+    setCameraScale,
+    setCameraRawSize,
 };

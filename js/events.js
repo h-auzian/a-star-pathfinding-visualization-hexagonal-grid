@@ -1,6 +1,6 @@
+import { setCameraRawSize } from "./logic/camera.js";
 import dom from "./references/dom.js";
 import state from "./references/state.js";
-import { updateCameraScaledSize } from "./logic/camera.js";
 
 /**
  * Setup all event listeners, useful for canvas resize and user input.
@@ -50,9 +50,7 @@ function resizeCanvas() {
     dom.canvas.width = window.innerWidth;
     dom.canvas.height = window.innerHeight;
 
-    state.camera.size.raw.width = dom.canvas.width;
-    state.camera.size.raw.height = dom.canvas.height;
-    updateCameraScaledSize();
+    setCameraRawSize(dom.canvas.width, dom.canvas.height);
 }
 
 /**
