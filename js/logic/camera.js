@@ -1,3 +1,4 @@
+import { keepBetweenValues } from "../misc/functions.js";
 import state from "../references/state.js";
 import { justPressed } from "./controls.js";
 
@@ -58,6 +59,7 @@ function scrollCamera() {
 
 /**
  * Scrolls the camera while the general scroll button is held.
+ *
  * The greater the distance between the cursor initial position and the current
  * position, the faster the scroll movement will be.
  */
@@ -107,10 +109,12 @@ function scrollCameraDirectionalControls() {
  * Sets the camera center position and updates dependant values.
  */
 function setCameraCenter(x, y) {
-    if (x != state.camera.center.x || y != state.camera.center.y) {
-        state.camera.center.x = x;
-        state.camera.center.y = y;
-        updateCameraScaledRectangle();
+    const camera = state.camera;
+
+    if (x != camera.center.x || y != camera.center.y) {
+        camera.center.x = x;
+        camera.center.y = y;
+        keepCameraCenterInsideBoundaries();
     }
 }
 
@@ -121,6 +125,7 @@ function setCameraScale(scale) {
     if (scale != state.camera.scale.value) {
         state.camera.scale.value = scale;
         updateCameraScaledSize();
+        keepCameraCenterInsideBoundaries();
     }
 }
 
@@ -133,7 +138,49 @@ function setCameraRawSize(width, height) {
         size.width = width;
         size.height = height;
         updateCameraScaledSize();
+        keepCameraCenterInsideBoundaries();
     }
+}
+/**
+ * Keeps the camera center inside the map boundaries.
+ *
+ * If the boundaries are smaller than the camera size, usually due to the
+ * camera being zoomed out to render the whole map, then it just keeps the
+ * camera centered on the map.
+ */
+function keepCameraCenterInsideBoundaries() {
+    const camera = state.camera;
+    const halfWidth = state.camera.size.scaled.width / 2;
+    const halfHeight = state.camera.size.scaled.height / 2;
+
+    const boundaries = {
+        left: state.map.boundaries.left + halfWidth,
+        right: state.map.boundaries.right - halfWidth,
+        top: state.map.boundaries.top + halfHeight,
+        bottom: state.map.boundaries.bottom - halfHeight,
+    };
+
+    if (boundaries.left >= boundaries.right) {
+        camera.center.x = state.map.boundaries.left + state.map.boundaries.right / 2;
+    } else {
+        camera.center.x = keepBetweenValues(
+            boundaries.left,
+            camera.center.x,
+            boundaries.right,
+        );
+    }
+
+    if (boundaries.top >= boundaries.bottom) {
+        camera.center.y = state.map.boundaries.top + state.map.boundaries.bottom / 2;
+    } else {
+        camera.center.y = keepBetweenValues(
+            boundaries.top,
+            camera.center.y,
+            boundaries.bottom,
+        );
+    }
+
+    updateCameraScaledRectangle();
 }
 
 /**

@@ -41,7 +41,12 @@ export default {
         width: 30,
         height: 20,
         tiles: [],
-        debugVisibleTiles: false,
+        boundaries: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+        },
     },
     input: {
         mouse: {
@@ -99,6 +104,12 @@ export default {
         scale: {
             previous: 0,
             current: 0,
+        },
+    },
+    debug: {
+        map: {
+            visibleTiles: false,
+            boundaries: false,
         },
     },
 };

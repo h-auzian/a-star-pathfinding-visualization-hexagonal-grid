@@ -1,8 +1,10 @@
+import { keepBetweenValues } from "../misc/functions.js";
 import state from "../references/state.js";
 
 const RADIANS = Math.PI / 180;
 const HEXAGON_RADIUS = 50;
-const HEXAGON_HORIZONTAL_DISTANCE = HEXAGON_RADIUS + Math.cos(60 * RADIANS) * HEXAGON_RADIUS;
+const HEXAGON_INNER_HORIZONTAL_DISTANCE = Math.cos(60 * RADIANS) * HEXAGON_RADIUS;
+const HEXAGON_HORIZONTAL_DISTANCE = HEXAGON_RADIUS + HEXAGON_INNER_HORIZONTAL_DISTANCE;
 const HEXAGON_VERTICAL_DISTANCE = Math.sin(60 * RADIANS) * HEXAGON_RADIUS;
 
 /**
@@ -17,7 +19,17 @@ function initializeMap() {
         }
     }
 
-    state.map.tiles[5][3].type = "impassable";
+    calculateMapBoundaries();
+
+    if (state.debug.map.boundaries) {
+        for (let i = 0; i < state.map.width; i++) {
+            for (let j = 0; j < state.map.height; j++) {
+                if ((i == 0 || i == state.map.width - 1) || (j == 0 || j == state.map.height - 1)) {
+                    state.map.tiles[i][j].type = "impassable";
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -34,6 +46,27 @@ function initializeTile(indexX, indexY) {
             x: centerX,
             y: centerY,
         },
+    }
+}
+
+/**
+ * Calculates the map boundaries rectangle depending of the width and height.
+ */
+function calculateMapBoundaries() {
+    const map = state.map;
+    const lastTile = map.tiles[map.width-1][map.height-1];
+
+    map.boundaries.left = -HEXAGON_INNER_HORIZONTAL_DISTANCE;
+    map.boundaries.right = lastTile.center.x + HEXAGON_INNER_HORIZONTAL_DISTANCE;
+    map.boundaries.top = 0;
+    map.boundaries.bottom = lastTile.center.y;
+
+    if (state.debug.map.boundaries) {
+        const offset = 10;
+        map.boundaries.left -= offset;
+        map.boundaries.right += offset;
+        map.boundaries.top -= offset;
+        map.boundaries.bottom += offset;
     }
 }
 
@@ -56,12 +89,12 @@ function getVisibleTiles() {
         y2: Math.floor((rect.bottom + HEXAGON_VERTICAL_DISTANCE) / (HEXAGON_VERTICAL_DISTANCE * 2)),
     };
 
-    visibleTiles.x1 = Math.max(0, Math.min(visibleTiles.x1, state.map.width-1));
-    visibleTiles.x2 = Math.max(0, Math.min(visibleTiles.x2, state.map.width-1));
-    visibleTiles.y1 = Math.max(0, Math.min(visibleTiles.y1, state.map.height-1));
-    visibleTiles.y2 = Math.max(0, Math.min(visibleTiles.y2, state.map.height-1));
+    visibleTiles.x1 = keepBetweenValues(0, visibleTiles.x1, state.map.width-1);
+    visibleTiles.x2 = keepBetweenValues(0, visibleTiles.x2, state.map.width-1);
+    visibleTiles.y1 = keepBetweenValues(0, visibleTiles.y1, state.map.height-1);
+    visibleTiles.y2 = keepBetweenValues(0, visibleTiles.y2, state.map.height-1);
 
-    if (state.map.debugVisibleTiles) {
+    if (state.debug.map.visibleTiles) {
         visibleTiles.x1++;
         visibleTiles.x2--;
         visibleTiles.y1++;
