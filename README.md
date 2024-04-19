@@ -18,3 +18,11 @@ If you have `npm` installed, install the dependencies and start the local server
     npm start
 
 Then open 127.0.0.1:8080 in your browser. If any changes are made in the files, the server will be reloaded automatically.
+
+### Docker
+
+If you have Docker and Docker Compose installed, simply run:
+
+    docker-compose up
+
+And then open 127.0.0.1:8080 in your browser. If any changes are made in the files, the server will be reloaded automatically.

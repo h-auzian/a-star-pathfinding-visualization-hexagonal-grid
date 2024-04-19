@@ -1,0 +1,9 @@
+services:
+  server:
+    build: .
+    volumes:
+      - ./js:/usr/app/js
+      - ./index.html:/usr/app/index.html
+      - ./style.css:/usr/app/style.css
+    ports:
+      - 8080:8080
