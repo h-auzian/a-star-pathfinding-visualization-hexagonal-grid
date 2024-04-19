@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "live-server --no-browser --watch=index.html,style.css,js"
+  },
+  "devDependencies": {
+    "live-server": "1.2.2"
+  }
+}
