@@ -1,5 +1,5 @@
 import { keepBetweenValues } from "../misc/functions.js";
-import state from "../references/state.js";
+import state from "../global/state.js";
 import { justPressed } from "./controls.js";
 
 const SCALE_SPEED = 0.05;

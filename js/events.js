@@ -1,6 +1,6 @@
 import { setCameraRawSize } from "./logic/camera.js";
-import dom from "./references/dom.js";
-import state from "./references/state.js";
+import dom from "./global/dom.js";
+import state from "./global/state.js";
 
 /**
  * Setup all event listeners, useful for canvas resize and user input.

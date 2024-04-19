@@ -1,5 +1,5 @@
-import dom from "../references/dom.js";
-import state from "../references/state.js";
+import dom from "../global/dom.js";
+import state from "../global/state.js";
 import { getHexagonPoints, getVisibleTiles } from "../logic/map.js";
 
 const HEXAGON_OUTLINE_WIDTH = 5;

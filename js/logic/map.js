@@ -1,5 +1,5 @@
 import { keepBetweenValues } from "../misc/functions.js";
-import state from "../references/state.js";
+import state from "../global/state.js";
 
 const RADIANS = Math.PI / 180;
 const HEXAGON_RADIUS = 50;
