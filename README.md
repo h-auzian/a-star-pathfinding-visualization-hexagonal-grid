@@ -26,3 +26,19 @@ If you have Docker and Docker Compose installed, simply run:
     docker-compose up
 
 And then open 127.0.0.1:8080 in your browser. If any changes are made in the files, the server will be reloaded automatically.
+
+## Tests
+
+There are a few tests for specific algorithms and functions.
+
+### npm
+
+If the project is running locally via `npm`, run:
+
+    npm test
+
+### Docker
+
+If the project is running locally via Docker, run:
+
+    docker-compose exec server npm test

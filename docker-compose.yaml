@@ -3,7 +3,9 @@ services:
     build: .
     volumes:
       - ./js:/usr/app/js
+      - ./tests:/usr/app/tests
       - ./index.html:/usr/app/index.html
+      - ./package.json:/usr/app/package.json
       - ./style.css:/usr/app/style.css
     ports:
       - 8080:8080
