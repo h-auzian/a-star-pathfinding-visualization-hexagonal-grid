@@ -5,8 +5,8 @@ import state from "../global/state.js";
  * Clears the canvas to allow rendering a new frame.
  */
 function clearCanvas() {
-    dom.context.setTransform(1, 0, 0, 1, dom.canvas.width/2, dom.canvas.height/2);
-    dom.context.clearRect(-dom.canvas.width/2, -dom.canvas.height/2, dom.canvas.width, dom.canvas.height);
+  dom.context.setTransform(1, 0, 0, 1, dom.canvas.width/2, dom.canvas.height/2);
+  dom.context.clearRect(-dom.canvas.width/2, -dom.canvas.height/2, dom.canvas.width, dom.canvas.height);
 }
 
 /**
@@ -14,11 +14,11 @@ function clearCanvas() {
  * Must be called every frame after clearing the canvas but before any rendering.
  */
 function applyCanvasTransformations() {
-    dom.context.scale(state.camera.scale.value, state.camera.scale.value);
-    dom.context.translate(-state.camera.center.x, -state.camera.center.y);
+  dom.context.scale(state.camera.scale.value, state.camera.scale.value);
+  dom.context.translate(-state.camera.center.x, -state.camera.center.y);
 }
 
 export {
-    clearCanvas,
-    applyCanvasTransformations,
+  clearCanvas,
+  applyCanvasTransformations,
 };

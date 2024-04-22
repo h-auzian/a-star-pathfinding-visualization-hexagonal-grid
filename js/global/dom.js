@@ -6,7 +6,7 @@ const context = canvas.getContext("2d");
 const info = document.getElementById("info");
 
 export default {
-    canvas: canvas,
-    context: context,
-    info: info,
+  canvas: canvas,
+  context: context,
+  info: info,
 }

@@ -1,35 +1,35 @@
 import { keepBetweenValues } from "../misc/functions.js";
 import state from "../global/state.js";
 import {
-    HEXAGON_HORIZONTAL_DISTANCE,
-    HEXAGON_INNER_HORIZONTAL_DISTANCE,
-    HEXAGON_RADIUS,
-    HEXAGON_VERTICAL_DISTANCE,
+  HEXAGON_HORIZONTAL_DISTANCE,
+  HEXAGON_INNER_HORIZONTAL_DISTANCE,
+  HEXAGON_RADIUS,
+  HEXAGON_VERTICAL_DISTANCE,
 } from "./hexagon.js";
 
 /**
  * Initializes the map state data as a two dimensional array.
  */
 function initializeMap() {
-    state.map.tiles = new Array(state.map.width);
+  state.map.tiles = new Array(state.map.width);
+  for (let i = 0; i < state.map.width; i++) {
+    state.map.tiles[i] = Array(state.map.height);
+    for (let j = 0; j < state.map.height; j++) {
+      initializeTile(i, j);
+    }
+  }
+
+  calculateMapBoundaries();
+
+  if (state.debug.map.boundaries) {
     for (let i = 0; i < state.map.width; i++) {
-        state.map.tiles[i] = Array(state.map.height);
-        for (let j = 0; j < state.map.height; j++) {
-            initializeTile(i, j);
+      for (let j = 0; j < state.map.height; j++) {
+        if ((i == 0 || i == state.map.width - 1) || (j == 0 || j == state.map.height - 1)) {
+          state.map.tiles[i][j].type = "impassable";
         }
+      }
     }
-
-    calculateMapBoundaries();
-
-    if (state.debug.map.boundaries) {
-        for (let i = 0; i < state.map.width; i++) {
-            for (let j = 0; j < state.map.height; j++) {
-                if ((i == 0 || i == state.map.width - 1) || (j == 0 || j == state.map.height - 1)) {
-                    state.map.tiles[i][j].type = "impassable";
-                }
-            }
-        }
-    }
+  }
 }
 
 /**
@@ -37,37 +37,37 @@ function initializeMap() {
  * the X and Y index.
  */
 function initializeTile(indexX, indexY) {
-    const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
-    const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
+  const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
+  const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
 
-    state.map.tiles[indexX][indexY] = {
-        type: "passable",
-        center: {
-            x: centerX,
-            y: centerY,
-        },
-    }
+  state.map.tiles[indexX][indexY] = {
+    type: "passable",
+    center: {
+      x: centerX,
+      y: centerY,
+    },
+  }
 }
 
 /**
  * Calculates the map boundaries rectangle depending of the width and height.
  */
 function calculateMapBoundaries() {
-    const map = state.map;
-    const lastTile = map.tiles[map.width-1][map.height-1];
+  const map = state.map;
+  const lastTile = map.tiles[map.width-1][map.height-1];
 
-    map.boundaries.left = -HEXAGON_INNER_HORIZONTAL_DISTANCE;
-    map.boundaries.right = lastTile.center.x + HEXAGON_INNER_HORIZONTAL_DISTANCE;
-    map.boundaries.top = 0;
-    map.boundaries.bottom = lastTile.center.y;
+  map.boundaries.left = -HEXAGON_INNER_HORIZONTAL_DISTANCE;
+  map.boundaries.right = lastTile.center.x + HEXAGON_INNER_HORIZONTAL_DISTANCE;
+  map.boundaries.top = 0;
+  map.boundaries.bottom = lastTile.center.y;
 
-    if (state.debug.map.boundaries) {
-        const offset = 10;
-        map.boundaries.left -= offset;
-        map.boundaries.right += offset;
-        map.boundaries.top -= offset;
-        map.boundaries.bottom += offset;
-    }
+  if (state.debug.map.boundaries) {
+    const offset = 10;
+    map.boundaries.left -= offset;
+    map.boundaries.right += offset;
+    map.boundaries.top -= offset;
+    map.boundaries.bottom += offset;
+  }
 }
 
 /**
@@ -80,31 +80,31 @@ function calculateMapBoundaries() {
  * minor and gets the job done.
  */
 function getVisibleTiles() {
-    const rect = state.camera.rectangle.scaled;
+  const rect = state.camera.rectangle.scaled;
 
-    const visibleTiles = {
-        x1: Math.floor((rect.left + HEXAGON_RADIUS / 2) / HEXAGON_HORIZONTAL_DISTANCE),
-        x2: Math.floor((rect.right + HEXAGON_RADIUS) / HEXAGON_HORIZONTAL_DISTANCE),
-        y1: Math.floor(rect.top / (HEXAGON_VERTICAL_DISTANCE * 2)),
-        y2: Math.floor((rect.bottom + HEXAGON_VERTICAL_DISTANCE) / (HEXAGON_VERTICAL_DISTANCE * 2)),
-    };
+  const visibleTiles = {
+    x1: Math.floor((rect.left + HEXAGON_RADIUS / 2) / HEXAGON_HORIZONTAL_DISTANCE),
+    x2: Math.floor((rect.right + HEXAGON_RADIUS) / HEXAGON_HORIZONTAL_DISTANCE),
+    y1: Math.floor(rect.top / (HEXAGON_VERTICAL_DISTANCE * 2)),
+    y2: Math.floor((rect.bottom + HEXAGON_VERTICAL_DISTANCE) / (HEXAGON_VERTICAL_DISTANCE * 2)),
+  };
 
-    visibleTiles.x1 = keepBetweenValues(0, visibleTiles.x1, state.map.width-1);
-    visibleTiles.x2 = keepBetweenValues(0, visibleTiles.x2, state.map.width-1);
-    visibleTiles.y1 = keepBetweenValues(0, visibleTiles.y1, state.map.height-1);
-    visibleTiles.y2 = keepBetweenValues(0, visibleTiles.y2, state.map.height-1);
+  visibleTiles.x1 = keepBetweenValues(0, visibleTiles.x1, state.map.width-1);
+  visibleTiles.x2 = keepBetweenValues(0, visibleTiles.x2, state.map.width-1);
+  visibleTiles.y1 = keepBetweenValues(0, visibleTiles.y1, state.map.height-1);
+  visibleTiles.y2 = keepBetweenValues(0, visibleTiles.y2, state.map.height-1);
 
-    if (state.debug.map.visibleTiles) {
-        visibleTiles.x1++;
-        visibleTiles.x2--;
-        visibleTiles.y1++;
-        visibleTiles.y2--;
-    }
+  if (state.debug.map.visibleTiles) {
+    visibleTiles.x1++;
+    visibleTiles.x2--;
+    visibleTiles.y1++;
+    visibleTiles.y2--;
+  }
 
-    return visibleTiles;
+  return visibleTiles;
 }
 
 export {
-    initializeMap,
-    getVisibleTiles,
+  initializeMap,
+  getVisibleTiles,
 };

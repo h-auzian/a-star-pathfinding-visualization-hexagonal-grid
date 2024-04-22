@@ -9,26 +9,26 @@ import updateLogic from "./update.js";
  * Initialization function that ties everything together.
  */
 function init() {
-    initializeMap();
-    centerCameraOnMap();
+  initializeMap();
+  centerCameraOnMap();
 
-    resizeCanvas();
-    listenToEvents();
+  resizeCanvas();
+  listenToEvents();
 
-    mainLoop();
+  mainLoop();
 }
 
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
  */
 function mainLoop() {
-    window.requestAnimationFrame(function() {
-        mainLoop();
-    });
+  window.requestAnimationFrame(function() {
+    mainLoop();
+  });
 
-    updateLogic();
-    updateUI();
-    render();
+  updateLogic();
+  updateUI();
+  render();
 }
 
 export default init;
