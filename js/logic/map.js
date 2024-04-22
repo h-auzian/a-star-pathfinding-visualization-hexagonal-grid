@@ -1,11 +1,11 @@
 import { keepBetweenValues } from "../misc/functions.js";
 import state from "../global/state.js";
-
-const RADIANS = Math.PI / 180;
-const HEXAGON_RADIUS = 50;
-const HEXAGON_INNER_HORIZONTAL_DISTANCE = Math.cos(60 * RADIANS) * HEXAGON_RADIUS;
-const HEXAGON_HORIZONTAL_DISTANCE = HEXAGON_RADIUS + HEXAGON_INNER_HORIZONTAL_DISTANCE;
-const HEXAGON_VERTICAL_DISTANCE = Math.sin(60 * RADIANS) * HEXAGON_RADIUS;
+import {
+    HEXAGON_HORIZONTAL_DISTANCE,
+    HEXAGON_INNER_HORIZONTAL_DISTANCE,
+    HEXAGON_RADIUS,
+    HEXAGON_VERTICAL_DISTANCE,
+} from "./hexagon.js";
 
 /**
  * Initializes the map state data as a two dimensional array.
@@ -104,24 +104,7 @@ function getVisibleTiles() {
     return visibleTiles;
 }
 
-/**
- * Returns the 6 vertices from an hexagon with a given center.
- */
-function getHexagonPoints(centerX, centerY) {
-    let points = [];
-
-    for (let i = 0; i < 6; i++) {
-        let angle = 60 * i * RADIANS;
-        const x = Math.cos(angle) * HEXAGON_RADIUS + centerX;
-        const y = Math.sin(angle) * HEXAGON_RADIUS + centerY;
-        points.push({x, y});
-    }
-
-    return points;
-}
-
 export {
     initializeMap,
     getVisibleTiles,
-    getHexagonPoints,
 };

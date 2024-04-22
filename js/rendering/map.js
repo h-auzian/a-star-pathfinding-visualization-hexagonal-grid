@@ -1,6 +1,7 @@
 import dom from "../global/dom.js";
 import state from "../global/state.js";
-import { getHexagonPoints, getVisibleTiles } from "../logic/map.js";
+import { getHexagonPoints } from "../logic/hexagon.js";
+import { getVisibleTiles } from "../logic/map.js";
 
 const HEXAGON_OUTLINE_WIDTH = 5;
 const HEXAGON_OUTLINE_COLOR = "#000";
