@@ -41,6 +41,13 @@ export default {
     width: 30,
     height: 20,
     tiles: [],
+    tileUnderCursor: null,
+    boundingBox: {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
     boundaries: {
       left: 0,
       right: 0,

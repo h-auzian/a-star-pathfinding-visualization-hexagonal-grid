@@ -1,4 +1,10 @@
-import { getHexagonPoints } from "../../js/logic/hexagon";
+import {
+  HEXAGON_INNER_HORIZONTAL_DISTANCE,
+  HEXAGON_RADIUS,
+  HEXAGON_VERTICAL_DISTANCE,
+  getHexagonPoints,
+  isPointInsideHexagon,
+} from "../../js/logic/hexagon";
 
 test.each([
   [0, 0],
@@ -26,4 +32,44 @@ test.each([
     expect(points[i].x).toBeCloseTo(expectedPoints[i].x, 0);
     expect(points[i].y).toBeCloseTo(expectedPoints[i].y, 0);
   }
+});
+
+test.each([
+  [0, 0, true],
+  [HEXAGON_RADIUS, 0, true],
+  [HEXAGON_RADIUS+1, 0, false],
+  [0, HEXAGON_VERTICAL_DISTANCE, true],
+  [0, HEXAGON_VERTICAL_DISTANCE+1, false],
+  [HEXAGON_INNER_HORIZONTAL_DISTANCE, HEXAGON_VERTICAL_DISTANCE, true],
+  [HEXAGON_INNER_HORIZONTAL_DISTANCE+1, HEXAGON_VERTICAL_DISTANCE, false],
+  [HEXAGON_INNER_HORIZONTAL_DISTANCE*1.5, HEXAGON_VERTICAL_DISTANCE*0.5, true],
+  [HEXAGON_INNER_HORIZONTAL_DISTANCE*1.5, HEXAGON_VERTICAL_DISTANCE*0.5+1, false],
+])("Detect point (%i, %i) inside hexagon on all quadrants", function(offsetX, offsetY, expectedResult) {
+  const hexagonGlobalCenter = {
+    x: 1000,
+    y: 1000,
+  };
+
+  const pointsPerQuadrant = [
+    {
+      x: hexagonGlobalCenter.x - offsetX,
+      y: hexagonGlobalCenter.y - offsetY,
+    },
+    {
+      x: hexagonGlobalCenter.x + offsetX,
+      y: hexagonGlobalCenter.y - offsetY,
+    },
+    {
+      x: hexagonGlobalCenter.x - offsetX,
+      y: hexagonGlobalCenter.y + offsetY,
+    },
+    {
+      x: hexagonGlobalCenter.x + offsetX,
+      y: hexagonGlobalCenter.y + offsetY,
+    },
+  ];
+
+  pointsPerQuadrant.forEach(function(point) {
+    expect(isPointInsideHexagon(point.x, point.y, hexagonGlobalCenter)).toBe(expectedResult);
+  });
 });
