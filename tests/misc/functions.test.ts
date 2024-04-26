@@ -1,4 +1,4 @@
-import { getLineY, isPointInsideRectangle, keepBetweenValues } from "../../js/misc/functions";
+import { getLineY, isPointInsideRectangle, keepBetweenValues } from "../../src/misc/functions";
 
 test.each([
   [10, 9, 20, 10],
@@ -30,7 +30,12 @@ test.each([
     bottom: 100,
   };
 
-  expect(isPointInsideRectangle(x, y, testRectangle)).toBe(expectedValue);
+  const point = {
+    x: x,
+    y: y,
+  };
+
+  expect(isPointInsideRectangle(point, testRectangle)).toBe(expectedValue);
 });
 
 test.each([
@@ -47,6 +52,7 @@ test.each([
     x: pointX,
     y: pointY,
   };
+
   expect(getLineY(x, point, slope)).toBeCloseTo(expectedY);
   expect(getLineY(x, point, -slope)).toBeCloseTo(-expectedY);
 });

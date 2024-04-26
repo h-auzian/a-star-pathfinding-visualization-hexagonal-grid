@@ -1,1 +1,3 @@
+*.norg
 node_modules
+dist

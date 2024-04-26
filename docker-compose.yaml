@@ -1,11 +1,14 @@
 services:
-  server:
+  local_server:
     build: .
     volumes:
-      - ./js:/usr/app/js
+      - ./dist:/usr/app/dist
+      - ./public:/usr/app/public
+      - ./src:/usr/app/src
       - ./tests:/usr/app/tests
-      - ./index.html:/usr/app/index.html
+      - ./package-lock.json:/usr/app/package-lock.json
       - ./package.json:/usr/app/package.json
-      - ./style.css:/usr/app/style.css
+      - ./tsconfig.json:/usr/app/tsconfig.json
+      - ./webpack.config.js:/usr/app/webpack.config.js
     ports:
       - 8080:8080

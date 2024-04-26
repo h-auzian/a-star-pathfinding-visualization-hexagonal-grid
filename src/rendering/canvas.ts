@@ -1,10 +1,10 @@
-import dom from "../global/dom.js";
-import state from "../global/state.js";
+import dom from "../global/dom";
+import state from "../global/state";
 
 /**
  * Clears the canvas to allow rendering a new frame.
  */
-function clearCanvas() {
+function clearCanvas(): void {
   dom.context.setTransform(1, 0, 0, 1, dom.canvas.width/2, dom.canvas.height/2);
   dom.context.clearRect(-dom.canvas.width/2, -dom.canvas.height/2, dom.canvas.width, dom.canvas.height);
 }
@@ -13,7 +13,7 @@ function clearCanvas() {
  * Applies various transformations to the canvas to simulate a "camera".
  * Must be called every frame after clearing the canvas but before any rendering.
  */
-function applyCanvasTransformations() {
+function applyCanvasTransformations(): void {
   dom.context.scale(state.camera.scale.value, state.camera.scale.value);
   dom.context.translate(-state.camera.center.x, -state.camera.center.y);
 }
@@ -21,4 +21,4 @@ function applyCanvasTransformations() {
 export {
   clearCanvas,
   applyCanvasTransformations,
-};
+}

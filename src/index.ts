@@ -1,14 +1,14 @@
-import { listenToEvents, resizeCanvas } from "./events.js";
-import { centerCameraOnMap } from "./logic/camera.js";
-import { initializeMap } from "./logic/map.js";
-import render from "./render.js";
-import updateUI from "./ui.js";
-import updateLogic from "./update.js";
+import { listenToEvents, resizeCanvas } from "./events";
+import { centerCameraOnMap } from "./logic/camera";
+import { initializeMap } from "./logic/map";
+import render from "./render";
+import updateUI from "./ui";
+import updateLogic from "./update";
 
 /**
  * Initialization function that ties everything together.
  */
-function init() {
+function init(): void {
   initializeMap();
   centerCameraOnMap();
 
@@ -21,7 +21,7 @@ function init() {
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
  */
-function mainLoop() {
+function mainLoop(): void {
   window.requestAnimationFrame(function() {
     mainLoop();
   });
@@ -31,4 +31,4 @@ function mainLoop() {
   render();
 }
 
-export default init;
+init();

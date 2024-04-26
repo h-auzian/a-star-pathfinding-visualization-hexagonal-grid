@@ -1,17 +1,17 @@
-import dom from "./global/dom.js";
-import state from "./global/state.js";
+import dom from "./global/dom";
+import state from "./global/state";
 
 /**
  * Main UI update function.
  */
-function updateUI() {
+function updateUI(): void {
   updateStateInformation();
 }
 
 /**
  * Updates the state information.
  */
-function updateStateInformation() {
+function updateStateInformation(): void {
   dom.info.innerHTML = "Camera (raw size): " + Math.round(state.camera.size.raw.width) + "x" + Math.round(state.camera.size.raw.height) + "<br>";
   dom.info.innerHTML += "Camera (scale): " + state.camera.scale.value.toPrecision(3) + " -> " + state.camera.scale.destination.toPrecision(3) + "<br>";
   dom.info.innerHTML += "Camera (scaled size): " + Math.round(state.camera.size.scaled.width) + "x" + Math.round(state.camera.size.scaled.height) + "<br>";

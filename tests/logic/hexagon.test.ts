@@ -4,7 +4,7 @@ import {
   HEXAGON_VERTICAL_DISTANCE,
   getHexagonPoints,
   isPointInsideHexagon,
-} from "../../js/logic/hexagon";
+} from "../../src/logic/hexagon";
 
 test.each([
   [0, 0],
@@ -27,7 +27,11 @@ test.each([
     point.y += centerY;
   });
 
-  const points = getHexagonPoints(centerX, centerY);
+  const points = getHexagonPoints({
+    x: centerX,
+    y: centerY,
+  });
+
   for (let i = 0; i < 6; i++) {
     expect(points[i].x).toBeCloseTo(expectedPoints[i].x, 0);
     expect(points[i].y).toBeCloseTo(expectedPoints[i].y, 0);
@@ -70,6 +74,6 @@ test.each([
   ];
 
   pointsPerQuadrant.forEach(function(point) {
-    expect(isPointInsideHexagon(point.x, point.y, hexagonGlobalCenter)).toBe(expectedResult);
+    expect(isPointInsideHexagon(point, hexagonGlobalCenter)).toBe(expectedResult);
   });
 });

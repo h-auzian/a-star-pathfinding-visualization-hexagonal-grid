@@ -1,5 +1,5 @@
-import state from "../../js/global/state";
-import { getVisibleTiles, initializeMap } from "../../js/logic/map";
+import state from "../../src/global/state";
+import { getVisibleTiles, initializeMap } from "../../src/logic/map";
 
 const TEST_CAMERA_WIDTH = 1000;
 const TEST_CAMERA_HEIGHT = 800;
@@ -31,10 +31,10 @@ test.each([
       bottom: TEST_CAMERA_HEIGHT,
     },
     {
-      x1: 0,
-      x2: 14,
-      y1: 0,
-      y2: 9,
+      left: 0,
+      right: 14,
+      top: 0,
+      bottom: 9,
     },
   ],
   // Camera on upper right corner of map.
@@ -46,10 +46,10 @@ test.each([
       bottom: TEST_CAMERA_HEIGHT,
     },
     {
-      x1: 86,
-      x2: 99,
-      y1: 0,
-      y2: 9,
+      left: 86,
+      right: 99,
+      top: 0,
+      bottom: 9,
     },
   ],
   // Camera on lower right corner of map.
@@ -61,10 +61,10 @@ test.each([
       bottom: TEST_MAP_BOTTOM_BOUNDARY,
     },
     {
-      x1: 86,
-      x2: 99,
-      y1: 65,
-      y2: 74,
+      left: 86,
+      right: 99,
+      top: 65,
+      bottom: 74,
     },
   ],
   // Camera on lower left corner of map.
@@ -76,10 +76,10 @@ test.each([
       bottom: TEST_MAP_BOTTOM_BOUNDARY,
     },
     {
-      x1: 0,
-      x2: 14,
-      y1: 65,
-      y2: 74,
+      left: 0,
+      right: 14,
+      top: 65,
+      bottom: 74,
     },
   ],
   // Camera in center of map.
@@ -91,10 +91,10 @@ test.each([
       bottom: TEST_MAP_BOTTOM_BOUNDARY / 2 + TEST_CAMERA_HEIGHT /2,
     },
     {
-      x1: 43,
-      x2: 57,
-      y1: 32,
-      y2: 42,
+      left: 43,
+      right: 57,
+      top: 32,
+      bottom: 42,
     },
   ],
   // Camera with same size as than map.
@@ -106,10 +106,10 @@ test.each([
       bottom: TEST_MAP_BOTTOM_BOUNDARY,
     },
     {
-      x1: 0,
-      x2: 99,
-      y1: 0,
-      y2: 74,
+      left: 0,
+      right: 99,
+      top: 0,
+      bottom: 74,
     },
   ]
 ])("Get visible tiles for rectangle %s", function(cameraRectangle, expectedIndices) {

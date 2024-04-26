@@ -1,14 +1,16 @@
+import { Point, Rectangle } from "../misc/types";
+
 /**
  * Returns a random integer between min and max, both inclusive.
  */
-function getRandomInteger(min, max) {
+function getRandomInteger(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
  * Keeps the value between min and max, both inclusive.
  */
-function keepBetweenValues(min, value, max) {
+function keepBetweenValues(min: number, value: number, max: number): number {
   if (value < min) {
     return min;
   } else if (value > max) {
@@ -21,9 +23,9 @@ function keepBetweenValues(min, value, max) {
 /**
  * Returns a boolean if a point is inside a rectangle.
  */
-function isPointInsideRectangle(pointX, pointY, rectangle) {
-  if (pointX >= rectangle.left && pointX <= rectangle.right) {
-    if (pointY >= rectangle.top && pointY <= rectangle.bottom) {
+function isPointInsideRectangle(point: Point, rectangle: Rectangle): boolean {
+  if (point.x >= rectangle.left && point.x <= rectangle.right) {
+    if (point.y >= rectangle.top && point.y <= rectangle.bottom) {
       return true;
     }
   }
@@ -36,7 +38,7 @@ function isPointInsideRectangle(pointX, pointY, rectangle) {
  *
  * The straight line equation (y - y1) = m(x - x1) is used.
  */
-function getLineY(x, point, slope) {
+function getLineY(x: number, point: Point, slope: number): number {
   return slope * (x - point.x) + point.y;
 }
 
@@ -45,4 +47,4 @@ export {
   keepBetweenValues,
   isPointInsideRectangle,
   getLineY,
-};
+}

@@ -1,3 +1,5 @@
+import { Tile } from "../misc/types";
+
 /**
  * Application state. This holds all relevant data in a centralized place.
  * Each frame, the `update` method will make changes to this state, while the
@@ -40,8 +42,8 @@ export default {
   map: {
     width: 30,
     height: 20,
-    tiles: [],
-    tileUnderCursor: null,
+    tiles: Array() as Tile[][],
+    tileUnderCursor: null as Tile | null,
     boundingBox: {
       left: 0,
       right: 0,

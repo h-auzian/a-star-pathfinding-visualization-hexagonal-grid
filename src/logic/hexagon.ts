@@ -1,4 +1,5 @@
-import { getLineY, isPointInsideRectangle } from "../misc/functions.js";
+import { getLineY, isPointInsideRectangle } from "../misc/functions";
+import { Point, Rectangle } from "../misc/types";
 
 const RADIANS = Math.PI / 180;
 
@@ -7,7 +8,7 @@ const HEXAGON_INNER_HORIZONTAL_DISTANCE = Math.cos(60 * RADIANS) * HEXAGON_RADIU
 const HEXAGON_HORIZONTAL_DISTANCE = HEXAGON_RADIUS + HEXAGON_INNER_HORIZONTAL_DISTANCE;
 const HEXAGON_VERTICAL_DISTANCE = Math.sin(60 * RADIANS) * HEXAGON_RADIUS;
 
-const HEXAGON_QUADRANT_BOUNDING_BOX = {
+const HEXAGON_QUADRANT_BOUNDING_BOX: Rectangle = {
   left: 0,
   right: HEXAGON_RADIUS,
   top: 0,
@@ -16,7 +17,7 @@ const HEXAGON_QUADRANT_BOUNDING_BOX = {
 
 const HEXAGON_TRIANGLE_SLOPE = -HEXAGON_VERTICAL_DISTANCE / HEXAGON_INNER_HORIZONTAL_DISTANCE;
 
-const HEXAGON_TRIANGLE_POINT = {
+const HEXAGON_TRIANGLE_POINT: Point = {
   x: HEXAGON_INNER_HORIZONTAL_DISTANCE,
   y: HEXAGON_VERTICAL_DISTANCE,
 };
@@ -24,14 +25,15 @@ const HEXAGON_TRIANGLE_POINT = {
 /**
  * Returns the 6 vertices from an hexagon with a given center.
  */
-function getHexagonPoints(centerX, centerY) {
-  let points = [];
+function getHexagonPoints(center: Point): Point[] {
+  let points: Point[] = [];
 
   for (let i = 0; i < 6; i++) {
     let angle = 60 * i * RADIANS;
-    const x = Math.cos(angle) * HEXAGON_RADIUS + centerX;
-    const y = Math.sin(angle) * HEXAGON_RADIUS + centerY;
-    points.push({x, y});
+    points.push({
+      x: Math.cos(angle) * HEXAGON_RADIUS + center.x,
+      y: Math.sin(angle) * HEXAGON_RADIUS + center.y,
+    });
   }
 
   return points;
@@ -54,13 +56,15 @@ function getHexagonPoints(centerX, centerY) {
  * is just a matter of checking whether the Y position of the point is above
  * the hypotenuse.
  */
-function isPointInsideHexagon(pointX, pointY, hexagonCenter) {
-  pointX = Math.abs(pointX - hexagonCenter.x);
-  pointY = Math.abs(pointY - hexagonCenter.y);
+function isPointInsideHexagon(point: Point, hexagonCenter: Point): boolean {
+  const localPoint: Point = {
+    x: Math.abs(point.x - hexagonCenter.x),
+    y: Math.abs(point.y - hexagonCenter.y),
+  };
 
-  if (isPointInsideRectangle(pointX, pointY, HEXAGON_QUADRANT_BOUNDING_BOX)) {
-    const lineY = getLineY(pointX, HEXAGON_TRIANGLE_POINT, HEXAGON_TRIANGLE_SLOPE);
-    if (pointY <= lineY) {
+  if (isPointInsideRectangle(localPoint, HEXAGON_QUADRANT_BOUNDING_BOX)) {
+    const lineY = getLineY(localPoint.x, HEXAGON_TRIANGLE_POINT, HEXAGON_TRIANGLE_SLOPE);
+    if (localPoint.y <= lineY) {
       return true;
     }
   }
@@ -75,4 +79,4 @@ export {
   HEXAGON_VERTICAL_DISTANCE,
   getHexagonPoints,
   isPointInsideHexagon,
-};
+}

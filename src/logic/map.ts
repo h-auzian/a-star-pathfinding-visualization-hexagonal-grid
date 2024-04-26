@@ -1,18 +1,19 @@
-import { getRandomInteger, isPointInsideRectangle, keepBetweenValues } from "../misc/functions.js";
-import state from "../global/state.js";
+import { getRandomInteger, isPointInsideRectangle, keepBetweenValues } from "../misc/functions";
+import state from "../global/state";
 import {
   HEXAGON_HORIZONTAL_DISTANCE,
   HEXAGON_INNER_HORIZONTAL_DISTANCE,
   HEXAGON_RADIUS,
   HEXAGON_VERTICAL_DISTANCE,
   isPointInsideHexagon,
-} from "./hexagon.js";
+} from "./hexagon";
+import { Point, Rectangle, Tile, TileType } from "../misc/types";
 
 /**
  * Initializes the map state data as a two dimensional array.
  */
-function initializeMap() {
-  state.map.tiles = new Array(state.map.width);
+function initializeMap(): void {
+  state.map.tiles = Array(state.map.width);
   for (let i = 0; i < state.map.width; i++) {
     state.map.tiles[i] = Array(state.map.height);
     for (let j = 0; j < state.map.height; j++) {
@@ -26,7 +27,7 @@ function initializeMap() {
     for (let i = 0; i < state.map.width; i++) {
       for (let j = 0; j < state.map.height; j++) {
         if ((i == 0 || i == state.map.width - 1) || (j == 0 || j == state.map.height - 1)) {
-          state.map.tiles[i][j].type = "impassable";
+          state.map.tiles[i][j].type = TileType.Passable;
         }
       }
     }
@@ -37,12 +38,12 @@ function initializeMap() {
  * Initializes a tile state data, calculating its center position acorrding to
  * the X and Y index.
  */
-function initializeTile(indexX, indexY) {
+function initializeTile(indexX: number, indexY: number): void {
   const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
   const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
 
   const random = getRandomInteger(0, 1);
-  const type = random == 0 ? "passable" : "impassable";
+  const type = random == 0 ? TileType.Passable : TileType.Impassable;
 
   state.map.tiles[indexX][indexY] = {
     type: type,
@@ -56,9 +57,9 @@ function initializeTile(indexX, indexY) {
 /**
  * Detects and marks the tile that is currently under the cursor.
  */
-function detectTileUnderCursor() {
+function detectTileUnderCursor(): void {
   const mouse = state.input.mouse.position.map;
-  state.map.tileUnderCursor = getTileByPoint(mouse.x, mouse.y);
+  state.map.tileUnderCursor = getTileByPoint(mouse);
 }
 
 /**
@@ -69,7 +70,7 @@ function detectTileUnderCursor() {
  * gaps, while the boundaries exclude the gaps, so it's a little smaller than
  * the bounding box and it's useful to limit the camera.
  */
-function calculateMapBoundingBoxAndBoundaries() {
+function calculateMapBoundingBoxAndBoundaries(): void {
   const map = state.map;
 
   const leftTile = map.tiles[0][0];
@@ -105,33 +106,33 @@ function calculateMapBoundingBoxAndBoundaries() {
  * invisible tiles at the top and bottom, but in practice the effect is
  * minor and gets the job done.
  */
-function getVisibleTiles() {
+function getVisibleTiles(): Rectangle {
   const rect = state.camera.rectangle.scaled;
 
-  const visibleTiles = {
-    x1: Math.floor((rect.left + HEXAGON_INNER_HORIZONTAL_DISTANCE) / HEXAGON_HORIZONTAL_DISTANCE),
-    x2: Math.floor((rect.right + HEXAGON_RADIUS) / HEXAGON_HORIZONTAL_DISTANCE),
-    y1: Math.floor(rect.top / (HEXAGON_VERTICAL_DISTANCE * 2)),
-    y2: Math.floor((rect.bottom + HEXAGON_VERTICAL_DISTANCE) / (HEXAGON_VERTICAL_DISTANCE * 2)),
+  const visibleTiles: Rectangle = {
+    left: Math.floor((rect.left + HEXAGON_INNER_HORIZONTAL_DISTANCE) / HEXAGON_HORIZONTAL_DISTANCE),
+    right: Math.floor((rect.right + HEXAGON_RADIUS) / HEXAGON_HORIZONTAL_DISTANCE),
+    top: Math.floor(rect.top / (HEXAGON_VERTICAL_DISTANCE * 2)),
+    bottom: Math.floor((rect.bottom + HEXAGON_VERTICAL_DISTANCE) / (HEXAGON_VERTICAL_DISTANCE * 2)),
   };
 
-  visibleTiles.x1 = keepBetweenValues(0, visibleTiles.x1, state.map.width-1);
-  visibleTiles.x2 = keepBetweenValues(0, visibleTiles.x2, state.map.width-1);
-  visibleTiles.y1 = keepBetweenValues(0, visibleTiles.y1, state.map.height-1);
-  visibleTiles.y2 = keepBetweenValues(0, visibleTiles.y2, state.map.height-1);
+  visibleTiles.left = keepBetweenValues(0, visibleTiles.left, state.map.width - 1);
+  visibleTiles.right = keepBetweenValues(0, visibleTiles.right, state.map.width - 1);
+  visibleTiles.top = keepBetweenValues(0, visibleTiles.top, state.map.height - 1);
+  visibleTiles.bottom = keepBetweenValues(0, visibleTiles.bottom, state.map.height - 1);
 
   if (state.debug.map.visibleTiles) {
-    visibleTiles.x1++;
-    visibleTiles.x2--;
-    visibleTiles.y1++;
-    visibleTiles.y2--;
+    visibleTiles.left++;
+    visibleTiles.right--;
+    visibleTiles.top++;
+    visibleTiles.bottom--;
   }
 
   return visibleTiles;
 }
 
 /**
- * Returns the hexagon that contains a given point.
+ * Returns the tile that contains a given point.
  *
  * In a square grid, getting the exact tile for a given point is done by simply
  * dividing the point coordinates with the square size, but since this is an
@@ -143,26 +144,26 @@ function getVisibleTiles() {
  * one tile up and one tile right to get a 2x2 grid of tiles, which are then
  * checked individually in a more precise way until the exact tile is found.
  */
-function getTileByPoint(pointX, pointY) {
-  if (!isPointInsideRectangle(pointX, pointY, state.map.boundingBox)) {
+function getTileByPoint(point: Point): Tile | null {
+  if (!isPointInsideRectangle(point, state.map.boundingBox)) {
     return null;
   }
 
-  const xWithMapOffset = pointX + HEXAGON_INNER_HORIZONTAL_DISTANCE;
-  const yWithMapOffset = pointY + HEXAGON_VERTICAL_DISTANCE;
+  const xWithMapOffset = point.x + HEXAGON_INNER_HORIZONTAL_DISTANCE;
+  const yWithMapOffset = point.y + HEXAGON_VERTICAL_DISTANCE;
 
   const approximateIndexX = Math.floor(xWithMapOffset / HEXAGON_HORIZONTAL_DISTANCE);
   const approximateIndexY = Math.floor(yWithMapOffset / (HEXAGON_VERTICAL_DISTANCE * 2));
 
-  const leftIndex = keepBetweenValues(0, approximateIndexX, state.map.width-1);
-  const rightIndex = keepBetweenValues(0, approximateIndexX+1, state.map.width-1);
-  const topIndex = keepBetweenValues(0, approximateIndexY-1, state.map.height-1);
-  const bottomIndex = keepBetweenValues(0, approximateIndexY, state.map.height-1);
+  const leftIndex = keepBetweenValues(0, approximateIndexX, state.map.width - 1);
+  const rightIndex = keepBetweenValues(0, approximateIndexX + 1, state.map.width - 1);
+  const topIndex = keepBetweenValues(0, approximateIndexY - 1, state.map.height - 1 );
+  const bottomIndex = keepBetweenValues(0, approximateIndexY, state.map.height - 1);
 
   for (let i = leftIndex; i <= rightIndex; i++) {
     for (let j = topIndex; j <= bottomIndex; j++) {
       const tile = state.map.tiles[i][j];
-      if (isPointInsideHexagon(pointX, pointY, tile.center)) {
+      if (isPointInsideHexagon(point, tile.center)) {
         return tile;
       }
     }
@@ -175,4 +176,4 @@ export {
   initializeMap,
   detectTileUnderCursor,
   getVisibleTiles,
-};
+}
