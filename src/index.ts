@@ -1,8 +1,9 @@
 import { DOMElements, getDOMElements } from "./dom";
-import { listenToEvents, resizeCanvas } from "./events";
+import listenToEvents from "./events";
 import { centerCameraOnMap } from "./logic/camera";
 import { initializeMap } from "./logic/map";
 import render from "./render";
+import { resizeCanvas } from "./rendering/canvas";
 import { GlobalState, createGlobalState } from "./state/global";
 import updateUI from "./ui";
 import updateLogic from "./update";

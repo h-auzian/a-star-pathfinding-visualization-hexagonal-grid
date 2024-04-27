@@ -1,4 +1,5 @@
-import { Control } from "../misc/types";
+import { Control, Point } from "../misc/types";
+import { CameraState } from "../state/camera";
 import { ControlState } from "../state/controls";
 import { InputState } from "../state/input";
 
@@ -10,24 +11,42 @@ function justPressed(control: Control): boolean {
 }
 
 /**
- * Updates all controls. This has to be called every frame.
+ * Updates all controls from the current raw input.
  */
-function updateControls(controlState: ControlState, inputState: InputState): void {
+function updateControls(
+  controlState: ControlState,
+  inputState: InputState,
+  cameraState: CameraState,
+): void {
+  updateCursorPositions(controlState, cameraState, inputState.mouse.position);
+
   updateControl(controlState.scale, inputState.mouse.wheel.y);
   updateControl(controlState.scroll.general, inputState.mouse.buttons.middle);
   updateControl(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
   updateControl(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
   updateControl(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
   updateControl(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
-
-  resetInputs(inputState);
 }
 
 /**
- * Resets inputs that are not normally reset via events.
+ * Sets both the window and camera cursor positions. In the latter case, the
+ * position is translated taking the camera position and scale into account.
  */
-function resetInputs(inputState: InputState): void {
-  inputState.mouse.wheel.y = 0;
+function updateCursorPositions(
+  controlState: ControlState,
+  cameraState: CameraState,
+  mousePosition: Point,
+): void {
+  const cursor = controlState.cursor;
+  const cameraScale = cameraState.scale.value;
+  const cameraSize = cameraState.size.scaled;
+  const cameraCenter = cameraState.center;
+
+  cursor.window.x = mousePosition.x;
+  cursor.window.y = mousePosition.y;
+
+  cursor.map.x = cursor.window.x / cameraScale - cameraSize.width/2 + cameraCenter.x;
+  cursor.map.y = cursor.window.y / cameraScale - cameraSize.height/2 + cameraCenter.y;
 }
 
 /**
