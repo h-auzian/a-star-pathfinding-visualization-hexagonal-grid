@@ -1,8 +1,9 @@
 import dom from "../global/dom";
-import state from "../global/state";
 import { getHexagonPoints } from "../logic/hexagon";
 import { getVisibleTiles } from "../logic/map";
 import { Tile } from "../misc/types";
+import { CameraState } from "../state/camera";
+import { MapState } from "../state/map";
 
 const HEXAGON_OUTLINE_WIDTH = 5;
 const HEXAGON_OUTLINE_COLOR = "#000";
@@ -15,13 +16,12 @@ const HEXAGON_TYPE_FILL_COLORS = {
 /**
  * Renders the visible tiles of the hexagonal map.
  */
-function renderMap(): void {
-  const visibleTiles = getVisibleTiles();
+function renderMap(mapState: MapState, cameraState: CameraState): void {
+  const visibleTiles = getVisibleTiles(mapState, cameraState.viewport);
   for (let x = visibleTiles.left; x <= visibleTiles.right; x++) {
-    const column = state.map.tiles[x];
+    const column = mapState.tiles[x];
     for (let y = visibleTiles.top; y <= visibleTiles.bottom; y++) {
-      const tile = column[y];
-      renderTile(tile);
+      renderTile(mapState, column[y]);
     }
   }
 }
@@ -29,11 +29,11 @@ function renderMap(): void {
 /**
  * Renders a single hexagonal tile.
  */
-function renderTile(tile: Tile): void {
+function renderTile(mapState: MapState, tile: Tile): void {
   dom.context.lineWidth = HEXAGON_OUTLINE_WIDTH;
   dom.context.strokeStyle = HEXAGON_OUTLINE_COLOR;
 
-  if (Object.is(tile, state.map.tileUnderCursor)) {
+  if (Object.is(tile, mapState.tileUnderCursor)) {
     dom.context.fillStyle = HEXAGON_TYPE_FILL_COLORS["hover"];
   } else {
     dom.context.fillStyle = HEXAGON_TYPE_FILL_COLORS[tile.type];

@@ -1,5 +1,6 @@
-import state from "../global/state";
 import { Control } from "../misc/types";
+import { ControlState } from "../state/controls";
+import { InputState } from "../state/input";
 
 /**
  * Returns if the control was just pressed or changed this frame.
@@ -9,28 +10,24 @@ function justPressed(control: Control): boolean {
 }
 
 /**
- * Sets all controls. This has to be called every frame.
+ * Updates all controls. This has to be called every frame.
  */
-function updateControls(): void {
-  const controls = state.controls;
-  const mouse = state.input.mouse;
-  const keyboard = state.input.keyboard;
+function updateControls(controlState: ControlState, inputState: InputState): void {
+  updateControl(controlState.scale, inputState.mouse.wheel.y);
+  updateControl(controlState.scroll.general, inputState.mouse.buttons.middle);
+  updateControl(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
+  updateControl(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
+  updateControl(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
+  updateControl(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
 
-  updateControl(controls.scale, mouse.wheel.y);
-  updateControl(controls.scroll.general, mouse.buttons.middle);
-  updateControl(controls.scroll.individual.up, keyboard.buttons.w);
-  updateControl(controls.scroll.individual.left, keyboard.buttons.a);
-  updateControl(controls.scroll.individual.down, keyboard.buttons.s);
-  updateControl(controls.scroll.individual.right, keyboard.buttons.d);
-
-  resetInputs();
+  resetInputs(inputState);
 }
 
 /**
  * Resets inputs that are not normally reset via events.
  */
-function resetInputs(): void {
-  state.input.mouse.wheel.y = 0;
+function resetInputs(inputState: InputState): void {
+  inputState.mouse.wheel.y = 0;
 }
 
 /**

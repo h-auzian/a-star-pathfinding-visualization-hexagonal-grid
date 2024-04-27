@@ -1,13 +1,14 @@
 import { applyCanvasTransformations, clearCanvas } from "./rendering/canvas";
 import { renderMap } from "./rendering/map";
+import { GlobalState } from "./state/global";
 
 /**
  * Main canvas render function.
  */
-function render(): void {
+function render(state: GlobalState): void {
   clearCanvas();
-  applyCanvasTransformations();
-  renderMap();
+  applyCanvasTransformations(state.camera);
+  renderMap(state.map, state.camera);
 }
 
 export default render;

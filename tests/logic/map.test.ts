@@ -1,24 +1,24 @@
-import state from "../../src/global/state";
 import { getVisibleTiles, initializeMap } from "../../src/logic/map";
+import { createMapState } from "../../src/state/map";
 
 const TEST_CAMERA_WIDTH = 1000;
 const TEST_CAMERA_HEIGHT = 800;
 const TEST_MAP_RIGHT_BOUNDARY = 7450;
 const TEST_MAP_BOTTOM_BOUNDARY = 6452;
 
-beforeAll(function() {
-  state.map.width = 100;
-  state.map.height = 75;
+const mapState = createMapState();
 
-  initializeMap();
+beforeAll(function() {
+  mapState.dimensions.width = 100;
+  mapState.dimensions.height = 75;
+  initializeMap(mapState);
 });
 
 test("Map boundaries", function() {
-  const boundaries = state.map.boundaries;
-  expect(boundaries.left).toBeCloseTo(-25, 0);
-  expect(boundaries.right).toBeCloseTo(TEST_MAP_RIGHT_BOUNDARY, 0);
-  expect(boundaries.top).toBe(0);
-  expect(boundaries.bottom).toBeCloseTo(TEST_MAP_BOTTOM_BOUNDARY, 0);
+  expect(mapState.boundaries.left).toBeCloseTo(-25, 0);
+  expect(mapState.boundaries.right).toBeCloseTo(TEST_MAP_RIGHT_BOUNDARY, 0);
+  expect(mapState.boundaries.top).toBe(0);
+  expect(mapState.boundaries.bottom).toBeCloseTo(TEST_MAP_BOTTOM_BOUNDARY, 0);
 });
 
 test.each([
@@ -112,7 +112,6 @@ test.each([
       bottom: 74,
     },
   ]
-])("Get visible tiles for rectangle %s", function(cameraRectangle, expectedIndices) {
-  state.camera.rectangle.scaled = cameraRectangle
-  expect(getVisibleTiles()).toStrictEqual(expectedIndices);
+])("Get visible tiles for rectangle %s", function(viewport, expectedIndices) {
+  expect(getVisibleTiles(mapState, viewport)).toStrictEqual(expectedIndices);
 });
