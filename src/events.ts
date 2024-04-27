@@ -1,18 +1,18 @@
 import { setCameraRawSize } from "./logic/camera";
-import dom from "./global/dom";
 import { Point } from "./misc/types";
 import { CameraState } from "./state/camera";
 import { MapState } from "./state/map";
 import { InputState } from "./state/input";
 import { ControlState } from "./state/controls";
 import { GlobalState } from "./state/global";
+import { DOMElements } from "./dom";
 
 /**
  * Setup all event listeners, useful for canvas resize and user input.
  */
-function listenToEvents(state: GlobalState): void {
+function listenToEvents(state: GlobalState, domElements: DOMElements): void {
   window.addEventListener("resize", function() {
-    resizeCanvas(state.camera, state.map);
+    resizeCanvas(domElements.canvas, state.camera, state.map);
   });
 
   window.addEventListener('mousemove', function(event: MouseEvent) {
@@ -54,13 +54,17 @@ function listenToEvents(state: GlobalState): void {
  * Sets the canvas size to the window size, and also updates the camera
  * dimensions according to the current scale.
  */
-function resizeCanvas(cameraState: CameraState, mapState: MapState): void {
-  dom.canvas.width = window.innerWidth;
-  dom.canvas.height = window.innerHeight;
+function resizeCanvas(
+  canvas: HTMLCanvasElement,
+  cameraState: CameraState,
+  mapState: MapState,
+): void {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   setCameraRawSize(cameraState, mapState, {
-    width: dom.canvas.width,
-    height: dom.canvas.height,
+    width: canvas.width,
+    height: canvas.height,
   });
 }
 

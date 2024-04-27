@@ -1,3 +1,4 @@
+import { DOMElements, getDOMElements } from "./dom";
 import { listenToEvents, resizeCanvas } from "./events";
 import { centerCameraOnMap } from "./logic/camera";
 import { initializeMap } from "./logic/map";
@@ -11,27 +12,30 @@ import updateLogic from "./update";
  */
 function init(): void {
   const state = createGlobalState();
+  const domElements = getDOMElements();
 
   initializeMap(state.map);
   centerCameraOnMap(state.camera, state.map);
 
-  resizeCanvas(state.camera, state.map);
-  listenToEvents(state);
+  resizeCanvas(domElements.canvas, state.camera, state.map);
+  listenToEvents(state, domElements);
 
-  mainLoop(state);
+  mainLoop(domElements, state);
 }
 
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
  */
-function mainLoop(state: GlobalState): void {
+function mainLoop(domElements: DOMElements, state: GlobalState): void {
   window.requestAnimationFrame(function() {
-    mainLoop(state);
+    mainLoop(domElements, state);
   });
 
   updateLogic(state);
-  updateUI(state);
-  render(state);
+  updateUI(domElements, state);
+  render(domElements, state);
 }
 
-init();
+window.onload = function() {
+  init();
+}
