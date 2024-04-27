@@ -3,7 +3,7 @@ import { Control, Point } from "../misc/types";
 type ControlState = {
   cursor: {
     window: Point,
-    map: Point,
+    camera: Point,
   },
   scroll: {
     general: Control,
@@ -24,7 +24,7 @@ function createControlState(): ControlState {
         x: 0,
         y: 0,
       },
-      map: {
+      camera: {
         x: 0,
         y: 0,
       },

@@ -59,7 +59,7 @@ function createTile(indexX: number, indexY: number): Tile {
  * Detects and marks the tile that is currently under the cursor.
  */
 function detectTileUnderCursor(mapState: MapState, controlState: ControlState): void {
-  mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.map);
+  mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
 }
 
 /**

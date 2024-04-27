@@ -45,8 +45,8 @@ function updateCursorPositions(
   cursor.window.x = mousePosition.x;
   cursor.window.y = mousePosition.y;
 
-  cursor.map.x = cursor.window.x / cameraScale - cameraSize.width/2 + cameraCenter.x;
-  cursor.map.y = cursor.window.y / cameraScale - cameraSize.height/2 + cameraCenter.y;
+  cursor.camera.x = cursor.window.x / cameraScale - cameraSize.width/2 + cameraCenter.x;
+  cursor.camera.y = cursor.window.y / cameraScale - cameraSize.height/2 + cameraCenter.y;
 }
 
 /**
