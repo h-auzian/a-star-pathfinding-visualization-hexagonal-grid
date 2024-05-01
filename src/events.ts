@@ -6,14 +6,17 @@ import {
   setRawKeyboardButton,
   setRawMouseButton,
 } from "./logic/input";
-import { resizeCanvas } from "./rendering/canvas";
+import { setCanvasAndCameraSize } from "./rendering/canvas";
 
 /**
  * Setup all event listeners, useful for canvas resize and user input.
  */
 function listenToEvents(state: GlobalState, domElements: DOMElements): void {
   window.addEventListener("resize", function() {
-    resizeCanvas(domElements.canvas, state.camera, state.map);
+    setCanvasAndCameraSize(domElements.canvas, state.camera, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
   });
 
   window.addEventListener('mousemove', function(event: MouseEvent) {

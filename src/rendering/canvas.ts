@@ -1,24 +1,20 @@
 import { DOMElements } from "../dom";
-import { setCameraRawSize } from "../logic/camera";
+import { Size } from "../misc/types";
 import { CameraState } from "../state/camera";
-import { MapState } from "../state/map";
 
 /**
- * Sets the canvas size to the window size, and also updates the camera
- * dimensions according to the current scale.
+ * Sets the canvas and camera size.
  */
-function resizeCanvas(
+function setCanvasAndCameraSize(
   canvas: HTMLCanvasElement,
   cameraState: CameraState,
-  mapState: MapState,
+  size: Size,
 ): void {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = size.width;
+  canvas.height = size.height;
 
-  setCameraRawSize(cameraState, mapState, {
-    width: canvas.width,
-    height: canvas.height,
-  });
+  cameraState.size.raw.width = canvas.width;
+  cameraState.size.raw.height = canvas.height;
 }
 
 /**
@@ -45,7 +41,7 @@ function applyCanvasTransformations(
 }
 
 export {
-  resizeCanvas,
+  setCanvasAndCameraSize,
   clearCanvas,
   applyCanvasTransformations,
 }

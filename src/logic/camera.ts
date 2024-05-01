@@ -1,6 +1,5 @@
 import { keepBetweenValues } from "../misc/functions";
 import { justPressed } from "./controls";
-import { Point, Size } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
@@ -19,30 +18,26 @@ function centerCameraOnMap(cameraState: CameraState, mapState: MapState): void {
   const tileX = Math.floor(mapState.dimensions.width / 2);
   const tileY = Math.floor(mapState.dimensions.height / 2);
   const tile = mapState.tiles[tileX][tileY];
-  setCameraCenter(cameraState, mapState, tile.center);
+
+  cameraState.center.x = tile.center.x;
+  cameraState.center.y = tile.center.y;
 }
 
 /**
  * Sets a new scale destination on user input, and slowly approaches the
  * current scale to said value.
  */
-function scaleCamera(
-  cameraState: CameraState,
-  controlState: ControlState,
-  mapState: MapState,
-): void {
+function scaleCamera(cameraState: CameraState, controlState: ControlState): void {
   const scale = cameraState.scale;
   const scaleControl = controlState.scale;
 
   if (scale.value != scale.destination) {
-    let newScale;
     if (getScaleDifference(cameraState) > scale.speed) {
       let direction = scale.value < scale.destination ? 1 : -1;
-      newScale = scale.value + scale.speed * direction;
+      scale.value = scale.value + scale.speed * direction;
     } else {
-      newScale = scale.destination;
+      scale.value = scale.destination;
     }
-    setCameraScale(cameraState, mapState, newScale);
   } else if (justPressed(scaleControl)) {
     const direction = Math.sign(Number(scaleControl.current));
     if (direction == 1 && scale.destination > SCALE_LOWER_LIMIT) {
@@ -55,18 +50,22 @@ function scaleCamera(
       scale.speed = SCALE_SPEED * getScaleDifference(cameraState);
     }
   }
+
+  updateCameraScaledSize(cameraState);
 }
 
 /**
- * Handles both scrolling methods for the camera.
+ * Scroll the camera with different methods and updates its viewport.
  */
 function scrollCamera(
   cameraState: CameraState,
   controlState: ControlState,
   mapState: MapState,
 ): void {
-  scrollCameraGeneralControls(cameraState, controlState, mapState);
-  scrollCameraDirectionalControls(cameraState, controlState, mapState);
+  scrollCameraGeneralControls(cameraState, controlState);
+  scrollCameraDirectionalControls(cameraState, controlState);
+  keepCameraCenterInsideBoundaries(cameraState, mapState);
+  updateCameraViewport(cameraState);
 }
 
 /**
@@ -78,21 +77,19 @@ function scrollCamera(
 function scrollCameraGeneralControls(
   cameraState: CameraState,
   controlState: ControlState,
-  mapState: MapState,
 ): void {
   const scrollControl = controlState.scroll.general;
   const cursorPosition = controlState.cursor.window;
+  const scrollPosition = cameraState.scrollPosition;
 
   if (justPressed(scrollControl)) {
-    cameraState.scrollPosition.x = cursorPosition.x;
-    cameraState.scrollPosition.y = cursorPosition.y;
+    scrollPosition.x = cursorPosition.x;
+    scrollPosition.y = cursorPosition.y;
   } else if (scrollControl.current) {
     const speed = GENERAL_SCROLL_SPEED / cameraState.scale.value;
-    const newCenter: Point = {
-      x: cameraState.center.x + (cursorPosition.x - cameraState.scrollPosition.x) * speed,
-      y: cameraState.center.y + (cursorPosition.y - cameraState.scrollPosition.y) * speed,
-    };
-    setCameraCenter(cameraState, mapState, newCenter);
+    const center = cameraState.center;
+    center.x = center.x + (cursorPosition.x - scrollPosition.x) * speed;
+    center.y = center.y + (cursorPosition.y - scrollPosition.y) * speed;
   }
 }
 
@@ -102,77 +99,24 @@ function scrollCameraGeneralControls(
 function scrollCameraDirectionalControls(
   cameraState: CameraState,
   controlState: ControlState,
-  mapState: MapState,
 ): void {
   const directionalControls = controlState.scroll.directional;
   const speed = DIRECTIONAL_SCROLL_SPEED / cameraState.scale.value;
-
-  let newCenter: Point = {
-    x: cameraState.center.x,
-    y: cameraState.center.y,
-  };
+  const center = cameraState.center;
 
   if (directionalControls.left.current) {
-    newCenter.x -= speed;
+    center.x -= speed;
   } else if (directionalControls.right.current) {
-    newCenter.x += speed;
+    center.x += speed;
   }
 
   if (directionalControls.up.current) {
-    newCenter.y -= speed;
+    center.y -= speed;
   } else if (directionalControls.down.current) {
-    newCenter.y += speed;
-  }
-
-  setCameraCenter(cameraState, mapState, newCenter);
-}
-
-/**
- * Sets the camera center position and updates dependant values.
- */
-function setCameraCenter(
-  cameraState: CameraState,
-  mapState: MapState,
-  center: Point,
-): void {
-  if (center.x != cameraState.center.x || center.y != cameraState.center.y) {
-    cameraState.center.x = center.x;
-    cameraState.center.y = center.y;
-    keepCameraCenterInsideBoundaries(cameraState, mapState);
+    center.y += speed;
   }
 }
 
-/**
- * Sets the camera scale value and updates dependant values.
- */
-function setCameraScale(
-  cameraState: CameraState,
-  mapState: MapState,
-  scale: number,
-): void {
-  if (scale != cameraState.scale.value) {
-    cameraState.scale.value = scale;
-    updateCameraScaledSize(cameraState);
-    keepCameraCenterInsideBoundaries(cameraState, mapState);
-  }
-}
-
-/**
- * Sets the camera raw size and updates dependant values.
- */
-function setCameraRawSize(
-  cameraState: CameraState,
-  mapState: MapState,
-  size: Size,
-): void {
-  const currentSize = cameraState.size.raw;
-  if (size.width != currentSize.width || size.height != currentSize.height) {
-    currentSize.width = size.width;
-    currentSize.height = size.height;
-    updateCameraScaledSize(cameraState);
-    keepCameraCenterInsideBoundaries(cameraState, mapState);
-  }
-}
 /**
  * Keeps the camera center inside the map boundaries.
  *
@@ -187,49 +131,64 @@ function keepCameraCenterInsideBoundaries(
   const halfWidth = cameraState.size.scaled.width / 2;
   const halfHeight = cameraState.size.scaled.height / 2;
 
-  const boundaries = {
-    left: mapState.boundaries.left + halfWidth,
-    right: mapState.boundaries.right - halfWidth,
-    top: mapState.boundaries.top + halfHeight,
-    bottom: mapState.boundaries.bottom - halfHeight,
+  const mapBoundaries = mapState.boundaries;
+  const cameraBoundaries = {
+    left: mapBoundaries.left + halfWidth,
+    right: mapBoundaries.right - halfWidth,
+    top: mapBoundaries.top + halfHeight,
+    bottom: mapBoundaries.bottom - halfHeight,
   };
 
-  if (boundaries.left >= boundaries.right) {
-    cameraState.center.x = mapState.boundaries.left + mapState.boundaries.right / 2;
+  if (cameraBoundaries.left >= cameraBoundaries.right) {
+    cameraState.center.x = mapBoundaries.left + mapBoundaries.right / 2;
   } else {
-    cameraState.center.x = keepBetweenValues(boundaries.left, cameraState.center.x, boundaries.right);
+    cameraState.center.x = keepBetweenValues(
+      cameraBoundaries.left,
+      cameraState.center.x,
+      cameraBoundaries.right,
+    );
   }
 
-  if (boundaries.top >= boundaries.bottom) {
-    cameraState.center.y = mapState.boundaries.top + mapState.boundaries.bottom / 2;
+  if (cameraBoundaries.top >= cameraBoundaries.bottom) {
+    cameraState.center.y = mapBoundaries.top + mapBoundaries.bottom / 2;
   } else {
-    cameraState.center.y = keepBetweenValues(boundaries.top, cameraState.center.y, boundaries.bottom);
+    cameraState.center.y = keepBetweenValues(
+      cameraBoundaries.top,
+      cameraState.center.y,
+      cameraBoundaries.bottom,
+    );
   }
-
-  updateCameraScaledRectangle(cameraState);
 }
 
 /**
- * Updates the camera scaled size.
+ * Updates the camera current scaled size, useful after changing the raw size
+ * and/or scale.
  */
 function updateCameraScaledSize(cameraState: CameraState): void {
-  cameraState.size.scaled.width = cameraState.size.raw.width / cameraState.scale.value;
-  cameraState.size.scaled.height = cameraState.size.raw.height / cameraState.scale.value;
-  updateCameraScaledRectangle(cameraState);
+  const size = cameraState.size;
+  const scale = cameraState.scale.value;
+  size.scaled.width = size.raw.width / scale;
+  size.scaled.height = size.raw.height / scale;
 }
 
 /**
- * Updates the camera scaled rectangle coordinates.
+ * Updates the camera current viewport, useful after moving the center of the
+ * camera.
  */
-function updateCameraScaledRectangle(cameraState: CameraState): void {
-  cameraState.viewport.left = cameraState.center.x - cameraState.size.scaled.width / 2;
-  cameraState.viewport.right = cameraState.center.x + cameraState.size.scaled.width / 2,
-  cameraState.viewport.top = cameraState.center.y - cameraState.size.scaled.height / 2;
-  cameraState.viewport.bottom = cameraState.center.y + cameraState.size.scaled.height / 2;
+function updateCameraViewport(cameraState: CameraState): void {
+  const viewport = cameraState.viewport;
+  const size = cameraState.size;
+  const center = cameraState.center;
+
+  viewport.left = center.x - size.scaled.width / 2;
+  viewport.right = center.x + size.scaled.width / 2,
+  viewport.top = center.y - size.scaled.height / 2;
+  viewport.bottom = center.y + size.scaled.height / 2;
 }
 
 /**
- * Returns the absolute difference between the current scale value and its destination.
+ * Returns the absolute difference between the current scale value and its
+ * destination.
  */
 function getScaleDifference(cameraState: CameraState): number {
   return Math.abs(cameraState.scale.destination - cameraState.scale.value);
@@ -239,5 +198,4 @@ export {
   centerCameraOnMap,
   scaleCamera,
   scrollCamera,
-  setCameraRawSize,
 }

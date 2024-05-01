@@ -3,7 +3,7 @@ import listenToEvents from "./events";
 import { centerCameraOnMap } from "./logic/camera";
 import { initializeMap } from "./logic/map";
 import render from "./render";
-import { resizeCanvas } from "./rendering/canvas";
+import { setCanvasAndCameraSize } from "./rendering/canvas";
 import { GlobalState, createGlobalState } from "./state/global";
 import updateUI from "./ui";
 import updateLogic from "./update";
@@ -18,9 +18,12 @@ function init(): void {
   initializeMap(state.map);
   centerCameraOnMap(state.camera, state.map);
 
-  resizeCanvas(domElements.canvas, state.camera, state.map);
-  listenToEvents(state, domElements);
+  setCanvasAndCameraSize(domElements.canvas, state.camera, {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
+  listenToEvents(state, domElements);
   mainLoop(domElements, state);
 }
 
