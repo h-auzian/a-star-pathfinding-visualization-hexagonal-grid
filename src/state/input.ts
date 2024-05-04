@@ -2,22 +2,22 @@ import { Point } from "../misc/types";
 
 type InputState = {
   mouse: {
-    position: Point,
+    position: Point;
     buttons: {
-      middle: boolean,
-    },
+      middle: boolean;
+    };
     wheel: {
-      y: number,
-    },
-  },
+      y: number;
+    };
+  };
   keyboard: {
     buttons: {
-      w: boolean,
-      a: boolean,
-      s: boolean,
-      d: boolean,
+      w: boolean;
+      a: boolean;
+      s: boolean;
+      d: boolean;
     }
-  },
+  };
 };
 
 function createInputState(): InputState {

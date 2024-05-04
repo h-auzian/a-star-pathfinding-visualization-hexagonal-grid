@@ -16,8 +16,8 @@ type Rectangle = {
 };
 
 type Control = {
-  previous: boolean | number,
-  current: boolean | number,
+  previous: boolean | number;
+  current: boolean | number;
 };
 
 enum TileType {

@@ -1,7 +1,7 @@
 type DOMElements = {
-  canvas: HTMLCanvasElement,
-  context: CanvasRenderingContext2D,
-  info: HTMLElement,
+  canvas: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  info: HTMLElement;
 };
 
 /**

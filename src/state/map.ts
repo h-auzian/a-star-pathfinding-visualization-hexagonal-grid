@@ -1,15 +1,15 @@
 import { Rectangle, Size, Tile } from "../misc/types";
 
 type MapState = {
-  dimensions: Size,
-  tiles: Tile[][],
-  tileUnderCursor: Tile | null,
-  boundingBox: Rectangle,
-  boundaries: Rectangle,
+  dimensions: Size;
+  tiles: Tile[][];
+  tileUnderCursor: Tile | null;
+  boundingBox: Rectangle;
+  boundaries: Rectangle;
   debug: {
-    visibleTiles: boolean,
-    boundaries: boolean,
-  },
+    visibleTiles: boolean;
+    boundaries: boolean;
+  };
 };
 
 function createMapState(): MapState {

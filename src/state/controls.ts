@@ -2,19 +2,19 @@ import { Control, Point } from "../misc/types";
 
 type ControlState = {
   cursor: {
-    window: Point,
-    camera: Point,
-  },
+    window: Point;
+    camera: Point;
+  };
   scroll: {
-    general: Control,
+    general: Control;
     directional: {
-      up: Control,
-      left: Control,
-      down: Control,
-      right: Control,
-    },
-  },
-  scale: Control,
+      up: Control;
+      left: Control;
+      down: Control;
+      right: Control;
+    };
+  };
+  scale: Control;
 };
 
 function createControlState(): ControlState {

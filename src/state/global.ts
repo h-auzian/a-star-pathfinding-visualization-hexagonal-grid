@@ -4,10 +4,10 @@ import { InputState, createInputState } from "./input"
 import { MapState, createMapState } from "./map"
 
 type GlobalState = {
-  camera: CameraState,
-  map: MapState,
-  input: InputState,
-  control: ControlState,
+  camera: CameraState;
+  map: MapState;
+  input: InputState;
+  control: ControlState;
 };
 
 function createGlobalState(): GlobalState {

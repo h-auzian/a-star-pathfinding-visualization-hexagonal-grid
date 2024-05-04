@@ -2,17 +2,17 @@ import { Point, Rectangle, Size } from "../misc/types";
 
 type CameraState = {
   size: {
-    raw: Size,
-    scaled: Size,
-  },
-  center: Point,
-  viewport: Rectangle,
-  scrollPosition: Point,
+    raw: Size;
+    scaled: Size;
+  };
+  center: Point;
+  viewport: Rectangle;
+  scrollPosition: Point;
   scale: {
-    value: number,
-    destination: number,
-    speed: number,
-  },
+    value: number;
+    destination: number;
+    speed: number;
+  };
 };
 
 function createCameraState(): CameraState {
