@@ -1,7 +1,5 @@
-import { getLineY, isPointInsideRectangle } from "../misc/functions";
+import { RADIANS, getLineY, isPointInsideRectangle } from "../misc/functions";
 import { Point, Rectangle } from "../misc/types";
-
-const RADIANS = Math.PI / 180;
 
 const HEXAGON_RADIUS = 50;
 const HEXAGON_INNER_HORIZONTAL_DISTANCE = Math.cos(60 * RADIANS) * HEXAGON_RADIUS;

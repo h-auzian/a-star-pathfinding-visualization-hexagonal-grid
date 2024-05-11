@@ -1,5 +1,8 @@
 import { Point, Rectangle } from "../misc/types";
 
+const RADIANS = Math.PI / 180;
+const DEGREES = 180 / Math.PI;
+
 /**
  * Returns whether the absolute value of the received number is even or not. If
  * the number contains decimals, then it is rounded down.
@@ -50,10 +53,47 @@ function getLineY(x: number, point: Point, slope: number): number {
   return slope * (x - point.x) + point.y;
 }
 
+/**
+ * Returns the angle between two points in degrees.
+ */
+function getAngleBetweenPoints(a: Point, b: Point): number {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  return Math.atan2(dy, dx) * DEGREES;
+}
+
+/**
+ * Rotates a point relative to the origin by the received degrees.
+ */
+function rotatePoint(a: Point, degrees: number): Point {
+  const radians = degrees * RADIANS;
+  return {
+    x: a.x * Math.cos(radians) - a.y * Math.sin(radians),
+    y: a.y * Math.cos(radians) + a.x * Math.sin(radians),
+  };
+}
+
+/**
+ * Convenience function to rotate multiple points by the received degrees.
+ */
+function rotatePoints(points: Point[], degrees: number): Point[] {
+  const rotatedPoints: Point[] = [];
+  points.forEach(point => {
+    rotatedPoints.push(rotatePoint(point, degrees));
+  });
+
+  return rotatedPoints;
+}
+
 export {
+  RADIANS,
+  DEGREES,
   isEven,
   getRandomInteger,
   keepBetweenValues,
   isPointInsideRectangle,
   getLineY,
+  getAngleBetweenPoints,
+  rotatePoint,
+  rotatePoints,
 }

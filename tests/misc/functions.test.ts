@@ -1,8 +1,10 @@
 import {
+  getAngleBetweenPoints,
   getLineY,
   isEven,
   isPointInsideRectangle,
   keepBetweenValues,
+  rotatePoint,
 } from "../../src/misc/functions";
 
 test.each([
@@ -84,4 +86,58 @@ test.each([
 
   expect(getLineY(x, point, slope)).toBeCloseTo(expectedY);
   expect(getLineY(x, point, -slope)).toBeCloseTo(-expectedY);
+});
+
+test.each([
+  [0, 0, 0, 0, 0],
+  [0, 0, 10, 0, 0],
+  [0, 0, 10, 10, 45],
+  [0, 0, 0, 10, 90],
+  [0, 0, -10, 10, 135],
+  [0, 0, -10, 0, 180],
+  [0, 0, -10, -10, -135],
+  [0, 0, 0, -10, -90],
+  [0, 0, 10, -10, -45],
+])("Angle between points (%i, %i) and (%i, %i) should be %i", function(
+  x1,
+  y1,
+  x2,
+  y2,
+  expectedValue,
+) {
+  const pointA = {
+    x: x1,
+    y: y1,
+  };
+
+  const pointB = {
+    x: x2,
+    y: y2,
+  };
+
+  expect(getAngleBetweenPoints(pointA, pointB)).toBe(expectedValue);
+});
+
+test.each([
+  [10, 5, 90, -5, 10],
+  [10, 5, 180, -10, -5],
+  [10, 5, 270, 5, -10],
+  [-10, -5, 90, 5, -10],
+  [-10, -5, 180, 10, 5],
+  [-10, -5, 270, -5, 10],
+])("Rotating point (%i, %i) by %i degrees should return point (%i, %i)", function(
+  x,
+  y,
+  degrees,
+  expectedX,
+  expectedY,
+) {
+  const point = {
+    x: x,
+    y: y,
+  };
+
+  const rotatedPoint = rotatePoint(point, degrees);
+  expect(rotatedPoint.x).toBeCloseTo(expectedX);
+  expect(rotatedPoint.y).toBeCloseTo(expectedY);
 });

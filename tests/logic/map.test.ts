@@ -1,7 +1,7 @@
 import {
   getManhattanDistance,
   getTileNeighbours,
-  getVisibleTiles,
+  getVisibleTilesIndices,
   initializeMap,
 } from "../../src/logic/map";
 
@@ -123,8 +123,8 @@ test.each([
       bottom: 74,
     },
   ]
-])("Visible tiles for rectangle %s", function(viewport, expectedIndices) {
-  expect(getVisibleTiles(mapState, viewport)).toStrictEqual(expectedIndices);
+])("Visible tiles for viewport %s", function(viewport, expectedIndices) {
+  expect(getVisibleTilesIndices(mapState, viewport)).toStrictEqual(expectedIndices);
 });
 
 test.each([

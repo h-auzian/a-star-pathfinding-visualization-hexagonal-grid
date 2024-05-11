@@ -162,15 +162,15 @@ function calculateMapBoundingBoxAndBoundaries(mapState: MapState): void {
 }
 
 /**
- * Returns the four indices of the corners of the rectangle of tiles that are
- * visible on the viewport rectangle.
+ * Returns a rectangle with the indices of the four corners of the group of
+ * tiles that are visible on the received viewport rectangle.
  *
  * Since the columns with even index have a vertical offset in their position,
  * this rectangle is not completely accurate and may include a row of
  * invisible tiles at the top and bottom, but in practice the effect is
  * minor and gets the job done.
  */
-function getVisibleTiles(mapState: MapState, viewport: Rectangle): Rectangle {
+function getVisibleTilesIndices(mapState: MapState, viewport: Rectangle): Rectangle {
   const visibleTiles: Rectangle = {
     left: Math.floor((viewport.left + HEXAGON_INNER_HORIZONTAL_DISTANCE) / HEXAGON_HORIZONTAL_DISTANCE),
     right: Math.floor((viewport.right + HEXAGON_RADIUS) / HEXAGON_HORIZONTAL_DISTANCE),
@@ -191,6 +191,22 @@ function getVisibleTiles(mapState: MapState, viewport: Rectangle): Rectangle {
   }
 
   return visibleTiles;
+}
+
+/**
+ * Returns a list of tiles that are visible on the received viewport rectangle.
+ */
+function getVisibleTiles(mapState: MapState, viewport: Rectangle): Tile[] {
+  const visibleTilesIndices = getVisibleTilesIndices(mapState, viewport);
+
+  const tiles = [];
+  for (let x = visibleTilesIndices.left; x <= visibleTilesIndices.right; x++) {
+    for (let y = visibleTilesIndices.top; y <= visibleTilesIndices.bottom; y++) {
+      tiles.push(mapState.tiles[x][y]);
+    }
+  }
+
+  return tiles;
 }
 
 /**
@@ -285,6 +301,7 @@ export {
   initializeMap,
   detectTileUnderCursor,
   detectPathToTileUnderCursor,
+  getVisibleTilesIndices,
   getVisibleTiles,
   getTileNeighbours,
   getManhattanDistance,
