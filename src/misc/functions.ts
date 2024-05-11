@@ -1,6 +1,14 @@
 import { Point, Rectangle } from "../misc/types";
 
 /**
+ * Returns whether the absolute value of the received number is even or not. If
+ * the number contains decimals, then it is rounded down.
+ */
+function isEven(x: number): boolean {
+  return Math.floor(Math.abs(x)) % 2 === 0;
+}
+
+/**
  * Returns a random integer between min and max, both inclusive.
  */
 function getRandomInteger(min: number, max: number): number {
@@ -43,6 +51,7 @@ function getLineY(x: number, point: Point, slope: number): number {
 }
 
 export {
+  isEven,
   getRandomInteger,
   keepBetweenValues,
   isPointInsideRectangle,

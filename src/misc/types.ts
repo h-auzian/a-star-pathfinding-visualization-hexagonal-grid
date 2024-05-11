@@ -1,3 +1,5 @@
+import PriorityQueue from "./priority-queue";
+
 type Size = {
   width: number;
   height: number;
@@ -26,8 +28,24 @@ enum TileType {
 }
 
 type Tile = {
-  type: TileType;
+  index: Point;
   center: Point;
+  type: TileType;
+  path: PathNode<Tile>;
+};
+
+type PathNode<Type> = {
+  checked: boolean;
+  used: boolean;
+  cost: number;
+  heuristic: number;
+  parent: Type | null;
+};
+
+type PathfindingData = {
+  candidates: PriorityQueue<Tile>;
+  checkedTiles: Tile[];
+  foundPath: Tile[];
 };
 
 export {
@@ -37,4 +55,6 @@ export {
   Control,
   TileType,
   Tile,
+  PathNode,
+  PathfindingData,
 }

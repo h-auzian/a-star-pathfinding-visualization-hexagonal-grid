@@ -1,4 +1,10 @@
-import { getRandomInteger, isPointInsideRectangle, keepBetweenValues } from "../misc/functions";
+import {
+  getRandomInteger,
+  isEven,
+  isPointInsideRectangle,
+  keepBetweenValues,
+} from "../misc/functions";
+
 import {
   HEXAGON_HORIZONTAL_DISTANCE,
   HEXAGON_INNER_HORIZONTAL_DISTANCE,
@@ -6,12 +12,26 @@ import {
   HEXAGON_VERTICAL_DISTANCE,
   isPointInsideHexagon,
 } from "./hexagon";
+
 import { Point, Rectangle, Tile, TileType } from "../misc/types";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
+import { findPath } from "./pathfinding";
+
+const NEIGHBOURS = {
+  even: [
+    [-1, -1], [0, -1], [1, -1], [1, 0], [0, 1], [-1, 0],
+  ],
+  odd: [
+    [-1, 0], [0, -1], [1, 0], [1, 1], [0, 1], [-1, 1],
+  ],
+}
 
 /**
- * Initializes the map data as a two dimensional array.
+ * Initializes the map data as a two dimensional array of hexagonal tiles.
+ *
+ * There are many ways to represent an hexagonal map. In this case, "offset"
+ * coordinates are used with odd columns shoved down.
  */
 function initializeMap(mapState: MapState): void {
   mapState.tiles = Array(mapState.dimensions.width);
@@ -43,14 +63,25 @@ function createTile(indexX: number, indexY: number): Tile {
   const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
   const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
 
-  const random = getRandomInteger(0, 1);
-  const type = random == 0 ? TileType.Passable : TileType.Impassable;
+  const random = getRandomInteger(0, 3);
+  const type = random == 0 ? TileType.Impassable : TileType.Passable;
 
   return {
-    type: type,
+    index: {
+      x: indexX,
+      y: indexY,
+    },
     center: {
       x: centerX,
       y: centerY,
+    },
+    type: type,
+    path: {
+      checked: false,
+      used: false,
+      cost: 0,
+      heuristic: 0,
+      parent: null,
     },
   }
 }
@@ -59,7 +90,39 @@ function createTile(indexX: number, indexY: number): Tile {
  * Detects and marks the tile that is currently under the cursor.
  */
 function detectTileUnderCursor(mapState: MapState, controlState: ControlState): void {
-  mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
+  const tileCursor = mapState.tileUnderCursor;
+  tileCursor.previous = tileCursor.current;
+  tileCursor.current = getTileByPoint(mapState, controlState.cursor.camera);
+}
+
+/**
+ * If a new tile is being hovered, updates the path from the current tile to
+ * the hovered tile, and stores the route in the state.
+ */
+function detectPathToTileUnderCursor(mapState: MapState): void {
+  const tileCursor = mapState.tileUnderCursor;
+  if (tileCursor.current !== null && tileCursor.current != tileCursor.previous) {
+    const data = mapState.pathfinding.data;
+
+    data.checkedTiles.forEach(function(tile) {
+      tile.path.checked = false;
+      tile.path.used = false;
+    });
+
+    data.candidates.clear();
+    data.checkedTiles = [];
+    data.foundPath = [];
+
+    const startingTile = mapState.tiles[0][0];
+
+    mapState.pathfinding.data = findPath(
+      mapState.tiles,
+      startingTile,
+      tileCursor.current,
+      mapState.pathfinding.algorithm,
+      mapState.pathfinding.data,
+    );
+  }
 }
 
 /**
@@ -72,11 +135,11 @@ function detectTileUnderCursor(mapState: MapState, controlState: ControlState): 
  */
 function calculateMapBoundingBoxAndBoundaries(mapState: MapState): void {
   const leftTile = mapState.tiles[0][0];
-  const rightTile = mapState.tiles[mapState.dimensions.width-1][0];
+  const rightTile = mapState.tiles[mapState.dimensions.width - 1][0];
   const topTile = mapState.tiles[0][0];
-  let bottomTile = mapState.tiles[0][mapState.dimensions.height-1];
+  let bottomTile = mapState.tiles[0][mapState.dimensions.height - 1];
   if (mapState.dimensions.width > 1) {
-    bottomTile = mapState.tiles[1][mapState.dimensions.height-1];
+    bottomTile = mapState.tiles[1][mapState.dimensions.height - 1];
   }
 
   mapState.boundingBox.left = leftTile.center.x - HEXAGON_RADIUS;
@@ -131,6 +194,53 @@ function getVisibleTiles(mapState: MapState, viewport: Rectangle): Rectangle {
 }
 
 /**
+ * For the given tile, returns its possible six neighbours in clockwise order
+ * starting from the upper left corner.
+ */
+function getTileNeighbours(tiles: Tile[][], tile: Tile): Tile[] {
+  const width = tiles.length;
+  const height = tiles[0].length;
+  const offsets = isEven(tile.index.x) ? NEIGHBOURS.even : NEIGHBOURS.odd;
+
+  let neighbouringTiles: Tile[] = [];
+  for (let i = 0; i < offsets.length; i++) {
+    const x = tile.index.x + offsets[i][0];
+    const y = tile.index.y + offsets[i][1];
+    if (x >= 0 && x < width && y >= 0 && y < height) {
+      neighbouringTiles.push(tiles[x][y]);
+    }
+  }
+
+  return neighbouringTiles;
+}
+
+/**
+ * Returns the Manhattan distance between two tiles, that is, how many tiles
+ * they are apart only allowing tile-to-tile movements, which is not the same
+ * as the euclidean distance.
+ *
+ * Since offset coordinates are used, odd columns must be taken into account.
+ */
+function getManhattanDistance(a: Tile, b: Tile): number {
+  const x1 = a.index.x;
+  const y1 = a.index.y;
+  const x2 = b.index.x;
+  const y2 = b.index.y;
+
+  let offset = 0;
+  if (isEven(x1) && !isEven(x2) && (y1 < y2)) {
+    offset = 1;
+  } else if (!isEven(x1) && isEven(x2) && (y1 > y2)) {
+    offset = 1;
+  }
+
+  let dx = Math.abs(x1 - x2);
+  let dy = Math.abs(y1 - y2) + Math.floor(dx / 2) + offset;
+
+  return Math.max(dx, dy);
+}
+
+/**
  * Returns the tile that contains a given point.
  *
  * In a square grid, getting the exact tile for a given point is done by simply
@@ -156,7 +266,7 @@ function getTileByPoint(mapState: MapState, point: Point): Tile | null {
 
   const leftIndex = keepBetweenValues(0, approximateIndexX, mapState.dimensions.width - 1);
   const rightIndex = keepBetweenValues(0, approximateIndexX + 1, mapState.dimensions.width - 1);
-  const topIndex = keepBetweenValues(0, approximateIndexY - 1, mapState.dimensions.height - 1 );
+  const topIndex = keepBetweenValues(0, approximateIndexY - 1, mapState.dimensions.height - 1);
   const bottomIndex = keepBetweenValues(0, approximateIndexY, mapState.dimensions.height - 1);
 
   for (let i = leftIndex; i <= rightIndex; i++) {
@@ -174,5 +284,8 @@ function getTileByPoint(mapState: MapState, point: Point): Tile | null {
 export {
   initializeMap,
   detectTileUnderCursor,
+  detectPathToTileUnderCursor,
   getVisibleTiles,
+  getTileNeighbours,
+  getManhattanDistance,
 }

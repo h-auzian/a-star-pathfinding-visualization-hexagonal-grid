@@ -48,7 +48,11 @@ test.each([
   [HEXAGON_INNER_HORIZONTAL_DISTANCE+1, HEXAGON_VERTICAL_DISTANCE, false],
   [HEXAGON_INNER_HORIZONTAL_DISTANCE*1.5, HEXAGON_VERTICAL_DISTANCE*0.5, true],
   [HEXAGON_INNER_HORIZONTAL_DISTANCE*1.5, HEXAGON_VERTICAL_DISTANCE*0.5+1, false],
-])("Detect point (%i, %i) inside hexagon on all quadrants", function(offsetX, offsetY, expectedResult) {
+])("Detect point (%i, %i) inside hexagon on all quadrants", function(
+  offsetX,
+  offsetY,
+  expectedResult,
+) {
   const hexagonGlobalCenter = {
     x: 1000,
     y: 1000,

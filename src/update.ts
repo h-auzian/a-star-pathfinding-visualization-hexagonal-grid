@@ -2,9 +2,15 @@ import {
   scaleCamera,
   scrollCamera,
 } from "./logic/camera";
+
 import { updateControls } from "./logic/controls";
 import { resetInputs } from "./logic/input";
-import { detectTileUnderCursor } from "./logic/map";
+
+import {
+  detectPathToTileUnderCursor,
+  detectTileUnderCursor,
+} from "./logic/map";
+
 import { GlobalState } from "./state/global";
 
 /**
@@ -18,6 +24,7 @@ function updateLogic(state: GlobalState): void {
   scrollCamera(state.camera, state.control, state.map);
 
   detectTileUnderCursor(state.map, state.control);
+  detectPathToTileUnderCursor(state.map);
 }
 
 export default updateLogic;

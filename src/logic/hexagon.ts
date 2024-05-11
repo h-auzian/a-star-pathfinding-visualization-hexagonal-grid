@@ -24,6 +24,9 @@ const HEXAGON_TRIANGLE_POINT: Point = {
 
 /**
  * Returns the 6 vertices from an hexagon with a given center.
+ *
+ * The hexagon is represented in "flat top" orientation, that is, the pointy
+ * sides are at the left and right sides of the hexagon.
  */
 function getHexagonPoints(center: Point): Point[] {
   let points: Point[] = [];
