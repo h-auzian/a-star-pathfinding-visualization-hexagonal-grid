@@ -1,10 +1,10 @@
-import { RADIANS, getLineY, isPointInsideRectangle } from "../misc/functions";
+import { getLineY, isPointInsideRectangle, translatePoint } from "../misc/functions";
 import { Point, Rectangle } from "../misc/types";
 
 const HEXAGON_RADIUS = 50;
-const HEXAGON_INNER_HORIZONTAL_DISTANCE = Math.cos(60 * RADIANS) * HEXAGON_RADIUS;
+const HEXAGON_INNER_HORIZONTAL_DISTANCE = translatePoint(HEXAGON_RADIUS, 60).x;
 const HEXAGON_HORIZONTAL_DISTANCE = HEXAGON_RADIUS + HEXAGON_INNER_HORIZONTAL_DISTANCE;
-const HEXAGON_VERTICAL_DISTANCE = Math.sin(60 * RADIANS) * HEXAGON_RADIUS;
+const HEXAGON_VERTICAL_DISTANCE = translatePoint(HEXAGON_RADIUS, 60).y;
 
 const HEXAGON_QUADRANT_BOUNDING_BOX: Rectangle = {
   left: 0,
@@ -30,11 +30,8 @@ function getHexagonPoints(center: Point): Point[] {
   let points: Point[] = [];
 
   for (let i = 0; i < 6; i++) {
-    let angle = 60 * i * RADIANS;
-    points.push({
-      x: Math.cos(angle) * HEXAGON_RADIUS + center.x,
-      y: Math.sin(angle) * HEXAGON_RADIUS + center.y,
-    });
+    let angle = 60 * i;
+    points.push(translatePoint(HEXAGON_RADIUS, angle, center));
   }
 
   return points;

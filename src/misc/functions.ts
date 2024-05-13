@@ -98,6 +98,25 @@ function rotatePoints(points: Point[], degrees: number): Point[] {
   return rotatedPoints;
 }
 
+/**
+ * Applies a translation with the given distance and angle to a given point.
+ *
+ * If the point is undefined, then it assumes the origin.
+ */
+function translatePoint(distance: number, angle: number, point?: Point): Point {
+  if (point === undefined) {
+    point = {
+      x: 0,
+      y: 0,
+    };
+  }
+
+  return {
+    x: point.x + Math.cos(angle * RADIANS) * distance,
+    y: point.y + Math.sin(angle * RADIANS) * distance,
+  };
+}
+
 export {
   RADIANS,
   DEGREES,
@@ -110,4 +129,5 @@ export {
   getAngleBetweenPoints,
   rotatePoint,
   rotatePoints,
+  translatePoint,
 }

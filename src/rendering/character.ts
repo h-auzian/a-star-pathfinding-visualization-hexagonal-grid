@@ -1,5 +1,5 @@
 import { CHARACTER_RADIUS } from "../logic/character";
-import { RADIANS, getAngleBetweenPoints, rectanglesIntersect } from "../misc/functions";
+import { RADIANS, getAngleBetweenPoints, rectanglesIntersect, translatePoint } from "../misc/functions";
 import { Point } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { CharacterState } from "../state/character";
@@ -118,8 +118,8 @@ function renderCharacterEye(
   const limitY = Math.min(trackingY, cursorDeltaY) / EYE_TRACKING_DISTANCE;
 
   const pupilCenter = {
-    x: center.x + Math.cos(angle * RADIANS) * limitX,
-    y: center.y + Math.sin(angle * RADIANS) * limitY,
+    x: translatePoint(limitX, angle, center).x,
+    y: translatePoint(limitY, angle, center).y,
   };
 
   context.lineWidth = 1;

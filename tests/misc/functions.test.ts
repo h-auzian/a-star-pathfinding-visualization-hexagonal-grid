@@ -6,6 +6,7 @@ import {
   keepBetweenValues,
   rectanglesIntersect,
   rotatePoint,
+  translatePoint,
 } from "../../src/misc/functions";
 
 test.each([
@@ -181,4 +182,31 @@ test.each([
   const rotatedPoint = rotatePoint(point, degrees);
   expect(rotatedPoint.x).toBeCloseTo(expectedX);
   expect(rotatedPoint.y).toBeCloseTo(expectedY);
+});
+
+test.each([
+  [0, 20, 10],
+  [30, 18.6, 15],
+  [45, 17, 17],
+  [60, 15, 18.6],
+  [90, 10, 20],
+  [135, 3, 17],
+  [180, 0, 10],
+  [225, 3, 3],
+  [270, 10, 0],
+  [315, 17, 3],
+])("Translate point with angle %i should result in point (%i, %i)", function(
+  angle,
+  expectedX,
+  expectedY,
+) {
+  const point = {
+    x: 10,
+    y: 10,
+  };
+  const distance = 10;
+  const translatedPoint = translatePoint(distance, angle, point);
+
+  expect(translatedPoint.x).toBeCloseTo(expectedX, 0);
+  expect(translatedPoint.y).toBeCloseTo(expectedY, 0);
 });
