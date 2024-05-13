@@ -113,8 +113,26 @@ function findPath(
   return pathfindingData;
 }
 
+/**
+ * Clears the pathfinding data from a previous path calculation.
+ */
+function clearPreviousPathData(data: PathfindingData): void {
+  data.checkedTiles.forEach(function(tile) {
+    tile.path.checked = false;
+    tile.path.used = false;
+    tile.path.cost = 0;
+    tile.path.heuristic = 0;
+    tile.path.parent = null;
+  });
+
+  data.candidates.clear();
+  data.checkedTiles = [];
+  data.foundPath = [];
+}
+
 export {
   PathfindingAlgorithm,
   PathfindingData,
   findPath,
+  clearPreviousPathData,
 };

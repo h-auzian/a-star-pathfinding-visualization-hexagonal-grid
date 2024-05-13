@@ -16,7 +16,7 @@ import {
 import { Point, Rectangle, Tile, TileType } from "../misc/types";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
-import { findPath } from "./pathfinding";
+import { clearPreviousPathData, findPath } from "./pathfinding";
 
 const NEIGHBOURS = {
   even: [
@@ -144,15 +144,7 @@ function detectPathToTileUnderCursor(
   }
 
   const data = mapState.pathfinding.data;
-
-  data.checkedTiles.forEach(function(tile) {
-    tile.path.checked = false;
-    tile.path.used = false;
-  });
-
-  data.candidates.clear();
-  data.checkedTiles = [];
-  data.foundPath = [];
+  clearPreviousPathData(data);
 
   mapState.pathfinding.data = findPath(
     mapState.tiles,
