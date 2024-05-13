@@ -20,12 +20,13 @@ function updateControls(
 ): void {
   updateCursorPositions(controlState, cameraState, inputState.mouse.position);
 
-  updateControl(controlState.scale, inputState.mouse.wheel.y);
   updateControl(controlState.scroll.general, inputState.mouse.buttons.middle);
   updateControl(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
   updateControl(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
   updateControl(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
   updateControl(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
+  updateControl(controlState.scale, inputState.mouse.wheel.y);
+  updateControl(controlState.followPath, inputState.mouse.buttons.left);
 }
 
 /**

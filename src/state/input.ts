@@ -4,6 +4,7 @@ type InputState = {
   mouse: {
     position: Point;
     buttons: {
+      left: boolean;
       middle: boolean;
     };
     wheel: {
@@ -28,6 +29,7 @@ function createInputState(): InputState {
         y: 0,
       },
       buttons: {
+        left: false,
         middle: false,
       },
       wheel: {

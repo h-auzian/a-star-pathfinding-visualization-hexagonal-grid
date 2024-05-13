@@ -2,11 +2,11 @@ import {
   HEXAGON_VERTICAL_DISTANCE,
   getHexagonPoints,
 } from "../logic/hexagon";
-
 import { getVisibleTiles } from "../logic/map";
 import { getAngleBetweenPoints, rotatePoints } from "../misc/functions";
 import { Point, Tile } from "../misc/types";
 import { CameraState } from "../state/camera";
+import { CharacterState } from "../state/character";
 import { MapState } from "../state/map";
 
 const HEXAGON_OUTLINE_COLOR = "#000";
@@ -54,16 +54,40 @@ function renderMap(
   context: CanvasRenderingContext2D,
   mapState: MapState,
   cameraState: CameraState,
+  characterState: CharacterState,
 ): void {
   const tiles = getVisibleTiles(mapState, cameraState.viewport);
   const tileCursor = mapState.tileUnderCursor.current;
   const startingTile = mapState.pathfinding.startingTile.current;
   const cameraScale = cameraState.scale.value;
+  const assignedCharacterPath = characterState.assignedPath.hasPath;
 
-  tiles.forEach(tile => renderTileBackground(context, tile, tileCursor));
-  tiles.forEach(tile => renderTileOutline(context, tile));
-  tiles.forEach(tile => renderTileParentIndicator(context, tile, cameraScale));
-  tiles.forEach(tile => renderTilePathfindingInfo(context, tile, startingTile, cameraScale));
+  tiles.forEach(tile => renderTileBackground(
+    context,
+    tile,
+    tileCursor,
+    assignedCharacterPath,
+  ));
+
+  tiles.forEach(tile => renderTileOutline(
+    context,
+    tile,
+  ));
+
+  tiles.forEach(tile => renderTileParentIndicator(
+    context,
+    tile,
+    cameraScale,
+    assignedCharacterPath,
+  ));
+
+  tiles.forEach(tile => renderTilePathfindingInfo(
+    context,
+    tile,
+    startingTile,
+    cameraScale,
+    assignedCharacterPath,
+  ));
 }
 
 /**
@@ -73,13 +97,14 @@ function renderTileBackground(
   context: CanvasRenderingContext2D,
   tile: Tile,
   hoveredTile: Tile | null,
+  assignedCharacterPath: boolean,
 ): void {
   let fillStyle;
   if (Object.is(tile, hoveredTile)) {
     fillStyle = HEXAGON_FILL_COLORS["hover"];
   } else if (tile.path.used) {
     fillStyle = HEXAGON_FILL_COLORS["path"];
-  } else if (tile.path.checked) {
+  } else if (tile.path.checked && !assignedCharacterPath) {
     fillStyle = HEXAGON_FILL_COLORS["checked"];
   } else {
     fillStyle = HEXAGON_FILL_COLORS[tile.type];
@@ -131,8 +156,9 @@ function renderTileParentIndicator(
   context: CanvasRenderingContext2D,
   tile: Tile,
   cameraScale: number,
+  assignedCharacterPath: boolean,
 ): void {
-  if (!tile.path.checked || tile.path.parent === null) {
+  if (assignedCharacterPath || !tile.path.checked || tile.path.parent === null) {
     return;
   }
 
@@ -179,8 +205,9 @@ function renderTilePathfindingInfo(
   tile: Tile,
   pathStartingTile: Tile | null,
   cameraScale: number,
+  assignedCharacterPath: boolean,
 ): void {
-  if (!tile.path.checked || cameraScale < FONT_BIG_SCALE_LIMIT) {
+  if (assignedCharacterPath || !tile.path.checked || cameraScale < FONT_BIG_SCALE_LIMIT) {
     return;
   }
   const x = tile.center.x;

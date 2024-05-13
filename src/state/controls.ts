@@ -15,6 +15,7 @@ type ControlState = {
     };
   };
   scale: Control;
+  followPath: Control;
 };
 
 function createControlState(): ControlState {
@@ -56,6 +57,10 @@ function createControlState(): ControlState {
     scale: {
       previous: 0,
       current: 0,
+    },
+    followPath: {
+      previous: false,
+      current: false,
     },
   };
 }

@@ -1,13 +1,11 @@
 import { GlobalState } from "./state/global";
 import { DOMElements } from "./dom";
-
 import {
   setMousePosition,
   setMouseWheelDirection,
   setRawKeyboardButton,
   setRawMouseButton,
 } from "./logic/input";
-
 import { setCanvasAndCameraSize } from "./rendering/canvas";
 
 /**

@@ -32,7 +32,9 @@ function setRawMouseButton(
 ): void {
   const buttons = inputState.mouse.buttons;
 
-  if (buttonIndex == 1) {
+  if (buttonIndex == 0) {
+    buttons.left = pressed;
+  } else if (buttonIndex == 1) {
     buttons.middle = pressed;
   }
 }

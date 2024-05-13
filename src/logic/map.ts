@@ -4,7 +4,6 @@ import {
   isPointInsideRectangle,
   keepBetweenValues,
 } from "../misc/functions";
-
 import {
   HEXAGON_HORIZONTAL_DISTANCE,
   HEXAGON_INNER_HORIZONTAL_DISTANCE,
@@ -12,7 +11,6 @@ import {
   HEXAGON_VERTICAL_DISTANCE,
   isPointInsideHexagon,
 } from "./hexagon";
-
 import { Point, Rectangle, Tile, TileType } from "../misc/types";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
@@ -110,9 +108,18 @@ function getCenterTile(mapState: MapState): Tile {
 }
 
 /**
- * Detects and marks the tile that is currently under the cursor.
+ * Detects and marks the tile that is currently under the cursor, but only if
+ * the character is not following an assigned path.
  */
-function detectTileUnderCursor(mapState: MapState, controlState: ControlState): void {
+function detectTileUnderCursor(
+  mapState: MapState,
+  controlState: ControlState,
+  assignedCharacterPath: boolean,
+): void {
+  if (assignedCharacterPath) {
+    return;
+  }
+
   const tileCursor = mapState.tileUnderCursor;
   tileCursor.previous = tileCursor.current;
   tileCursor.current = getTileByPoint(mapState, controlState.cursor.camera);
@@ -120,7 +127,8 @@ function detectTileUnderCursor(mapState: MapState, controlState: ControlState): 
 
 /**
  * Updates the path from the starting tile to the hovered tile, and stores the
- * route in the state.
+ * route in the state. It only calculates a new path if the character is not
+ * moving through an assigned path.
  *
  * To avoid redundant path calculations, a new path is only calculated if the
  * start or destination tiles changed compared to the previous path.
@@ -128,7 +136,12 @@ function detectTileUnderCursor(mapState: MapState, controlState: ControlState): 
 function detectPathToTileUnderCursor(
   mapState: MapState,
   startingPosition: Point,
+  assignedCharacterPath: boolean,
 ): void {
+  if (assignedCharacterPath) {
+    return;
+  }
+
   const start = mapState.pathfinding.startingTile;
   const destination = mapState.tileUnderCursor;
 
@@ -137,9 +150,7 @@ function detectPathToTileUnderCursor(
 
   if (start.current === null || destination.current === null) {
     return;
-  }
-
-  if (start.previous === start.current && destination.previous === destination.current) {
+  } else if (start.previous === start.current && destination.previous === destination.current) {
     return;
   }
 

@@ -10,7 +10,7 @@ import { GlobalState } from "./state/global";
 function render(domElements: DOMElements, state: GlobalState): void {
   clearCanvas(domElements);
   applyCanvasTransformations(domElements.context, state.camera);
-  renderMap(domElements.context, state.map, state.camera);
+  renderMap(domElements.context, state.map, state.camera, state.character);
   renderCharacter(domElements.context, state.character, state.camera, state.control);
 }
 

@@ -1,5 +1,10 @@
 import { CHARACTER_RADIUS } from "../logic/character";
-import { RADIANS, getAngleBetweenPoints, rectanglesIntersect, translatePoint } from "../misc/functions";
+import {
+  RADIANS,
+  getAngleBetweenPoints,
+  rectanglesIntersect,
+  translatePoint,
+} from "../misc/functions";
 import { Point } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { CharacterState } from "../state/character";

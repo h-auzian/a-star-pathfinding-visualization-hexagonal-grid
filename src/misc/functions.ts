@@ -76,6 +76,15 @@ function getAngleBetweenPoints(a: Point, b: Point): number {
 }
 
 /**
+ * Returns the distance between two points.
+ */
+function getDistanceBetweenPoints(a: Point, b: Point): number {
+  const dx = Math.abs(a.x - b.x);
+  const dy = Math.abs(a.y - b.y);
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+}
+
+/**
  * Rotates a point relative to the origin by the received degrees.
  */
 function rotatePoint(a: Point, degrees: number): Point {
@@ -127,6 +136,7 @@ export {
   rectanglesIntersect,
   getLineY,
   getAngleBetweenPoints,
+  getDistanceBetweenPoints,
   rotatePoint,
   rotatePoints,
   translatePoint,

@@ -1,5 +1,6 @@
 import {
   getAngleBetweenPoints,
+  getDistanceBetweenPoints,
   getLineY,
   isEven,
   isPointInsideRectangle,
@@ -158,6 +159,26 @@ test.each([
   };
 
   expect(getAngleBetweenPoints(pointA, pointB)).toBe(expected);
+});
+
+test.each([
+  [10, 10, 10, 10, 0],
+  [10, 10, 20, 10, 10],
+  [10, 10, 10, 20, 10],
+  [10, 10, 20, 20, 14.14],
+])("Distance between points (%i, %i) and (%i, %i) should be %i", function(x1, y1, x2, y2, expected) {
+  const pointA = {
+    x: x1,
+    y: y1,
+  };
+
+  const pointB = {
+    x: x2,
+    y: y2,
+  };
+
+  expect(getDistanceBetweenPoints(pointA, pointB)).toBeCloseTo(expected);
+  expect(getDistanceBetweenPoints(pointB, pointA)).toBeCloseTo(expected);
 });
 
 test.each([
