@@ -44,6 +44,19 @@ function isPointInsideRectangle(point: Point, rectangle: Rectangle): boolean {
 }
 
 /**
+ * Returns whether two rectangles intersect.
+ */
+function rectanglesIntersect(a: Rectangle, b: Rectangle): boolean {
+  if (a.left < b.right && a.right > b.left) {
+    if (a.top < b.bottom && a.bottom > b.top) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Returns the Y coordinate of a line with a known point and slope for a given
  * X coordinate.
  *
@@ -92,6 +105,7 @@ export {
   getRandomInteger,
   keepBetweenValues,
   isPointInsideRectangle,
+  rectanglesIntersect,
   getLineY,
   getAngleBetweenPoints,
   rotatePoint,

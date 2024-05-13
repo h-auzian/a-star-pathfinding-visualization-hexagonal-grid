@@ -27,6 +27,7 @@ const FONT_BIG = "22px helvetica";
 const FONT_COLOR = "#000";
 const FONT_UPPER_PADDING = 10;
 const FONT_LOWER_PADDING = 12;
+const FONT_LOWER_EDGE_PADDING = HEXAGON_VERTICAL_DISTANCE - 1;
 const FONT_SMALL_SCALE_LIMIT = 0.75;
 const FONT_BIG_SCALE_LIMIT = 0.35;
 
@@ -55,10 +56,14 @@ function renderMap(
   cameraState: CameraState,
 ): void {
   const tiles = getVisibleTiles(mapState, cameraState.viewport);
-  tiles.forEach(tile => renderTileBackground(context, tile, mapState.tileUnderCursor.current));
+  const tileCursor = mapState.tileUnderCursor.current;
+  const startingTile = mapState.pathfinding.startingTile.current;
+  const cameraScale = cameraState.scale.value;
+
+  tiles.forEach(tile => renderTileBackground(context, tile, tileCursor));
   tiles.forEach(tile => renderTileOutline(context, tile));
-  tiles.forEach(tile => renderTileParentIndicator(context, tile, cameraState.scale.value));
-  tiles.forEach(tile => renderTilePathfindingInfo(context, tile, cameraState.scale.value));
+  tiles.forEach(tile => renderTileParentIndicator(context, tile, cameraScale));
+  tiles.forEach(tile => renderTilePathfindingInfo(context, tile, startingTile, cameraScale));
 }
 
 /**
@@ -164,10 +169,15 @@ function renderTileParentIndicator(
 
 /**
  * Renders a tile's pathfinding information, if applicable.
+ *
+ * The starting tile is a special case, as the character is on top of that tile
+ * and will cover the information. In this case, only the tile index is drawn
+ * at the bottom edge.
  */
 function renderTilePathfindingInfo(
   context: CanvasRenderingContext2D,
   tile: Tile,
+  pathStartingTile: Tile | null,
   cameraScale: number,
 ): void {
   if (!tile.path.checked || cameraScale < FONT_BIG_SCALE_LIMIT) {
@@ -177,18 +187,27 @@ function renderTilePathfindingInfo(
   const y = tile.center.y;
 
   context.fillStyle = FONT_COLOR;
-  context.font = FONT_BIG;
   context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.fillText(`${tile.path.heuristic + tile.path.cost}`, x, y);
 
-  if (cameraScale > FONT_SMALL_SCALE_LIMIT) {
-    context.font = FONT_SMALL;
-    context.textBaseline = "bottom";
-    context.fillText(`${tile.path.cost}+${tile.path.heuristic}`, x, y - FONT_LOWER_PADDING);
+  if (Object.is(tile, pathStartingTile)) {
+    if (cameraScale > FONT_SMALL_SCALE_LIMIT) {
+      context.font = FONT_SMALL;
+      context.textBaseline = "bottom";
+      context.fillText(`(${tile.index.x},${tile.index.y})`, x, y + FONT_LOWER_EDGE_PADDING);
+    }
+  } else {
+    context.font = FONT_BIG;
+    context.textBaseline = "middle";
+    context.fillText(`${tile.path.heuristic + tile.path.cost}`, x, y);
 
-    context.textBaseline = "top";
-    context.fillText(`(${tile.index.x},${tile.index.y})`, x, y + FONT_UPPER_PADDING);
+    if (cameraScale > FONT_SMALL_SCALE_LIMIT) {
+      context.font = FONT_SMALL;
+      context.textBaseline = "bottom";
+      context.fillText(`${tile.path.cost}+${tile.path.heuristic}`, x, y - FONT_LOWER_PADDING);
+
+      context.textBaseline = "top";
+      context.fillText(`(${tile.index.x},${tile.index.y})`, x, y + FONT_UPPER_PADDING);
+    }
   }
 }
 

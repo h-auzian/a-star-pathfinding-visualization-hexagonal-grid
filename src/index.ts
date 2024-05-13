@@ -1,7 +1,8 @@
 import { DOMElements, getDOMElements } from "./dom";
 import listenToEvents from "./events";
-import { centerCameraOnMap } from "./logic/camera";
-import { initializeMap } from "./logic/map";
+import { setCameraPosition } from "./logic/camera";
+import { setCharacterPosition } from "./logic/character";
+import { clearTilesAroundPosition, getCenterTile, initializeMap } from "./logic/map";
 import render from "./render";
 import { setCanvasAndCameraSize } from "./rendering/canvas";
 import { GlobalState, createGlobalState } from "./state/global";
@@ -16,7 +17,9 @@ function init(): void {
   const domElements = getDOMElements();
 
   initializeMap(state.map);
-  centerCameraOnMap(state.camera, state.map);
+  setCharacterPosition(state.character, getCenterTile(state.map).center);
+  clearTilesAroundPosition(state.map, state.character.position);
+  setCameraPosition(state.camera, state.character.position);
 
   setCanvasAndCameraSize(domElements.canvas, state.camera, {
     width: window.innerWidth,

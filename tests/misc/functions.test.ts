@@ -4,6 +4,7 @@ import {
   isEven,
   isPointInsideRectangle,
   keepBetweenValues,
+  rectanglesIntersect,
   rotatePoint,
 } from "../../src/misc/functions";
 
@@ -47,7 +48,7 @@ test.each([
   [100, 100, true],
   [101, 100, false],
   [100, 101, false],
-])("Is point (%i, %i) inside rectangle should be %s", function(x, y, expectedValue) {
+])("Is point (%i, %i) inside rectangle should be %s", function(x, y, expected) {
   const testRectangle = {
     left: -100,
     right: 100,
@@ -60,7 +61,53 @@ test.each([
     y: y,
   };
 
-  expect(isPointInsideRectangle(point, testRectangle)).toBe(expectedValue);
+  expect(isPointInsideRectangle(point, testRectangle)).toBe(expected);
+});
+
+test.each([
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 9, right: 19, top: 0, bottom: 10 },
+    true,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 10, right: 20, top: 0, bottom: 10 },
+    false,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 0, right: 10, top: 9, bottom: 19 },
+    true,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 0, right: 10, top: 10, bottom: 20 },
+    false,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 9, right: 19, top: 9, bottom: 19 },
+    true,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 10, right: 20, top: 10, bottom: 20 },
+    false,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    true,
+  ],
+  [
+    { left: 0, right: 10, top: 0, bottom: 10 },
+    { left: 1, right: 9, top: 1, bottom: 9 },
+    true,
+  ],
+])("Rectangle intersection between %s and %s should return %s", function(a, b, expected) {
+  expect(rectanglesIntersect(a, b)).toBe(expected);
+  expect(rectanglesIntersect(b, a)).toBe(expected);
 });
 
 test.each([
@@ -98,13 +145,7 @@ test.each([
   [0, 0, -10, -10, -135],
   [0, 0, 0, -10, -90],
   [0, 0, 10, -10, -45],
-])("Angle between points (%i, %i) and (%i, %i) should be %i", function(
-  x1,
-  y1,
-  x2,
-  y2,
-  expectedValue,
-) {
+])("Angle between points (%i, %i) and (%i, %i) should be %i", function(x1, y1, x2, y2, expected) {
   const pointA = {
     x: x1,
     y: y1,
@@ -115,7 +156,7 @@ test.each([
     y: y2,
   };
 
-  expect(getAngleBetweenPoints(pointA, pointB)).toBe(expectedValue);
+  expect(getAngleBetweenPoints(pointA, pointB)).toBe(expected);
 });
 
 test.each([

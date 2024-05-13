@@ -9,13 +9,17 @@ type MapState = {
     previous: Tile | null;
     current: Tile | null;
   };
-  boundingBox: Rectangle;
-  boundaries: Rectangle;
   pathfinding: {
+    startingTile: {
+      previous: Tile | null;
+      current: Tile | null;
+    };
     algorithm: PathfindingAlgorithm;
     data: PathfindingData;
   };
-  debug: {
+  boundingBox: Rectangle;
+  boundaries: Rectangle;
+    debug: {
     visibleTiles: boolean;
     boundaries: boolean;
   };
@@ -24,15 +28,19 @@ type MapState = {
 function createMapState(): MapState {
   return {
     dimensions: {
-      width: 30,
-      height: 20,
+      width: 100,
+      height: 50,
     },
     tiles: Array() as Tile[][],
     tileUnderCursor: {
-      current: null,
       previous: null,
+      current: null,
     },
     pathfinding: {
+      startingTile: {
+        previous: null,
+        current: null,
+      },
       algorithm: PathfindingAlgorithm.AStar,
       data: {
         candidates: new PriorityQueue<Tile>(),

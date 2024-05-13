@@ -43,16 +43,6 @@ function initializeMap(mapState: MapState): void {
   }
 
   calculateMapBoundingBoxAndBoundaries(mapState);
-
-  if (mapState.debug.boundaries) {
-    for (let i = 0; i < mapState.dimensions.width; i++) {
-      for (let j = 0; j < mapState.dimensions.height; j++) {
-        if ((i == 0 || i == mapState.dimensions.width - 1) || (j == 0 || j == mapState.dimensions.height - 1)) {
-          mapState.tiles[i][j].type = TileType.Passable;
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -86,6 +76,39 @@ function createTile(indexX: number, indexY: number): Tile {
   }
 }
 
+
+/**
+ * Clears any impassable tiles around a position's small radius.
+ */
+function clearTilesAroundPosition(
+  mapState: MapState,
+  position: Point,
+): void {
+  const tile = getTileByPoint(mapState, position);
+  if (tile === null) {
+    return;
+  }
+
+  const tilesToClear: Tile[] = [tile];
+  const neighbours = getTileNeighbours(mapState.tiles, tile);
+  tilesToClear.push(...neighbours);
+
+  neighbours.forEach(neighbour => {
+    tilesToClear.push(...getTileNeighbours(mapState.tiles, neighbour));
+  });
+
+  tilesToClear.forEach(tile => tile.type = TileType.Passable);
+}
+
+/**
+ * Returns the centermost tile of the map.
+ */
+function getCenterTile(mapState: MapState): Tile {
+  const x = Math.floor(mapState.dimensions.width / 2);
+  const y = Math.floor(mapState.dimensions.height / 2);
+  return mapState.tiles[x][y];
+}
+
 /**
  * Detects and marks the tile that is currently under the cursor.
  */
@@ -96,33 +119,48 @@ function detectTileUnderCursor(mapState: MapState, controlState: ControlState): 
 }
 
 /**
- * If a new tile is being hovered, updates the path from the current tile to
- * the hovered tile, and stores the route in the state.
+ * Updates the path from the starting tile to the hovered tile, and stores the
+ * route in the state.
+ *
+ * To avoid redundant path calculations, a new path is only calculated if the
+ * start or destination tiles changed compared to the previous path.
  */
-function detectPathToTileUnderCursor(mapState: MapState): void {
-  const tileCursor = mapState.tileUnderCursor;
-  if (tileCursor.current !== null && tileCursor.current != tileCursor.previous) {
-    const data = mapState.pathfinding.data;
+function detectPathToTileUnderCursor(
+  mapState: MapState,
+  startingPosition: Point,
+): void {
+  const start = mapState.pathfinding.startingTile;
+  const destination = mapState.tileUnderCursor;
 
-    data.checkedTiles.forEach(function(tile) {
-      tile.path.checked = false;
-      tile.path.used = false;
-    });
+  start.previous = start.current;
+  start.current = getTileByPoint(mapState, startingPosition);
 
-    data.candidates.clear();
-    data.checkedTiles = [];
-    data.foundPath = [];
-
-    const startingTile = mapState.tiles[0][0];
-
-    mapState.pathfinding.data = findPath(
-      mapState.tiles,
-      startingTile,
-      tileCursor.current,
-      mapState.pathfinding.algorithm,
-      mapState.pathfinding.data,
-    );
+  if (start.current === null || destination.current === null) {
+    return;
   }
+
+  if (start.previous === start.current && destination.previous === destination.current) {
+    return;
+  }
+
+  const data = mapState.pathfinding.data;
+
+  data.checkedTiles.forEach(function(tile) {
+    tile.path.checked = false;
+    tile.path.used = false;
+  });
+
+  data.candidates.clear();
+  data.checkedTiles = [];
+  data.foundPath = [];
+
+  mapState.pathfinding.data = findPath(
+    mapState.tiles,
+    start.current,
+    destination.current,
+    mapState.pathfinding.algorithm,
+    mapState.pathfinding.data,
+  );
 }
 
 /**
@@ -153,7 +191,7 @@ function calculateMapBoundingBoxAndBoundaries(mapState: MapState): void {
   mapState.boundaries.bottom = mapState.boundingBox.bottom - HEXAGON_VERTICAL_DISTANCE;
 
   if (mapState.debug.boundaries) {
-    const offset = 10;
+    const offset = 20;
     mapState.boundaries.left -= offset;
     mapState.boundaries.right += offset;
     mapState.boundaries.top -= offset;
@@ -256,6 +294,9 @@ function getManhattanDistance(a: Tile, b: Tile): number {
   return Math.max(dx, dy);
 }
 
+
+
+
 /**
  * Returns the tile that contains a given point.
  *
@@ -299,6 +340,8 @@ function getTileByPoint(mapState: MapState, point: Point): Tile | null {
 
 export {
   initializeMap,
+  clearTilesAroundPosition,
+  getCenterTile,
   detectTileUnderCursor,
   detectPathToTileUnderCursor,
   getVisibleTilesIndices,

@@ -3,6 +3,7 @@ import { justPressed } from "./controls";
 import { CameraState } from "../state/camera";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
+import { Point } from "../misc/types";
 
 const SCALE_SPEED = 0.05;
 const SCALE_MULTIPLIER = 2;
@@ -12,15 +13,11 @@ const GENERAL_SCROLL_SPEED = 0.5;
 const DIRECTIONAL_SCROLL_SPEED = 15;
 
 /**
- * Positions the camera on the central tile (or closest to it).
+ * Sets the camera position.
  */
-function centerCameraOnMap(cameraState: CameraState, mapState: MapState): void {
-  const tileX = Math.floor(mapState.dimensions.width / 2);
-  const tileY = Math.floor(mapState.dimensions.height / 2);
-  const tile = mapState.tiles[tileX][tileY];
-
-  cameraState.center.x = tile.center.x;
-  cameraState.center.y = tile.center.y;
+function setCameraPosition(cameraState: CameraState, position: Point): void {
+  cameraState.center.x = position.x;
+  cameraState.center.y = position.y;
 }
 
 /**
@@ -195,7 +192,7 @@ function getScaleDifference(cameraState: CameraState): number {
 }
 
 export {
-  centerCameraOnMap,
+  setCameraPosition,
   scaleCamera,
   scrollCamera,
 }

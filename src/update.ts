@@ -24,7 +24,7 @@ function updateLogic(state: GlobalState): void {
   scrollCamera(state.camera, state.control, state.map);
 
   detectTileUnderCursor(state.map, state.control);
-  detectPathToTileUnderCursor(state.map);
+  detectPathToTileUnderCursor(state.map, state.character.position);
 }
 
 export default updateLogic;
