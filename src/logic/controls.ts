@@ -1,4 +1,4 @@
-import { setFrameValue } from "../misc/functions";
+import { setFrameValue } from "../misc/utils";
 import { CameraState } from "../state/camera";
 import { ControlState } from "../state/controls";
 import { InputState } from "../state/input";

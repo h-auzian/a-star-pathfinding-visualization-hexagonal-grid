@@ -1,12 +1,4 @@
 import {
-  frameValueChanged,
-  getRandomInteger,
-  isEven,
-  isPointInsideRectangle,
-  keepBetweenValues,
-  setFrameValue,
-} from "../misc/functions";
-import {
   HEXAGON_HORIZONTAL_DISTANCE,
   HEXAGON_INNER_HORIZONTAL_DISTANCE,
   HEXAGON_RADIUS,
@@ -18,6 +10,14 @@ import { ControlState } from "../state/controls";
 import { clearPreviousPathData, findPath } from "./pathfinding";
 import { Tile, TileType } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
+import {
+  frameValueChanged,
+  getRandomInteger,
+  isEven,
+  isPointInsideRectangle,
+  keepBetweenValues,
+  setFrameValue,
+} from "../misc/utils";
 
 const NEIGHBOURS = {
   even: [

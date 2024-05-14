@@ -2,7 +2,7 @@ import {
   getAngleBetweenPoints,
   getDistanceBetweenPoints,
   translatePoint,
-} from "../misc/functions";
+} from "../misc/math";
 import { CharacterState } from "../state/character";
 import { ControlState } from "../state/controls";
 import { MapState } from "../state/map";

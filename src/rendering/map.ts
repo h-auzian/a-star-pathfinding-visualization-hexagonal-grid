@@ -3,7 +3,7 @@ import {
   getHexagonPoints,
 } from "../logic/hexagon";
 import { getVisibleTiles } from "../logic/map";
-import { getAngleBetweenPoints, rotatePoints } from "../misc/functions";
+import { getAngleBetweenPoints, rotatePoints } from "../misc/math";
 import { CameraState } from "../state/camera";
 import { CharacterState } from "../state/character";
 import { MapState } from "../state/map";

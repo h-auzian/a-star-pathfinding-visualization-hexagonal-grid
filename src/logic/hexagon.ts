@@ -1,4 +1,5 @@
-import { getLineY, isPointInsideRectangle, translatePoint } from "../misc/functions";
+import { getLineY, translatePoint } from "../misc/math";
+import { isPointInsideRectangle } from "../misc/utils";
 import { Point, Rectangle } from "../types/primitives";
 
 const HEXAGON_RADIUS = 50;

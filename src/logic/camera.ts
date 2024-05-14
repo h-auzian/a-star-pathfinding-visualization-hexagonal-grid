@@ -1,9 +1,9 @@
-import { keepBetweenValues } from "../misc/functions";
 import { justPressed } from "./controls";
 import { CameraState } from "../state/camera";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
 import { Point } from "../types/primitives";
+import { keepBetweenValues } from "../misc/utils";
 
 const SCALE_SPEED = 0.05;
 const SCALE_MULTIPLIER = 2;
