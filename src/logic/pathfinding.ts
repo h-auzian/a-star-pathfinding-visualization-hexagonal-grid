@@ -1,12 +1,7 @@
 import PriorityQueue from "../misc/priority-queue";
-import { PathfindingData, Tile, TileType } from "../misc/types";
+import { PathfindingAlgorithm, PathfindingData } from "../types/pathfinding";
+import { Tile, TileType } from "../types/tiles";
 import { getManhattanDistance, getTileNeighbours } from "./map";
-
-enum PathfindingAlgorithm {
-  Dijkstra,
-  Greedy,
-  AStar,
-}
 
 const TILE_DISTANCE_COST = 1;
 
@@ -131,8 +126,6 @@ function clearPreviousPathData(data: PathfindingData): void {
 }
 
 export {
-  PathfindingAlgorithm,
-  PathfindingData,
   findPath,
   clearPreviousPathData,
 };

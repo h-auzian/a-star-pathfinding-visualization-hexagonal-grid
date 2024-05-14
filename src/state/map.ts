@@ -1,12 +1,8 @@
-import { PathfindingAlgorithm } from "../logic/pathfinding";
 import PriorityQueue from "../misc/priority-queue";
-import {
-  FrameValues,
-  PathfindingData,
-  Rectangle,
-  Size,
-  Tile,
-} from "../misc/types";
+import { FrameValues } from "../types/misc";
+import { PathfindingAlgorithm, PathfindingData } from "../types/pathfinding";
+import { Rectangle, Size } from "../types/primitives";
+import { Tile } from "../types/tiles";
 
 type MapState = {
   dimensions: Size;

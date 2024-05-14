@@ -3,7 +3,7 @@ import { justPressed } from "./controls";
 import { CameraState } from "../state/camera";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
-import { Point } from "../misc/types";
+import { Point } from "../types/primitives";
 
 const SCALE_SPEED = 0.05;
 const SCALE_MULTIPLIER = 2;

@@ -13,10 +13,11 @@ import {
   HEXAGON_VERTICAL_DISTANCE,
   isPointInsideHexagon,
 } from "./hexagon";
-import { Point, Rectangle, Tile, TileType } from "../misc/types";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
 import { clearPreviousPathData, findPath } from "./pathfinding";
+import { Tile, TileType } from "../types/tiles";
+import { Point, Rectangle } from "../types/primitives";
 
 const NEIGHBOURS = {
   even: [

@@ -1,5 +1,6 @@
-import { Tile, TileType } from "../../src/misc/types";
-import { PathfindingAlgorithm, findPath } from "../../src/logic/pathfinding";
+import { findPath } from "../../src/logic/pathfinding";
+import { PathfindingAlgorithm } from "../../src/types/pathfinding";
+import { Tile, TileType } from "../../src/types/tiles";
 
 /**
  * String representations for test hexagonal maps, which are read to create the

@@ -3,10 +3,10 @@ import {
   getDistanceBetweenPoints,
   translatePoint,
 } from "../misc/functions";
-import { Point } from "../misc/types";
 import { CharacterState } from "../state/character";
 import { ControlState } from "../state/controls";
 import { MapState } from "../state/map";
+import { Point } from "../types/primitives";
 import { justPressed } from "./controls";
 import { HEXAGON_RADIUS } from "./hexagon";
 

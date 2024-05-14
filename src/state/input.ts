@@ -1,4 +1,4 @@
-import { Point } from "../misc/types";
+import { Point } from "../types/primitives";
 
 type InputState = {
   mouse: {

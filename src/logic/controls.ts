@@ -1,8 +1,9 @@
 import { setFrameValue } from "../misc/functions";
-import { FrameValues, Point } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { ControlState } from "../state/controls";
 import { InputState } from "../state/input";
+import { FrameValues } from "../types/misc";
+import { Point } from "../types/primitives";
 
 /**
  * Returns if the control was just pressed or changed this frame.

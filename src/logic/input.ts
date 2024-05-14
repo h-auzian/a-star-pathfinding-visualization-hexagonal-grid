@@ -1,5 +1,5 @@
-import { Point } from "../misc/types";
 import { InputState } from "../state/input";
+import { Point } from "../types/primitives";
 
 /**
  * Sets in the state whether a keyboard button is currently pressed or not.

@@ -1,4 +1,4 @@
-import { Point, Rectangle, Size } from "../misc/types";
+import { Point, Rectangle, Size } from "../types/primitives";
 
 type CameraState = {
   size: {

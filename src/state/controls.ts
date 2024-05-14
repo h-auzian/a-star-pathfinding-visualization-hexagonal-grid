@@ -1,4 +1,5 @@
-import { FrameValues, Point } from "../misc/types";
+import { FrameValues } from "../types/misc";
+import { Point } from "../types/primitives";
 
 type ControlState = {
   cursor: {

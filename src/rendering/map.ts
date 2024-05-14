@@ -4,10 +4,11 @@ import {
 } from "../logic/hexagon";
 import { getVisibleTiles } from "../logic/map";
 import { getAngleBetweenPoints, rotatePoints } from "../misc/functions";
-import { Point, Tile } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { CharacterState } from "../state/character";
 import { MapState } from "../state/map";
+import { Point } from "../types/primitives";
+import { Tile } from "../types/tiles";
 
 const HEXAGON_OUTLINE_COLOR = "#000";
 const HEXAGON_OUTLINE_WIDTHS = {

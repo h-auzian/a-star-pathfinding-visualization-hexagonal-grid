@@ -1,4 +1,5 @@
-import { FrameValues, Point, Rectangle } from "../misc/types";
+import { FrameValues } from "../types/misc";
+import { Point, Rectangle } from "../types/primitives";
 
 const RADIANS = Math.PI / 180;
 const DEGREES = 180 / Math.PI;

@@ -5,10 +5,10 @@ import {
   rectanglesIntersect,
   translatePoint,
 } from "../misc/functions";
-import { Point } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { CharacterState } from "../state/character";
 import { ControlState } from "../state/controls";
+import { Point } from "../types/primitives";
 
 const CHARACTER_LINE_WIDTH = 3;
 const CHARACTER_COLOR = "#FF0";

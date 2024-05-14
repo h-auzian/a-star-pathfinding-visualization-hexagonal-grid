@@ -1,6 +1,6 @@
 import { DOMElements } from "../dom";
-import { Size } from "../misc/types";
 import { CameraState } from "../state/camera";
+import { Size } from "../types/primitives";
 
 /**
  * Sets the canvas and camera size.

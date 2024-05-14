@@ -1,4 +1,5 @@
-import { Point, Rectangle, Tile } from "../misc/types";
+import { Point, Rectangle } from "../types/primitives";
+import { Tile } from "../types/tiles";
 
 type CharacterState = {
   position: Point;
