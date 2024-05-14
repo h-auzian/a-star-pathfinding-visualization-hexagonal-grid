@@ -1,7 +1,24 @@
-import { Point, Rectangle } from "../misc/types";
+import { FrameValues, Point, Rectangle } from "../misc/types";
 
 const RADIANS = Math.PI / 180;
 const DEGREES = 180 / Math.PI;
+
+/**
+ * Sets a new value for the current frame whle keeping the value for the
+ * previous frame.
+ */
+function setFrameValue<Type>(control: FrameValues<Type>, raw: Type): void {
+  control.previous = control.current;
+  control.current = raw;
+}
+
+/**
+ * Returns whether the frame value was changed this frame compared to the
+ * previous one.
+ */
+function frameValueChanged<Type>(control: FrameValues<Type>): boolean {
+  return control.previous !== control.current;
+}
 
 /**
  * Returns whether the absolute value of the received number is even or not. If
@@ -129,6 +146,8 @@ function translatePoint(distance: number, angle: number, point?: Point): Point {
 export {
   RADIANS,
   DEGREES,
+  setFrameValue,
+  frameValueChanged,
   isEven,
   getRandomInteger,
   keepBetweenValues,

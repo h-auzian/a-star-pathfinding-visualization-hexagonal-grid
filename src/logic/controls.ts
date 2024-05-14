@@ -1,4 +1,5 @@
-import { Control, Point } from "../misc/types";
+import { setFrameValue } from "../misc/functions";
+import { FrameValues, Point } from "../misc/types";
 import { CameraState } from "../state/camera";
 import { ControlState } from "../state/controls";
 import { InputState } from "../state/input";
@@ -6,7 +7,7 @@ import { InputState } from "../state/input";
 /**
  * Returns if the control was just pressed or changed this frame.
  */
-function justPressed(control: Control): boolean {
+function justPressed(control: FrameValues<boolean | number>): boolean {
   return control.previous == 0 && control.current != 0;
 }
 
@@ -19,14 +20,13 @@ function updateControls(
   cameraState: CameraState,
 ): void {
   updateCursorPositions(controlState, cameraState, inputState.mouse.position);
-
-  updateControl(controlState.scroll.general, inputState.mouse.buttons.middle);
-  updateControl(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
-  updateControl(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
-  updateControl(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
-  updateControl(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
-  updateControl(controlState.scale, inputState.mouse.wheel.y);
-  updateControl(controlState.followPath, inputState.mouse.buttons.left);
+  setFrameValue(controlState.scroll.general, inputState.mouse.buttons.middle);
+  setFrameValue(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
+  setFrameValue(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
+  setFrameValue(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
+  setFrameValue(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
+  setFrameValue(controlState.scale, inputState.mouse.wheel.y);
+  setFrameValue(controlState.followPath, inputState.mouse.buttons.left);
 }
 
 /**
@@ -48,14 +48,6 @@ function updateCursorPositions(
 
   cursor.camera.x = cursor.window.x / cameraScale - cameraSize.width/2 + cameraCenter.x;
   cursor.camera.y = cursor.window.y / cameraScale - cameraSize.height/2 + cameraCenter.y;
-}
-
-/**
- * Sets a control value for the previous and current frame.
- */
-function updateControl(control: Control, raw: boolean | number): void {
-  control.previous = control.current;
-  control.current = raw;
 }
 
 export {

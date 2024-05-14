@@ -1,19 +1,19 @@
 import { PathfindingAlgorithm } from "../logic/pathfinding";
 import PriorityQueue from "../misc/priority-queue";
-import { PathfindingData, Rectangle, Size, Tile } from "../misc/types";
+import {
+  FrameValues,
+  PathfindingData,
+  Rectangle,
+  Size,
+  Tile,
+} from "../misc/types";
 
 type MapState = {
   dimensions: Size;
   tiles: Tile[][];
-  tileUnderCursor: {
-    previous: Tile | null;
-    current: Tile | null;
-  };
+  tileUnderCursor: FrameValues<Tile | null>;
   pathfinding: {
-    startingTile: {
-      previous: Tile | null;
-      current: Tile | null;
-    };
+    startingTile: FrameValues<Tile | null>;
     algorithm: PathfindingAlgorithm;
     data: PathfindingData;
   };

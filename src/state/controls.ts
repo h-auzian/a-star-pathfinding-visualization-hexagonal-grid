@@ -1,4 +1,4 @@
-import { Control, Point } from "../misc/types";
+import { FrameValues, Point } from "../misc/types";
 
 type ControlState = {
   cursor: {
@@ -6,16 +6,16 @@ type ControlState = {
     camera: Point;
   };
   scroll: {
-    general: Control;
+    general: FrameValues<boolean>;
     directional: {
-      up: Control;
-      left: Control;
-      down: Control;
-      right: Control;
+      up: FrameValues<boolean>;
+      left: FrameValues<boolean>;
+      down: FrameValues<boolean>;
+      right: FrameValues<boolean>;
     };
   };
-  scale: Control;
-  followPath: Control;
+  scale: FrameValues<number>;
+  followPath: FrameValues<boolean>;
 };
 
 function createControlState(): ControlState {

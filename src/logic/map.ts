@@ -1,8 +1,10 @@
 import {
+  frameValueChanged,
   getRandomInteger,
   isEven,
   isPointInsideRectangle,
   keepBetweenValues,
+  setFrameValue,
 } from "../misc/functions";
 import {
   HEXAGON_HORIZONTAL_DISTANCE,
@@ -120,9 +122,10 @@ function detectTileUnderCursor(
     return;
   }
 
-  const tileCursor = mapState.tileUnderCursor;
-  tileCursor.previous = tileCursor.current;
-  tileCursor.current = getTileByPoint(mapState, controlState.cursor.camera);
+  setFrameValue(
+    mapState.tileUnderCursor,
+    getTileByPoint(mapState, controlState.cursor.camera),
+  );
 }
 
 /**
@@ -145,12 +148,11 @@ function detectPathToTileUnderCursor(
   const start = mapState.pathfinding.startingTile;
   const destination = mapState.tileUnderCursor;
 
-  start.previous = start.current;
-  start.current = getTileByPoint(mapState, startingPosition);
+  setFrameValue(start, getTileByPoint(mapState, startingPosition));
 
   if (start.current === null || destination.current === null) {
     return;
-  } else if (start.previous === start.current && destination.previous === destination.current) {
+  } else if (!frameValueChanged(start) && !frameValueChanged(destination)) {
     return;
   }
 

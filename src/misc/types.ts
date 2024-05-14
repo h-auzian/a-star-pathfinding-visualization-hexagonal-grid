@@ -17,9 +17,9 @@ type Rectangle = {
   bottom: number;
 };
 
-type Control = {
-  previous: boolean | number;
-  current: boolean | number;
+type FrameValues<Type> = {
+  previous: Type;
+  current: Type;
 };
 
 enum TileType {
@@ -52,7 +52,7 @@ export {
   Size,
   Point,
   Rectangle,
-  Control,
+  FrameValues,
   TileType,
   Tile,
   PathNode,
