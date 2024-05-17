@@ -5,10 +5,11 @@ import {
 } from "../misc/math";
 import { CharacterState } from "../state/character";
 import { ControlState } from "../state/controls";
-import { MapState } from "../state/map";
+import { PathfindingData } from "../types/pathfinding";
 import { Point } from "../types/primitives";
 import { justPressed } from "./controls";
 import { HEXAGON_RADIUS } from "./hexagon";
+import { clearPreviousPathData } from "./pathfinding";
 
 const CHARACTER_RADIUS = HEXAGON_RADIUS / 2;
 const BOUNDING_BOX_RADIUS = CHARACTER_RADIUS * 1.5;
@@ -27,14 +28,14 @@ const DISTANCE_PER_SPEED_MULTIPLIER = 10;
 function sendCharacterToSelectedPath(
   characterState: CharacterState,
   controlState: ControlState,
-  mapState: MapState,
+  pathfindingData: PathfindingData,
 ): void {
   if (characterState.assignedPath.hasPath) {
     return;
   }
 
-  const path = mapState.pathfinding.data.foundPath;
-  if (path.length <= 1) {
+  const path = pathfindingData.foundPath;
+  if (!pathfindingData.finished || path.length <= 1) {
     return;
   }
 
@@ -90,8 +91,8 @@ function moveCharacterThroughPath(characterState: CharacterState): void {
 
 /**
  * Detects if the character has arrived to its assigned path destination, and
- * if so, clears the assigned path to allow new path calculations from the
- * current position.
+ * if so, clears the assigned path and the calculated path to allow new path
+ * calculations from the current position.
  *
  * Originally this was done in the same function that moves the character
  * through the path, but that had the side effect of rendering the old path for
@@ -102,15 +103,21 @@ function moveCharacterThroughPath(characterState: CharacterState): void {
  * the frame after the character arrives to its destination, but before
  * calculating a new path on that frame.
  */
-function clearCharacterAssignedPathOnDestination(characterState: CharacterState): void {
+function clearPathOnDestination(
+  characterState: CharacterState,
+  pathfindingData: PathfindingData,
+): void {
   const assignedPath = characterState.assignedPath;
-  if (assignedPath.currentIndex >= assignedPath.path.length) {
-    assignedPath.hasPath = false;
-    assignedPath.path = [];
-    assignedPath.currentIndex = 0;
-    assignedPath.speed = 0;
+  if (!assignedPath.hasPath || assignedPath.currentIndex < assignedPath.path.length) {
     return;
   }
+
+  assignedPath.hasPath = false;
+  assignedPath.path = [];
+  assignedPath.currentIndex = 0;
+  assignedPath.speed = 0;
+
+  clearPreviousPathData(pathfindingData);
 }
 
 /**
@@ -148,5 +155,5 @@ export {
   sendCharacterToSelectedPath,
   moveCharacterThroughPath,
   setCharacterPosition,
-  clearCharacterAssignedPathOnDestination,
+  clearPathOnDestination,
 }

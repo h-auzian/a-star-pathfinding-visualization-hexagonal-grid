@@ -1,10 +1,16 @@
 import { findPath } from "../../src/logic/pathfinding";
-import { PathfindingAlgorithm } from "../../src/types/pathfinding";
+import PriorityQueue from "../../src/misc/priority-queue";
+import {
+  PathfindingAlgorithm,
+  PathfindingData,
+  PathfindingStyle,
+} from "../../src/types/pathfinding";
 import { Tile, TileType } from "../../src/types/tiles";
 
 /**
  * String representations for test hexagonal maps, which are read to create the
- * actual test tiles. The dots are normal tiles and the Xs are impassable tiles.
+ * actual test tiles. The dots are normal tiles and the Xs are impassable
+ * tiles.
  */
 const MAP_REPRESENTATIONS: { [key: string]: string } = {
   "open": `
@@ -98,13 +104,33 @@ test.each([
   const map = MAP_REPRESENTATIONS[mapName];
   const tiles = getTilesFromStringRepresentation(map);
 
+  const data: PathfindingData = {
+    algorithm: PathfindingAlgorithm.AStar,
+    style: PathfindingStyle.Instant,
+    startingTile: null,
+    destinationTile: null,
+    pending: false,
+    destinationReached: false,
+    finished: false,
+    candidates: new PriorityQueue<Tile>(),
+    checkedTiles: [],
+    currentTile: null,
+    foundPath: [],
+  };
+
   const startTile = tiles[start[0]][start[1]];
   const destinationTile = tiles[destination[0]][destination[1]];
-  const pathData = findPath(tiles, startTile, destinationTile, PathfindingAlgorithm.AStar);
+
+  findPath(
+    data,
+    tiles,
+    startTile,
+    destinationTile,
+  );
 
   let routeIndices: number[][] = [];
-  for (let i = 0; i < pathData.foundPath.length; i++) {
-    let tile = pathData.foundPath[i];
+  for (let i = 0; i < data.foundPath.length; i++) {
+    let tile = data.foundPath[i];
     routeIndices.push([tile.index.x, tile.index.y]);
   }
 
@@ -136,6 +162,7 @@ function getTilesFromStringRepresentation(representation: string): Tile[][] {
           y: 0,
         },
         path: {
+          candidate: false,
           checked: false,
           used: false,
           cost: 0,

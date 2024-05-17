@@ -7,12 +7,25 @@ enum PathfindingAlgorithm {
   AStar,
 }
 
+enum PathfindingStyle {
+  Instant,
+  StepByStep,
+}
+
 /**
  * Holds information of a pathfinding calculation as a whole.
  */
 type PathfindingData = {
+  algorithm: PathfindingAlgorithm;
+  style: PathfindingStyle;
+  startingTile: Tile | null;
+  destinationTile: Tile | null;
+  pending: boolean;
+  destinationReached: boolean;
+  finished: boolean;
   candidates: PriorityQueue<Tile>;
   checkedTiles: Tile[];
+  currentTile: Tile | null;
   foundPath: Tile[];
 };
 
@@ -20,6 +33,7 @@ type PathfindingData = {
  * Holds information for a single pathfinding node.
  */
 type PathNode<Type> = {
+  candidate: boolean;
   checked: boolean;
   used: boolean;
   cost: number;
@@ -29,6 +43,7 @@ type PathNode<Type> = {
 
 export {
   PathfindingAlgorithm,
+  PathfindingStyle,
   PathfindingData,
   PathNode,
 }

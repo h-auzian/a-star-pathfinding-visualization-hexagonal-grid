@@ -7,17 +7,17 @@ import {
 } from "./hexagon";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
-import { clearPreviousPathData, findPath } from "./pathfinding";
+import { findPath } from "./pathfinding";
 import { Tile, TileType } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
 import {
-  frameValueChanged,
   getRandomInteger,
   isEven,
   isPointInsideRectangle,
   keepBetweenValues,
-  setFrameValue,
 } from "../misc/utils";
+import { PathfindingStyle } from "../types/pathfinding";
+import { justPressed } from "./controls";
 
 const NEIGHBOURS = {
   even: [
@@ -68,6 +68,7 @@ function createTile(indexX: number, indexY: number): Tile {
     },
     type: type,
     path: {
+      candidate: false,
       checked: false,
       used: false,
       cost: 0,
@@ -76,7 +77,6 @@ function createTile(indexX: number, indexY: number): Tile {
     },
   }
 }
-
 
 /**
  * Clears any impassable tiles around a position's small radius.
@@ -111,34 +111,29 @@ function getCenterTile(mapState: MapState): Tile {
 }
 
 /**
- * Detects and marks the tile that is currently under the cursor, but only if
- * the character is not following an assigned path.
+ * Detects and marks the tile that is currently under the cursor if no path is
+ * being calculated or traversed.
  */
 function detectTileUnderCursor(
   mapState: MapState,
   controlState: ControlState,
   assignedCharacterPath: boolean,
 ): void {
-  if (assignedCharacterPath) {
+  if (assignedCharacterPath || mapState.pathfinding.pending) {
     return;
   }
 
-  setFrameValue(
-    mapState.tileUnderCursor,
-    getTileByPoint(mapState, controlState.cursor.camera),
-  );
+  mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
 }
 
 /**
  * Updates the path from the starting tile to the hovered tile, and stores the
  * route in the state. It only calculates a new path if the character is not
  * moving through an assigned path.
- *
- * To avoid redundant path calculations, a new path is only calculated if the
- * start or destination tiles changed compared to the previous path.
  */
 function detectPathToTileUnderCursor(
   mapState: MapState,
+  controlState: ControlState,
   startingPosition: Point,
   assignedCharacterPath: boolean,
 ): void {
@@ -146,26 +141,26 @@ function detectPathToTileUnderCursor(
     return;
   }
 
-  const start = mapState.pathfinding.startingTile;
-  const destination = mapState.tileUnderCursor;
+  const calculate = mapState.pathfinding.style === PathfindingStyle.Instant
+    || justPressed(controlState.followPath);
 
-  setFrameValue(start, getTileByPoint(mapState, startingPosition));
-
-  if (start.current === null || destination.current === null) {
-    return;
-  } else if (!frameValueChanged(start) && !frameValueChanged(destination)) {
+  if (!calculate) {
     return;
   }
 
-  const data = mapState.pathfinding.data;
-  clearPreviousPathData(data);
+  let startingTile = mapState.pathfinding.startingTile;
+  let destinationTile = mapState.pathfinding.destinationTile;
 
-  mapState.pathfinding.data = findPath(
+  if (!mapState.pathfinding.pending) {
+    destinationTile = mapState.tileUnderCursor;
+    startingTile = getTileByPoint(mapState, startingPosition);
+  };
+
+  findPath(
+    mapState.pathfinding,
     mapState.tiles,
-    start.current,
-    destination.current,
-    mapState.pathfinding.algorithm,
-    mapState.pathfinding.data,
+    startingTile,
+    destinationTile,
   );
 }
 
@@ -299,9 +294,6 @@ function getManhattanDistance(a: Tile, b: Tile): number {
 
   return Math.max(dx, dy);
 }
-
-
-
 
 /**
  * Returns the tile that contains a given point.

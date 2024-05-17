@@ -3,7 +3,7 @@ import {
   scrollCamera,
 } from "./logic/camera";
 import {
-  clearCharacterAssignedPathOnDestination,
+  clearPathOnDestination,
   moveCharacterThroughPath,
   sendCharacterToSelectedPath,
 } from "./logic/character";
@@ -25,7 +25,7 @@ function updateLogic(state: GlobalState): void {
   scaleCamera(state.camera, state.control);
   scrollCamera(state.camera, state.control, state.map);
 
-  clearCharacterAssignedPathOnDestination(state.character);
+  clearPathOnDestination(state.character, state.map.pathfinding);
 
   detectTileUnderCursor(
     state.map,
@@ -34,11 +34,16 @@ function updateLogic(state: GlobalState): void {
   );
   detectPathToTileUnderCursor(
     state.map,
+    state.control,
     state.character.position,
     state.character.assignedPath.hasPath,
   );
 
-  sendCharacterToSelectedPath(state.character, state.control, state.map);
+  sendCharacterToSelectedPath(
+    state.character,
+    state.control,
+    state.map.pathfinding,
+  );
   moveCharacterThroughPath(state.character);
 }
 

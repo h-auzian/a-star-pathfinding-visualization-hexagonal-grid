@@ -19,7 +19,9 @@ const HEXAGON_FILL_COLORS = {
   "passable": "#0F0",
   "impassable": "#F00",
   "hover": "#09D",
-  "checked": "#FFF",
+  "current": "#0A8",
+  "candidate": "#FFF",
+  "checked": "#CCC",
   "path": "#2BF",
 };
 
@@ -58,15 +60,17 @@ function renderMap(
   characterState: CharacterState,
 ): void {
   const tiles = getVisibleTiles(mapState, cameraState.viewport);
-  const tileCursor = mapState.tileUnderCursor.current;
-  const startingTile = mapState.pathfinding.startingTile.current;
+  const hoveredTile = mapState.tileUnderCursor;
+  const currentTile = mapState.pathfinding.currentTile;
+  const startingTile = mapState.pathfinding.startingTile;
   const cameraScale = cameraState.scale.value;
   const assignedCharacterPath = characterState.assignedPath.hasPath;
 
   tiles.forEach(tile => renderTileBackground(
     context,
     tile,
-    tileCursor,
+    hoveredTile,
+    currentTile,
     assignedCharacterPath,
   ));
 
@@ -98,13 +102,19 @@ function renderTileBackground(
   context: CanvasRenderingContext2D,
   tile: Tile,
   hoveredTile: Tile | null,
+  currentTile: Tile | null,
   assignedCharacterPath: boolean,
 ): void {
   let fillStyle;
-  if (Object.is(tile, hoveredTile)) {
+
+  if (tile === currentTile) {
+    fillStyle = HEXAGON_FILL_COLORS["current"];
+  } else if (tile === hoveredTile) {
     fillStyle = HEXAGON_FILL_COLORS["hover"];
   } else if (tile.path.used) {
     fillStyle = HEXAGON_FILL_COLORS["path"];
+  } else if (tile.path.candidate && !assignedCharacterPath) {
+    fillStyle = HEXAGON_FILL_COLORS["candidate"];
   } else if (tile.path.checked && !assignedCharacterPath) {
     fillStyle = HEXAGON_FILL_COLORS["checked"];
   } else {
@@ -204,7 +214,7 @@ function renderTileParentIndicator(
 function renderTilePathfindingInfo(
   context: CanvasRenderingContext2D,
   tile: Tile,
-  pathStartingTile: Tile | null,
+  startingTile: Tile | null,
   cameraScale: number,
   assignedCharacterPath: boolean,
 ): void {
@@ -217,7 +227,7 @@ function renderTilePathfindingInfo(
   context.fillStyle = FONT_COLOR;
   context.textAlign = "center";
 
-  if (Object.is(tile, pathStartingTile)) {
+  if (tile === startingTile) {
     if (cameraScale > FONT_SMALL_SCALE_LIMIT) {
       context.font = FONT_SMALL;
       context.textBaseline = "bottom";

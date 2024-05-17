@@ -1,18 +1,17 @@
 import PriorityQueue from "../misc/priority-queue";
-import { FrameValues } from "../types/misc";
-import { PathfindingAlgorithm, PathfindingData } from "../types/pathfinding";
+import {
+  PathfindingAlgorithm,
+  PathfindingData,
+  PathfindingStyle,
+} from "../types/pathfinding";
 import { Rectangle, Size } from "../types/primitives";
 import { Tile } from "../types/tiles";
 
 type MapState = {
   dimensions: Size;
   tiles: Tile[][];
-  tileUnderCursor: FrameValues<Tile | null>;
-  pathfinding: {
-    startingTile: FrameValues<Tile | null>;
-    algorithm: PathfindingAlgorithm;
-    data: PathfindingData;
-  };
+  tileUnderCursor: Tile | null;
+  pathfinding: PathfindingData;
   boundingBox: Rectangle;
   boundaries: Rectangle;
     debug: {
@@ -28,21 +27,19 @@ function createMapState(): MapState {
       height: 50,
     },
     tiles: Array() as Tile[][],
-    tileUnderCursor: {
-      previous: null,
-      current: null,
-    },
+    tileUnderCursor: null,
     pathfinding: {
-      startingTile: {
-        previous: null,
-        current: null,
-      },
       algorithm: PathfindingAlgorithm.AStar,
-      data: {
-        candidates: new PriorityQueue<Tile>(),
-        checkedTiles: [],
-        foundPath: [],
-      },
+      style: PathfindingStyle.StepByStep,
+      startingTile: null,
+      destinationTile: null,
+      pending: false,
+      destinationReached: false,
+      finished: false,
+      candidates: new PriorityQueue<Tile>(),
+      checkedTiles: [],
+      currentTile: null,
+      foundPath: [],
     },
     boundingBox: {
       left: 0,
