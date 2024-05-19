@@ -13,7 +13,7 @@ import { clearPreviousPathData } from "./pathfinding";
 
 const CHARACTER_RADIUS = HEXAGON_RADIUS / 2;
 const BOUNDING_BOX_RADIUS = CHARACTER_RADIUS * 1.5;
-const BASE_MOVEMENT_SPEED = 5;
+const BASE_MOVEMENT_SPEED = 300;
 const MAX_SPEED = BASE_MOVEMENT_SPEED * 3;
 const DISTANCE_PER_SPEED_MULTIPLIER = 10;
 
@@ -62,7 +62,10 @@ function sendCharacterToSelectedPath(
  * produces an unpleasant stuttering effect, which is why correcting on the
  * last tile is preferred.
  */
-function moveCharacterThroughPath(characterState: CharacterState): void {
+function moveCharacterThroughPath(
+  characterState: CharacterState,
+  deltaTime: number,
+): void {
   const assignedPath = characterState.assignedPath;
   if (!assignedPath.hasPath || assignedPath.currentIndex >= assignedPath.path.length) {
     return;
@@ -75,10 +78,12 @@ function moveCharacterThroughPath(characterState: CharacterState): void {
     assignedPath.currentIndex++;
   } else {
     const angle = getAngleBetweenPoints(position, destination);
-    let newPosition = translatePoint(assignedPath.speed, angle, position);
+    const speed = assignedPath.speed * deltaTime;
+
+    let newPosition = translatePoint(speed, angle, position);
 
     const remainingDistance = getDistanceBetweenPoints(position, destination);
-    if (remainingDistance <= assignedPath.speed) {
+    if (remainingDistance <= speed) {
       assignedPath.currentIndex++;
       if (assignedPath.currentIndex >= assignedPath.path.length) {
         newPosition = destination;

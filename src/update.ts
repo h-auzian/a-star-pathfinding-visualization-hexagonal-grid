@@ -18,12 +18,12 @@ import { GlobalState } from "./state/global";
 /**
  * Main logic update function.
  */
-function updateLogic(state: GlobalState): void {
+function updateLogic(state: GlobalState, deltaTime: number): void {
   updateControls(state.control, state.input, state.camera);
   resetInputs(state.input);
 
-  scaleCamera(state.camera, state.control);
-  scrollCamera(state.camera, state.control, state.map);
+  scaleCamera(state.camera, state.control, deltaTime);
+  scrollCamera(state.camera, state.control, state.map, deltaTime);
 
   clearPathOnDestination(state.character, state.map.pathfinding);
 
@@ -44,7 +44,7 @@ function updateLogic(state: GlobalState): void {
     state.control,
     state.map.pathfinding,
   );
-  moveCharacterThroughPath(state.character);
+  moveCharacterThroughPath(state.character, deltaTime);
 }
 
 export default updateLogic;

@@ -5,12 +5,12 @@ import { ControlState } from "../state/controls";
 import { Point } from "../types/primitives";
 import { keepBetweenValues } from "../misc/utils";
 
-const SCALE_SPEED = 0.05;
+const SCALE_SPEED = 3;
 const SCALE_MULTIPLIER = 2;
 const SCALE_LOWER_LIMIT = Math.pow(1/SCALE_MULTIPLIER, 3);
 const SCALE_UPPER_LIMIT = Math.pow(SCALE_MULTIPLIER, 3);
-const GENERAL_SCROLL_SPEED = 0.5;
-const DIRECTIONAL_SCROLL_SPEED = 15;
+const GENERAL_SCROLL_SPEED = 30;
+const DIRECTIONAL_SCROLL_SPEED = 900;
 
 /**
  * Sets the camera position.
@@ -24,7 +24,11 @@ function setCameraPosition(cameraState: CameraState, position: Point): void {
  * Sets a new scale destination on user input, and slowly approaches the
  * current scale to said value.
  */
-function scaleCamera(cameraState: CameraState, controlState: ControlState): void {
+function scaleCamera(
+  cameraState: CameraState,
+  controlState: ControlState,
+  deltaTime: number,
+): void {
   const scale = cameraState.scale;
   const scaleControl = controlState.scale;
 
@@ -44,7 +48,7 @@ function scaleCamera(cameraState: CameraState, controlState: ControlState): void
     }
 
     if (scale.value != scale.destination) {
-      scale.speed = SCALE_SPEED * getScaleDifference(cameraState);
+      scale.speed = SCALE_SPEED * deltaTime * getScaleDifference(cameraState);
     }
   }
 
@@ -58,9 +62,10 @@ function scrollCamera(
   cameraState: CameraState,
   controlState: ControlState,
   mapState: MapState,
+  deltaTime: number,
 ): void {
-  scrollCameraGeneralControls(cameraState, controlState);
-  scrollCameraDirectionalControls(cameraState, controlState);
+  scrollCameraGeneralControls(cameraState, controlState, deltaTime);
+  scrollCameraDirectionalControls(cameraState, controlState, deltaTime);
   keepCameraCenterInsideBoundaries(cameraState, mapState);
   updateCameraViewport(cameraState);
 }
@@ -74,6 +79,7 @@ function scrollCamera(
 function scrollCameraGeneralControls(
   cameraState: CameraState,
   controlState: ControlState,
+  deltaTime: number,
 ): void {
   const scrollControl = controlState.scroll.general;
   const cursorPosition = controlState.cursor.window;
@@ -83,7 +89,7 @@ function scrollCameraGeneralControls(
     scrollPosition.x = cursorPosition.x;
     scrollPosition.y = cursorPosition.y;
   } else if (scrollControl.current) {
-    const speed = GENERAL_SCROLL_SPEED / cameraState.scale.value;
+    const speed = GENERAL_SCROLL_SPEED * deltaTime / cameraState.scale.value;
     const center = cameraState.center;
     center.x = center.x + (cursorPosition.x - scrollPosition.x) * speed;
     center.y = center.y + (cursorPosition.y - scrollPosition.y) * speed;
@@ -96,9 +102,10 @@ function scrollCameraGeneralControls(
 function scrollCameraDirectionalControls(
   cameraState: CameraState,
   controlState: ControlState,
+  deltaTime: number,
 ): void {
   const directionalControls = controlState.scroll.directional;
-  const speed = DIRECTIONAL_SCROLL_SPEED / cameraState.scale.value;
+  const speed = DIRECTIONAL_SCROLL_SPEED * deltaTime / cameraState.scale.value;
   const center = cameraState.center;
 
   if (directionalControls.left.current) {

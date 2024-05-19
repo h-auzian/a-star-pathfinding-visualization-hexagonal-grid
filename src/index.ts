@@ -27,18 +27,35 @@ function init(): void {
   });
 
   listenToEvents(state, domElements);
+
   mainLoop(domElements, state);
 }
 
 /**
  * Main loop, updating the logic and drawing the canvas each frame.
+ *
+ * Internally it works with a variable timestep, which is good enough for this
+ * application as it only contains animations, which don't need to be precise.
+ *
+ * To achieve a variable timestep, the total time of the previous frame is
+ * substracted from the total time of the current frame, getting the time
+ * delta, which is then passed to the update function. This way, the animations
+ * will take around the same time regardless of how many frames per second the
+ * application is running for.
  */
-function mainLoop(domElements: DOMElements, state: GlobalState): void {
-  window.requestAnimationFrame(function() {
-    mainLoop(domElements, state);
+function mainLoop(
+  domElements: DOMElements,
+  state: GlobalState,
+  totalTime: number = 0,
+  deltaTime: number = 0,
+): void {
+  window.requestAnimationFrame(function(time: number) {
+    time /= 1000;
+    deltaTime = time - totalTime;
+    mainLoop(domElements, state, time, deltaTime);
   });
 
-  updateLogic(state);
+  updateLogic(state, deltaTime);
   updateUI(domElements, state);
   render(domElements, state);
 }
