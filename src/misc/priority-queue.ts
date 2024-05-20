@@ -91,7 +91,7 @@ class PriorityQueue<Type> {
     const parentIndex = Math.floor((index - 1) / 2);
     const parentNode = this.heap[parentIndex];
 
-    if (currentNode.priority < parentNode.priority) {
+    if (currentNode.priority <= parentNode.priority) {
       this.swap(index, parentIndex);
       this.bubbleUp(parentIndex);
     }

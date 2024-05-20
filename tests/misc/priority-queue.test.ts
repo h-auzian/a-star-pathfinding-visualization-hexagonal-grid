@@ -10,7 +10,7 @@ test("Add node to empty queue", function() {
 test.each([
   ["One", 1, "One"],
   ["Two", 2, "Two"],
-  ["Three", 3, "Three"],
+  ["Three (Duplicate)", 3, "Three (Duplicate)"],
   ["Four", 4, "Three"],
 ])("Add node '%s' to queue with existing nodes", function(
   value,
