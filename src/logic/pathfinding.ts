@@ -52,6 +52,7 @@ function findPath(
   start: Tile | null,
   destination: Tile | null,
   interruptOnLastIteration: boolean = false,
+  forceInstantFinish: boolean = false,
 ): void {
   if (start !== data.startingTile || destination != data.destinationTile) {
     clearPreviousPathData(data);
@@ -73,7 +74,7 @@ function findPath(
   const usesHeuristic = data.algorithm === PathfindingAlgorithm.Greedy
     || data.algorithm === PathfindingAlgorithm.AStar;
 
-  const stepByStep = data.style === PathfindingStyle.StepByStep;
+  const stepByStep = data.style === PathfindingStyle.StepByStep && !forceInstantFinish;
 
   if (!data.pending) {
     start.path.candidate = true;
@@ -144,7 +145,7 @@ function findPath(
   if (data.destinationReached) {
     while (data.currentTile !== null) {
       const nextTile = data.currentTile.path.parent;
-      if (nextTile === null && interruptOnLastIteration) {
+      if (nextTile === null && (interruptOnLastIteration || forceInstantFinish)) {
         break;
       }
 

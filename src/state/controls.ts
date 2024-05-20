@@ -21,6 +21,7 @@ type ControlState = {
   };
   scale: FrameValues<number>;
   followPath: FrameValues<boolean>;
+  finishPath: FrameValues<boolean>;
   speedUpPath: AccumulatedTime;
 };
 
@@ -65,6 +66,10 @@ function createControlState(): ControlState {
       current: 0,
     },
     followPath: {
+      previous: false,
+      current: false,
+    },
+    finishPath: {
       previous: false,
       current: false,
     },

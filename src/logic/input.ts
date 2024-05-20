@@ -11,7 +11,9 @@ function setRawKeyboardButton(
 ): void {
   const buttons = inputState.keyboard.buttons;
 
-  if (buttonCode == "KeyW") {
+  if (buttonCode == "KeyQ") {
+    buttons.q = pressed;
+  } else if (buttonCode == "KeyW") {
     buttons.w = pressed;
   } else if (buttonCode == "KeyA") {
     buttons.a = pressed;

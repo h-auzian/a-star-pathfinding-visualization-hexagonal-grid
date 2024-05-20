@@ -30,6 +30,7 @@ function updateControls(
   setFrameValue(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
   setFrameValue(controlState.scale, inputState.mouse.wheel.y);
   setFrameValue(controlState.followPath, inputState.mouse.buttons.left);
+  setFrameValue(controlState.finishPath, inputState.keyboard.buttons.q);
 
   updateAccumulatedTime(controlState.speedUpPath, inputState.mouse.buttons.left, deltaTime);
 }

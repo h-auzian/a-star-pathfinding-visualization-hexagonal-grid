@@ -144,14 +144,17 @@ function detectPathToTileUnderCursor(
     return;
   }
 
+  const pendingPath = mapState.pathfinding.pending;
   const instant = mapState.pathfinding.style === PathfindingStyle.Instant;
-  const buttonPressed = justPressed(controlState.followPath);
+
+  const followPathPressed = justPressed(controlState.followPath);
+  const forceFinish = pendingPath && justPressed(controlState.finishPath);
 
   const buttonLongHeld = hasRequiredTime(controlState.speedUpPath);
   const nextStepAllowed = hasRequiredTime(mapState.pathfinding.timeSinceLastStep);
-  const holdCalculation = mapState.pathfinding.pending && buttonLongHeld && nextStepAllowed;
+  const holdCalculation = pendingPath && buttonLongHeld && nextStepAllowed;
 
-  const calculate = instant || buttonPressed || holdCalculation;
+  const calculate = instant || followPathPressed || forceFinish || holdCalculation;
 
   updateAccumulatedTime(mapState.pathfinding.timeSinceLastStep, !calculate, deltaTime);
   if (!calculate) {
@@ -161,7 +164,7 @@ function detectPathToTileUnderCursor(
   let startingTile = mapState.pathfinding.startingTile;
   let destinationTile = mapState.pathfinding.destinationTile;
 
-  if (!mapState.pathfinding.pending) {
+  if (!pendingPath) {
     destinationTile = mapState.tileUnderCursor;
     startingTile = getTileByPoint(mapState, startingPosition);
   };
@@ -172,6 +175,7 @@ function detectPathToTileUnderCursor(
     startingTile,
     destinationTile,
     holdCalculation,
+    forceFinish,
   );
 }
 

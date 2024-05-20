@@ -16,6 +16,7 @@ type InputState = {
   };
   keyboard: {
     buttons: {
+      q: boolean;
       w: boolean;
       a: boolean;
       s: boolean;
@@ -41,6 +42,7 @@ function createInputState(): InputState {
     },
     keyboard: {
       buttons: {
+        q: false,
         w: false,
         a: false,
         s: false,
