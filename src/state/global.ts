@@ -4,6 +4,9 @@ import { ControlState, createControlState } from "./controls"
 import { InputState, createInputState } from "./input"
 import { MapState, createMapState } from "./map"
 
+/**
+ * Convenience container to hold all the different states in the application.
+ */
 type GlobalState = {
   camera: CameraState;
   map: MapState;

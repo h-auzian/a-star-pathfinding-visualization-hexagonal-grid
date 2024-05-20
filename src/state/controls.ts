@@ -1,6 +1,10 @@
-import { FrameValues } from "../types/misc";
+import { AccumulatedTime, FrameValues } from "../types/misc";
 import { Point } from "../types/primitives";
 
+/**
+ * Holds the controls for specific actions in the application, which are set
+ * from raw inputs each frame.
+ */
 type ControlState = {
   cursor: {
     window: Point;
@@ -17,6 +21,7 @@ type ControlState = {
   };
   scale: FrameValues<number>;
   followPath: FrameValues<boolean>;
+  speedUpPath: AccumulatedTime;
 };
 
 function createControlState(): ControlState {
@@ -62,6 +67,10 @@ function createControlState(): ControlState {
     followPath: {
       previous: false,
       current: false,
+    },
+    speedUpPath: {
+      requiredTime: 0.7,
+      currentTime: 0,
     },
   };
 }

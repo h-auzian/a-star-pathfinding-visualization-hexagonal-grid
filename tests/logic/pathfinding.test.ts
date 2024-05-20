@@ -116,6 +116,10 @@ test.each([
     checkedTiles: [],
     currentTile: null,
     foundPath: [],
+    timeSinceLastStep: {
+      requiredTime: 0.015,
+      currentTime: 0,
+    },
   };
 
   const startTile = tiles[start[0]][start[1]];

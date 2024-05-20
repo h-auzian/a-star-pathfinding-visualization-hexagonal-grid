@@ -1,5 +1,8 @@
 import { Point, Rectangle, Size } from "../types/primitives";
 
+/**
+ * Holds the camera state to control the rendering.
+ */
 type CameraState = {
   size: {
     raw: Size;

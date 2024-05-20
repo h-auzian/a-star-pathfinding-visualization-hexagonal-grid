@@ -19,7 +19,7 @@ import { GlobalState } from "./state/global";
  * Main logic update function.
  */
 function updateLogic(state: GlobalState, deltaTime: number): void {
-  updateControls(state.control, state.input, state.camera);
+  updateControls(state.control, state.input, state.camera, deltaTime);
   resetInputs(state.input);
 
   scaleCamera(state.camera, state.control, deltaTime);
@@ -37,6 +37,7 @@ function updateLogic(state: GlobalState, deltaTime: number): void {
     state.control,
     state.character.position,
     state.character.assignedPath.hasPath,
+    deltaTime,
   );
 
   sendCharacterToSelectedPath(

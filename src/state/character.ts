@@ -1,6 +1,9 @@
 import { Point, Rectangle } from "../types/primitives";
 import { Tile } from "../types/tiles";
 
+/**
+ * Holds the character state on the map.
+ */
 type CharacterState = {
   position: Point;
   boundingBox: Rectangle;

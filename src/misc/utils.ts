@@ -1,4 +1,4 @@
-import { FrameValues } from "../types/misc";
+import { AccumulatedTime, FrameValues } from "../types/misc";
 import { Point, Rectangle } from "../types/primitives";
 
 /**
@@ -11,11 +11,26 @@ function setFrameValue<Type>(control: FrameValues<Type>, raw: Type): void {
 }
 
 /**
- * Returns whether the frame value was changed this frame compared to the
- * previous one.
+ * Increments the time by the delta if the condition is true, otherwise resets
+ * the accumulated time.
  */
-function frameValueChanged<Type>(control: FrameValues<Type>): boolean {
-  return control.previous !== control.current;
+function updateAccumulatedTime(
+  time: AccumulatedTime,
+  condition: boolean,
+  deltaTime: number,
+): void {
+  if (condition) {
+    time.currentTime += deltaTime;
+  } else {
+    time.currentTime = 0;
+  }
+}
+
+/**
+ * Returns whether the accumulated time reached the required value.
+ */
+function hasRequiredTime(time: AccumulatedTime): boolean {
+  return time.currentTime >= time.requiredTime;
 }
 
 /**
@@ -73,7 +88,8 @@ function rectanglesIntersect(a: Rectangle, b: Rectangle): boolean {
 
 export {
   setFrameValue,
-  frameValueChanged,
+  updateAccumulatedTime,
+  hasRequiredTime,
   isEven,
   getRandomInteger,
   keepBetweenValues,

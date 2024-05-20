@@ -7,6 +7,9 @@ import {
 import { Rectangle, Size } from "../types/primitives";
 import { Tile } from "../types/tiles";
 
+/**
+ * Holds the representation of the hexagonal map.
+ */
 type MapState = {
   dimensions: Size;
   tiles: Tile[][];
@@ -40,6 +43,10 @@ function createMapState(): MapState {
       checkedTiles: [],
       currentTile: null,
       foundPath: [],
+      timeSinceLastStep: {
+        requiredTime: 0.015,
+        currentTime: 0,
+      },
     },
     boundingBox: {
       left: 0,

@@ -1,4 +1,5 @@
 import PriorityQueue from "../misc/priority-queue";
+import { AccumulatedTime } from "./misc";
 import { Tile } from "./tiles";
 
 enum PathfindingAlgorithm {
@@ -27,6 +28,7 @@ type PathfindingData = {
   checkedTiles: Tile[];
   currentTile: Tile | null;
   foundPath: Tile[];
+  timeSinceLastStep: AccumulatedTime,
 };
 
 /**

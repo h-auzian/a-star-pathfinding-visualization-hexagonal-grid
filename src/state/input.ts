@@ -1,5 +1,8 @@
 import { Point } from "../types/primitives";
 
+/**
+ * Holds the raw input without being associated to any specific action.
+ */
 type InputState = {
   mouse: {
     position: Point;

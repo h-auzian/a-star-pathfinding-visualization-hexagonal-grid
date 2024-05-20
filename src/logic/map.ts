@@ -12,9 +12,11 @@ import { Tile, TileType } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
 import {
   getRandomInteger,
+  hasRequiredTime,
   isEven,
   isPointInsideRectangle,
   keepBetweenValues,
+  updateAccumulatedTime,
 } from "../misc/utils";
 import { PathfindingStyle } from "../types/pathfinding";
 import { justPressed } from "./controls";
@@ -136,14 +138,22 @@ function detectPathToTileUnderCursor(
   controlState: ControlState,
   startingPosition: Point,
   assignedCharacterPath: boolean,
+  deltaTime: number,
 ): void {
   if (assignedCharacterPath) {
     return;
   }
 
-  const calculate = mapState.pathfinding.style === PathfindingStyle.Instant
-    || justPressed(controlState.followPath);
+  const instant = mapState.pathfinding.style === PathfindingStyle.Instant;
+  const buttonPressed = justPressed(controlState.followPath);
 
+  const buttonLongHeld = hasRequiredTime(controlState.speedUpPath);
+  const nextStepAllowed = hasRequiredTime(mapState.pathfinding.timeSinceLastStep);
+  const holdCalculation = mapState.pathfinding.pending && buttonLongHeld && nextStepAllowed;
+
+  const calculate = instant || buttonPressed || holdCalculation;
+
+  updateAccumulatedTime(mapState.pathfinding.timeSinceLastStep, !calculate, deltaTime);
   if (!calculate) {
     return;
   }
@@ -161,6 +171,7 @@ function detectPathToTileUnderCursor(
     mapState.tiles,
     startingTile,
     destinationTile,
+    holdCalculation,
   );
 }
 

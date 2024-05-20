@@ -1,4 +1,4 @@
-import { setFrameValue } from "../misc/utils";
+import { updateAccumulatedTime, setFrameValue } from "../misc/utils";
 import { CameraState } from "../state/camera";
 import { ControlState } from "../state/controls";
 import { InputState } from "../state/input";
@@ -19,8 +19,10 @@ function updateControls(
   controlState: ControlState,
   inputState: InputState,
   cameraState: CameraState,
+  deltaTime: number,
 ): void {
   updateCursorPositions(controlState, cameraState, inputState.mouse.position);
+
   setFrameValue(controlState.scroll.general, inputState.mouse.buttons.middle);
   setFrameValue(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
   setFrameValue(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
@@ -28,6 +30,8 @@ function updateControls(
   setFrameValue(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
   setFrameValue(controlState.scale, inputState.mouse.wheel.y);
   setFrameValue(controlState.followPath, inputState.mouse.buttons.left);
+
+  updateAccumulatedTime(controlState.speedUpPath, inputState.mouse.buttons.left, deltaTime);
 }
 
 /**

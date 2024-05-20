@@ -51,6 +51,7 @@ function findPath(
   tiles: Tile[][],
   start: Tile | null,
   destination: Tile | null,
+  interruptOnLastIteration: boolean = false,
 ): void {
   if (start !== data.startingTile || destination != data.destinationTile) {
     clearPreviousPathData(data);
@@ -142,9 +143,14 @@ function findPath(
   let finished = false;
   if (data.destinationReached) {
     while (data.currentTile !== null) {
+      const nextTile = data.currentTile.path.parent;
+      if (nextTile === null && interruptOnLastIteration) {
+        break;
+      }
+
       data.foundPath.push(data.currentTile);
       data.currentTile.path.used = true;
-      data.currentTile = data.currentTile.path.parent;
+      data.currentTile = nextTile;
 
       if (stepByStep) {
         break;
