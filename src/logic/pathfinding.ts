@@ -120,14 +120,17 @@ function findPath(
             neighbourTile.path.heuristic = heuristic;
           }
 
-          neighbourTile.path.candidate = true;
-          neighbourTile.path.checked = true;
           neighbourTile.path.cost = newCost;
           neighbourTile.path.parent = current;
-
           const priority = newCost + neighbourTile.path.heuristic;
+
+          neighbourTile.path.candidate = true;
           data.candidates.add(neighbourTile, priority);
-          data.checkedTiles.push(neighbourTile);
+
+          if (!neighbourTile.path.checked) {
+            neighbourTile.path.checked = true;
+            data.checkedTiles.push(neighbourTile);
+          }
         }
       }
 
