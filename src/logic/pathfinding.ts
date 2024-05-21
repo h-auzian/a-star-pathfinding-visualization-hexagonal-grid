@@ -9,27 +9,30 @@ import { getManhattanDistance, getTileNeighbours } from "./map";
 const TILE_DISTANCE_COST = 1;
 
 /**
- * Finds a path between two tiles in an hexagonal map using different
- * search algorithms:
+ * Finds a path between two tiles in an hexagonal map using different search
+ * algorithms:
  *
  * - Dijkstra's: Travel cost only.
  * - Greedy: Heuristic only.
  * - A-Star: Travel cost plus heuristic.
  *
- * In all three cases the steps are the same: a list of candidate tiles is
- * kept, always ordered from lowest to highest movement cost. The first tile of
- * the list is removed and all of its neighbours are checked, which are then
- * added to the list while keeping it ordered, and then the process is repeated
- * again with the first element of the list, and so on, until reaching the
- * destination. If reached, the tiles are iterated in reverse until getting
- * back to the starting position, as each tile has a reference to the tile
- * where it came from.
+ * In all three cases the steps are the same: a priority queue of candidate
+ * tiles is kept, always ordered from lowest to highest movement cost. The
+ * first tile of the queue is removed and all of its neighbours are checked,
+ * which are then added to the queue while keeping it ordered. Then the process
+ * is repeated with the new first element of the queue, and so on, until
+ * reaching the destination or exhausting the queue. If the destination is
+ * reached, the tiles are iterated in reverse until getting back to the
+ * starting position, as each tile has a reference to the tile where it came
+ * from.
  *
- * In an ideal implementation, a pathfinding function would receive an abstract
- * graph so that the algorithm would work regardless of the actual map layout,
- * be it a square grid, an hexagonal grid, or just any type of graph, but in
- * this case the function just receives the tiles as-is and knows that the map
- * is hexagonal, as that is the focus of this application.
+ * In some cases, a tile may be added as a candidate more than once if it can
+ * be reached from a different path with a lower cost, and thus it can exist in
+ * the priority queue multiple times with different priority values. When a
+ * tile is removed from the queue, its "candidate" flag is removed, so if that
+ * same tile is fetched again from the queue with a higher cost, it can be
+ * ignored. This is easier than avoiding the duplicate, as that requires
+ * detecting and updating the previous value and then reordering the queue.
  *
  * This implementation supports both instant and step-by-step calculation of
  * the path, so is a little more complex (and uglier) than the pure algorithm
@@ -41,10 +44,16 @@ const TILE_DISTANCE_COST = 1;
  * The calculated costs per tile are stored in the tiles themselves instead of
  * being stored in a new data structure, to avoid constantly creating new
  * arrays. The downside is that the costs need to be cleared out before
- * calculating a new path to avoid rendering info from a previous calculation.
- * To avoid iterating the whole array of tiles to clear the data, the
- * "pathfindingData.checkedTiles" array stores the tiles that were updated,
- * which then can be cleared on the next path calculation.
+ * calculating a new path to avoid mixing info from a previous calculation.
+ * Instead of iterating the whole map to clear the data, the checked tiles are
+ * stored in an array of references, which can be iterated and clared before
+ * the next path calculation.
+ *
+ * In an ideal implementation, a pathfinding function would receive an abstract
+ * graph so that the algorithm would work regardless of the actual map layout,
+ * be it a square grid, an hexagonal grid, or just any type of graph, but in
+ * this case the function just receives the tiles as-is and knows that the map
+ * is hexagonal, as that is the focus of this application.
  */
 function findPath(
   data: PathfindingData,
@@ -96,6 +105,10 @@ function findPath(
       if (current === destination) {
         data.destinationReached = true;
         break;
+      }
+
+      if (!current.path.candidate) {
+        continue;
       }
 
       current.path.candidate = false;
