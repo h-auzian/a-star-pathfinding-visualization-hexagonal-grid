@@ -9,9 +9,13 @@ import {
 import { setCanvasAndCameraSize } from "./rendering/canvas";
 
 /**
- * Setup all event listeners, useful for canvas resize and user input.
+ * Sets up all general event listeners, useful for canvas resize and detecting
+ * user input.
  */
-function listenToEvents(state: GlobalState, domElements: DOMElements): void {
+function initializeGeneralEvents(
+  domElements: DOMElements,
+  state: GlobalState,
+): void {
   window.addEventListener("resize", function() {
     setCanvasAndCameraSize(domElements.canvas, state.camera, {
       width: window.innerWidth,
@@ -19,18 +23,18 @@ function listenToEvents(state: GlobalState, domElements: DOMElements): void {
     });
   });
 
-  window.addEventListener('mousemove', function(event: MouseEvent) {
+  domElements.canvas.addEventListener('mousemove', function(event: MouseEvent) {
     setMousePosition(state.input, {
       x: event.pageX,
       y: event.pageY,
     });
   });
 
-  window.addEventListener('mousedown', function(event: MouseEvent) {
+  domElements.canvas.addEventListener('mousedown', function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, true);
   });
 
-  window.addEventListener('mouseup', function(event: MouseEvent) {
+  domElements.canvas.addEventListener('mouseup', function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, false);
   });
 
@@ -54,4 +58,4 @@ function listenToEvents(state: GlobalState, domElements: DOMElements): void {
   }
 }
 
-export default listenToEvents;
+export default initializeGeneralEvents;

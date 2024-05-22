@@ -1,3 +1,4 @@
+import { CharacterState } from "../state/character";
 import {
   PathfindingAlgorithm,
   PathfindingData,
@@ -216,7 +217,46 @@ function clearPreviousPathData(data: PathfindingData): void {
   data.foundPath = [];
 }
 
+/**
+ * Cycles through pathfinding algorithms.
+ */
+function changePathfindingAlgorithm(data: PathfindingData) {
+  if (data.algorithm === PathfindingAlgorithm.Dijkstra) {
+    data.algorithm = PathfindingAlgorithm.Greedy;
+  } else if (data.algorithm === PathfindingAlgorithm.Greedy) {
+    data.algorithm = PathfindingAlgorithm.AStar;
+  } else if (data.algorithm === PathfindingAlgorithm.AStar) {
+    data.algorithm = PathfindingAlgorithm.Dijkstra;
+  }
+}
+
+/**
+ * Cycles through pathfinding calculation styles.
+ */
+function changePathfindingStyle(data: PathfindingData) {
+  if (data.style === PathfindingStyle.Instant) {
+    data.style = PathfindingStyle.StepByStep;
+  } else if (data.style === PathfindingStyle.StepByStep) {
+    data.style = PathfindingStyle.Instant;
+  }
+  clearPreviousPathData(data);
+}
+
+/**
+ * Returns if changing pathfinding options is allowed, to avoid changing them
+ * mid-calculation.
+ */
+function allowPathfindingOptionChanges(
+  data: PathfindingData,
+  characterState: CharacterState,
+): boolean {
+  return !data.pending && !characterState.assignedPath.hasPath;
+}
+
 export {
   findPath,
   clearPreviousPathData,
+  changePathfindingAlgorithm,
+  changePathfindingStyle,
+  allowPathfindingOptionChanges,
 };

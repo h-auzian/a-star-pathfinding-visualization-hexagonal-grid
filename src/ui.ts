@@ -1,32 +1,83 @@
 import { DOMElements } from "./dom";
-import { CameraState } from "./state/camera";
-import { ControlState } from "./state/controls";
+import {
+  allowPathfindingOptionChanges,
+  changePathfindingAlgorithm,
+  changePathfindingStyle,
+} from "./logic/pathfinding";
 import { GlobalState } from "./state/global";
 
+const HIDDEN_CLASS = "hidden";
+const ENABLED_CLASS = "enabled";
+const DISABLED_CLASS = "disabled";
+const VALUE_CLASS = "ui-value";
+
 /**
- * Main UI update function.
+ * Sets up the UI button events on click, and also updates the current values.
+ */
+function initializeUIEvents(domElements: DOMElements, state: GlobalState): void {
+  const options = domElements.options;
+  const buttons = options.buttons;
+
+  options.toggle.addEventListener("click", function() {
+    options.container.classList.toggle(HIDDEN_CLASS);
+  });
+
+  buttons.algorithm.addEventListener("click", function() {
+    if (allowPathfindingOptionChanges(state.map.pathfinding, state.character)) {
+      changePathfindingAlgorithm(state.map.pathfinding);
+      updateButtonValue(this, state.map.pathfinding.algorithm);
+    }
+  });
+
+  buttons.calculation.addEventListener("click", function() {
+    if (allowPathfindingOptionChanges(state.map.pathfinding, state.character)) {
+      changePathfindingStyle(state.map.pathfinding);
+      updateButtonValue(this, state.map.pathfinding.style);
+    }
+  });
+
+  updateButtonValue(buttons.algorithm, state.map.pathfinding.algorithm);
+  updateButtonValue(buttons.calculation, state.map.pathfinding.style);
+}
+
+/**
+ * Updates the value of a UI button with its string option.
+ */
+function updateButtonValue(element: HTMLElement, value: string): void {
+  const uiValues = element.getElementsByClassName(VALUE_CLASS);
+  if (uiValues.length > 0) {
+    uiValues[0].innerHTML = value;
+  }
+}
+
+/**
+ * Update necessary UI elements each frame.
  */
 function updateUI(domElements: DOMElements, state: GlobalState): void {
-  updateStateInformation(domElements.info, state.camera, state.control);
+  const buttons = domElements.options.buttons;
+  const enableOptions = allowPathfindingOptionChanges(
+    state.map.pathfinding,
+    state.character,
+  );
+
+  toggleEnabled(buttons.algorithm, enableOptions);
+  toggleEnabled(buttons.calculation, enableOptions);
 }
 
 /**
- * Updates the state information.
+ * Toggles the CSS classes to show a UI element as enabled or disabled.
  */
-function updateStateInformation(
-  info: HTMLElement,
-  cameraState: CameraState,
-  controlState: ControlState,
-): void {
-  info.innerHTML = "Camera (raw size): " + Math.round(cameraState.size.raw.width) + "x" + Math.round(cameraState.size.raw.height) + "<br>";
-  info.innerHTML += "Camera (scale): " + cameraState.scale.value.toPrecision(3) + " -> " + cameraState.scale.destination.toPrecision(3) + "<br>";
-  info.innerHTML += "Camera (scaled size): " + Math.round(cameraState.size.scaled.width) + "x" + Math.round(cameraState.size.scaled.height) + "<br>";
-  info.innerHTML += "Camera (center): " + Math.round(cameraState.center.x) + "x" + Math.round(cameraState.center.y) + "<br>";
-  info.innerHTML += "Camera (scroll pos):" + Math.round(cameraState.scrollPosition.x) + "x" + Math.round(cameraState.scrollPosition.y) + "<br>";
-  info.innerHTML += "Mouse (window): " + Math.round(controlState.cursor.window.x) + "x" + Math.round(controlState.cursor.window.y) + "<br>";
-  info.innerHTML += "Mouse (camera): " + Math.round(controlState.cursor.camera.x) + "x" + Math.round(controlState.cursor.camera.y) + "<br>";
-  info.innerHTML += "Controls (scale): " + controlState.scale.current + "<br>";
-  info.innerHTML += "Controls (scroll): " + controlState.scroll.general.current + "<br>";
+function toggleEnabled(element: HTMLElement, enabled: boolean): void {
+  if (enabled) {
+    element.classList.remove(DISABLED_CLASS);
+    element.classList.add(ENABLED_CLASS);
+  } else {
+    element.classList.remove(ENABLED_CLASS);
+    element.classList.add(DISABLED_CLASS);
+  }
 }
 
-export default updateUI;
+export {
+  initializeUIEvents,
+  updateUI,
+}

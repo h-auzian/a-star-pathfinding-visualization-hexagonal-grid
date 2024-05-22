@@ -2,6 +2,14 @@ type DOMElements = {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   info: HTMLElement;
+  options: {
+    toggle: HTMLElement;
+    container: HTMLElement;
+    buttons: {
+      algorithm: HTMLSpanElement;
+      calculation: HTMLSpanElement;
+    };
+  };
 };
 
 /**
@@ -14,6 +22,14 @@ function getDOMElements(): DOMElements {
     canvas: canvas,
     context: canvas.getContext("2d")!,
     info: document.getElementById("info")!,
+    options: {
+      toggle: document.getElementById("gear")!,
+      container: document.getElementById("options")!,
+      buttons: {
+        algorithm: document.getElementById("algorithm-option")!,
+        calculation: document.getElementById("calculation-option")!,
+      },
+    },
   };
 }
 

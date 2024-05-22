@@ -33,7 +33,7 @@ function createMapState(): MapState {
     tileUnderCursor: null,
     pathfinding: {
       algorithm: PathfindingAlgorithm.AStar,
-      style: PathfindingStyle.StepByStep,
+      style: PathfindingStyle.Instant,
       startingTile: null,
       destinationTile: null,
       pending: false,

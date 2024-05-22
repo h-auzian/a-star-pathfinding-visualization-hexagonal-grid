@@ -1,12 +1,12 @@
 import { DOMElements, getDOMElements } from "./dom";
-import listenToEvents from "./events";
+import initializeGeneralEvents from "./events";
 import { setCameraPosition } from "./logic/camera";
 import { setCharacterPosition } from "./logic/character";
 import { clearTilesAroundPosition, getCenterTile, initializeMap } from "./logic/map";
 import render from "./render";
 import { setCanvasAndCameraSize } from "./rendering/canvas";
 import { GlobalState, createGlobalState } from "./state/global";
-import updateUI from "./ui";
+import { initializeUIEvents, updateUI } from "./ui";
 import updateLogic from "./update";
 
 /**
@@ -26,7 +26,8 @@ function init(): void {
     height: window.innerHeight,
   });
 
-  listenToEvents(state, domElements);
+  initializeGeneralEvents(domElements, state);
+  initializeUIEvents(domElements, state);
 
   mainLoop(domElements, state);
 }

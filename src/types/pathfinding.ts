@@ -3,14 +3,14 @@ import { AccumulatedTime } from "./misc";
 import { Tile } from "./tiles";
 
 enum PathfindingAlgorithm {
-  Dijkstra,
-  Greedy,
-  AStar,
+  Dijkstra = "Dijkstra",
+  Greedy = "Greedy",
+  AStar = "A-Star",
 }
 
 enum PathfindingStyle {
-  Instant,
-  StepByStep,
+  Instant = "Instant",
+  StepByStep = "Step by step",
 }
 
 /**
