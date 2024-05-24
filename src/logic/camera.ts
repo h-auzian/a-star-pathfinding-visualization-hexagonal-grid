@@ -144,7 +144,7 @@ function keepCameraCenterInsideBoundaries(
   };
 
   if (cameraBoundaries.left >= cameraBoundaries.right) {
-    cameraState.center.x = mapBoundaries.left + mapBoundaries.right / 2;
+    cameraState.center.x = (mapBoundaries.left + mapBoundaries.right) / 2;
   } else {
     cameraState.center.x = keepBetweenValues(
       cameraBoundaries.left,
@@ -154,7 +154,7 @@ function keepCameraCenterInsideBoundaries(
   }
 
   if (cameraBoundaries.top >= cameraBoundaries.bottom) {
-    cameraState.center.y = mapBoundaries.top + mapBoundaries.bottom / 2;
+    cameraState.center.y = (mapBoundaries.top + mapBoundaries.bottom) / 2;
   } else {
     cameraState.center.y = keepBetweenValues(
       cameraBoundaries.top,
