@@ -1,9 +1,7 @@
 import { CHARACTER_RADIUS } from "../logic/character";
 import { RADIANS, getAngleBetweenPoints, translatePoint } from "../misc/math";
 import { rectanglesIntersect } from "../misc/utils";
-import { CameraState } from "../state/camera";
-import { CharacterState } from "../state/character";
-import { ControlState } from "../state/controls";
+import { GlobalState } from "../state/global";
 import { Point } from "../types/primitives";
 
 const CHARACTER_LINE_WIDTH = 3;
@@ -30,23 +28,26 @@ const PUPIL_LIMIT = EYE_RADIUS - PUPIL_RADIUS;
  */
 function renderCharacter(
   context: CanvasRenderingContext2D,
-  characterState: CharacterState,
-  cameraState: CameraState,
-  controlState: ControlState,
+  state: GlobalState,
 ): void {
-  if (!rectanglesIntersect(characterState.boundingBox, cameraState.viewport)) {
+  if (!rectanglesIntersect(state.character.boundingBox, state.camera.viewport)) {
     return;
   }
 
-  const cursor = controlState.cursor.camera;
   const position = {
-    x: characterState.position.x,
-    y: characterState.position.y - CHARACTER_OFFSET_Y,
+    x: state.character.position.x,
+    y: state.character.position.y - CHARACTER_OFFSET_Y,
   };
+
+  const pathData = state.map.pathfinding;
+  const characterMoving = state.character.assignedPath.hasPath;
+  const eyeFocus = pathData.destinationTile && (pathData.pending || characterMoving)
+    ? pathData.destinationTile.center
+    : state.control.cursor.camera;
 
   renderCharacterFeet(context, position);
   renderCharacterBody(context, position);
-  renderCharacterEyes(context, position, cursor);
+  renderCharacterEyes(context, position, eyeFocus);
 }
 
 /**
@@ -87,36 +88,36 @@ function renderCharacterBody(
 function renderCharacterEyes(
   context: CanvasRenderingContext2D,
   position: Point,
-  cursor: Point,
+  focus: Point,
 ): void {
   let eyePosition = {
     x: position.x - EYE_OFFSET_X,
     y: position.y - EYE_OFFSET_Y,
   };
-  renderCharacterEye(context, eyePosition, cursor);
+  renderCharacterEye(context, eyePosition, focus);
 
   eyePosition.x = position.x + EYE_OFFSET_X;
-  renderCharacterEye(context, eyePosition, cursor);
+  renderCharacterEye(context, eyePosition, focus);
 }
 
 /**
- * Renders a single eye. The pupil will track the cursor position.
+ * Renders a single eye. The pupil will track the focus point.
  */
 function renderCharacterEye(
   context: CanvasRenderingContext2D,
   center: Point,
-  cursor: Point,
+  focus: Point,
 ): void {
-  const angle = getAngleBetweenPoints(center, cursor);
+  const angle = getAngleBetweenPoints(center, focus);
 
   const trackingX = PUPIL_LIMIT * EYE_WIDTH_RATIO * EYE_TRACKING_DISTANCE;
   const trackingY = PUPIL_LIMIT * EYE_TRACKING_DISTANCE;
 
-  const cursorDeltaX = Math.abs(cursor.x - center.x);
-  const cursorDeltaY = Math.abs(cursor.y - center.y);
+  const focusDeltaX = Math.abs(focus.x - center.x);
+  const focusDeltaY = Math.abs(focus.y - center.y);
 
-  const limitX = Math.min(trackingX, cursorDeltaX) / EYE_TRACKING_DISTANCE;
-  const limitY = Math.min(trackingY, cursorDeltaY) / EYE_TRACKING_DISTANCE;
+  const limitX = Math.min(trackingX, focusDeltaX) / EYE_TRACKING_DISTANCE;
+  const limitY = Math.min(trackingY, focusDeltaY) / EYE_TRACKING_DISTANCE;
 
   const pupilCenter = {
     x: translatePoint(limitX, angle, center).x,
