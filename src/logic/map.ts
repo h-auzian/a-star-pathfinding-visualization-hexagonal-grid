@@ -7,7 +7,7 @@ import {
 } from "./hexagon";
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
-import { findPath } from "./pathfinding";
+import { clearPreviousPathData, findPath } from "./pathfinding";
 import { Tile } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
 import {
@@ -20,6 +20,7 @@ import {
 } from "../misc/utils";
 import { PathfindingStyle } from "../types/pathfinding";
 import { justPressed } from "./controls";
+import { ObstacleFrequency } from "../types/misc";
 
 const NEIGHBOURS = {
   even: [
@@ -28,7 +29,14 @@ const NEIGHBOURS = {
   odd: [
     [-1, 0], [0, -1], [1, 0], [1, 1], [0, 1], [-1, 1],
   ],
-}
+};
+
+const OBSTACLE_FREQUENCIES = {
+  "None": 0,
+  "Low": 15,
+  "Medium": 25,
+  "High": 45,
+};
 
 /**
  * Initializes the map data as a two dimensional array of hexagonal tiles.
@@ -41,7 +49,7 @@ function initializeMap(mapState: MapState): void {
   for (let i = 0; i < mapState.dimensions.width; i++) {
     mapState.tiles[i] = Array(mapState.dimensions.height);
     for (let j = 0; j < mapState.dimensions.height; j++) {
-      mapState.tiles[i][j] = createTile(i, j);
+      mapState.tiles[i][j] = createTile(i, j, mapState.obstacleFrequency);
     }
   }
 
@@ -49,34 +57,32 @@ function initializeMap(mapState: MapState): void {
 }
 
 /**
- * Returns a tile object with its center position according to the indices
- * received.
+ * Regenerates the map by randomly changing each tile's impassable attribute.
  */
-function createTile(indexX: number, indexY: number): Tile {
-  const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
-  const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
+function regenerateMap(mapState: MapState, clearPosition: Point): void {
+  for (let i = 0; i < mapState.dimensions.width; i++) {
+    for (let j = 0; j < mapState.dimensions.height; j++) {
+      const tile = mapState.tiles[i][j];
+      tile.impassable = getRandomImpassableAttribute(mapState.obstacleFrequency);
+    }
+  }
 
-  const random = getRandomInteger(0, 3);
-  const impassable = random == 0 ? true : false;
+  clearTilesAroundPosition(mapState, clearPosition);
+  clearPreviousPathData(mapState.pathfinding);
+}
 
-  return {
-    index: {
-      x: indexX,
-      y: indexY,
-    },
-    center: {
-      x: centerX,
-      y: centerY,
-    },
-    impassable: impassable,
-    path: {
-      candidate: false,
-      checked: false,
-      used: false,
-      cost: 0,
-      heuristic: 0,
-      parent: null,
-    },
+/**
+ * Cycles through the map obstacle frequencies.
+ */
+function changeObstacleFrequency(mapState: MapState): void {
+  if (mapState.obstacleFrequency === ObstacleFrequency.None) {
+    mapState.obstacleFrequency = ObstacleFrequency.Low;
+  } else if (mapState.obstacleFrequency === ObstacleFrequency.Low) {
+    mapState.obstacleFrequency = ObstacleFrequency.Medium;
+  } else if (mapState.obstacleFrequency === ObstacleFrequency.Medium) {
+    mapState.obstacleFrequency = ObstacleFrequency.High;
+  } else if (mapState.obstacleFrequency === ObstacleFrequency.High) {
+    mapState.obstacleFrequency = ObstacleFrequency.None;
   }
 }
 
@@ -180,42 +186,6 @@ function detectPathToTileUnderCursor(
 }
 
 /**
- * Calculates the map bounding box and boundaries rectangles for the current
- * width and height.
- *
- * The bounding box is the rectangle of the whole map, including the empty
- * gaps, while the boundaries exclude the gaps, so it's a little smaller than
- * the bounding box and it's useful to limit the camera.
- */
-function calculateMapBoundingBoxAndBoundaries(mapState: MapState): void {
-  const leftTile = mapState.tiles[0][0];
-  const rightTile = mapState.tiles[mapState.dimensions.width - 1][0];
-  const topTile = mapState.tiles[0][0];
-  let bottomTile = mapState.tiles[0][mapState.dimensions.height - 1];
-  if (mapState.dimensions.width > 1) {
-    bottomTile = mapState.tiles[1][mapState.dimensions.height - 1];
-  }
-
-  mapState.boundingBox.left = leftTile.center.x - HEXAGON_RADIUS;
-  mapState.boundingBox.right = rightTile.center.x + HEXAGON_RADIUS;
-  mapState.boundingBox.top = topTile.center.x - HEXAGON_VERTICAL_DISTANCE;
-  mapState.boundingBox.bottom = bottomTile.center.y + HEXAGON_VERTICAL_DISTANCE;
-
-  mapState.boundaries.left = mapState.boundingBox.left + HEXAGON_INNER_HORIZONTAL_DISTANCE;
-  mapState.boundaries.right = mapState.boundingBox.right - HEXAGON_INNER_HORIZONTAL_DISTANCE;
-  mapState.boundaries.top = mapState.boundingBox.top + HEXAGON_VERTICAL_DISTANCE;
-  mapState.boundaries.bottom = mapState.boundingBox.bottom - HEXAGON_VERTICAL_DISTANCE;
-
-  if (mapState.debug.boundaries) {
-    const offset = 20;
-    mapState.boundaries.left -= offset;
-    mapState.boundaries.right += offset;
-    mapState.boundaries.top -= offset;
-    mapState.boundaries.bottom += offset;
-  }
-}
-
-/**
  * Returns a rectangle with the indices of the four corners of the group of
  * tiles that are visible on the received viewport rectangle.
  *
@@ -311,6 +281,75 @@ function getManhattanDistance(a: Tile, b: Tile): number {
 }
 
 /**
+ * Returns a tile object with its center position according to the indices
+ * received.
+ */
+function createTile(
+  indexX: number,
+  indexY: number,
+  obstacleFrequency: ObstacleFrequency,
+): Tile {
+  const centerX = HEXAGON_HORIZONTAL_DISTANCE * indexX;
+  const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
+
+  return {
+    index: {
+      x: indexX,
+      y: indexY,
+    },
+    center: {
+      x: centerX,
+      y: centerY,
+    },
+    impassable: getRandomImpassableAttribute(obstacleFrequency),
+    path: {
+      candidate: false,
+      checked: false,
+      used: false,
+      cost: 0,
+      heuristic: 0,
+      parent: null,
+    },
+  }
+}
+
+/**
+ * Calculates the map bounding box and boundaries rectangles for the current
+ * width and height.
+ *
+ * The bounding box is the rectangle of the whole map, including the empty
+ * gaps, while the boundaries exclude the gaps, so it's a little smaller than
+ * the bounding box and it's useful to limit the camera.
+ */
+function calculateMapBoundingBoxAndBoundaries(mapState: MapState): void {
+  const leftTile = mapState.tiles[0][0];
+  const rightTile = mapState.tiles[mapState.dimensions.width - 1][0];
+  const topTile = mapState.tiles[0][0];
+  let bottomTile = mapState.tiles[0][mapState.dimensions.height - 1];
+  if (mapState.dimensions.width > 1) {
+    bottomTile = mapState.tiles[1][mapState.dimensions.height - 1];
+  }
+
+  mapState.boundingBox.left = leftTile.center.x - HEXAGON_RADIUS;
+  mapState.boundingBox.right = rightTile.center.x + HEXAGON_RADIUS;
+  mapState.boundingBox.top = topTile.center.x - HEXAGON_VERTICAL_DISTANCE;
+  mapState.boundingBox.bottom = bottomTile.center.y + HEXAGON_VERTICAL_DISTANCE;
+
+  mapState.boundaries.left = mapState.boundingBox.left + HEXAGON_INNER_HORIZONTAL_DISTANCE;
+  mapState.boundaries.right = mapState.boundingBox.right - HEXAGON_INNER_HORIZONTAL_DISTANCE;
+  mapState.boundaries.top = mapState.boundingBox.top + HEXAGON_VERTICAL_DISTANCE;
+  mapState.boundaries.bottom = mapState.boundingBox.bottom - HEXAGON_VERTICAL_DISTANCE;
+
+  if (mapState.debug.boundaries) {
+    const offset = 20;
+    mapState.boundaries.left -= offset;
+    mapState.boundaries.right += offset;
+    mapState.boundaries.top -= offset;
+    mapState.boundaries.bottom += offset;
+  }
+}
+
+/**
  * Returns the tile that contains a given point.
  *
  * In a square grid, getting the exact tile for a given point is done by simply
@@ -351,8 +390,19 @@ function getTileByPoint(mapState: MapState, point: Point): Tile | null {
   return null;
 }
 
+/**
+ * Generates a random boolean to define whether a tile is impassable or not.
+ * The bigger the frequency received, the more likely the value will be true.
+ */
+function getRandomImpassableAttribute(frequency: ObstacleFrequency): boolean {
+  const frequencyValue = OBSTACLE_FREQUENCIES[frequency];
+  return getRandomInteger(0, 99) >= frequencyValue ? false : true;
+}
+
 export {
   initializeMap,
+  regenerateMap,
+  changeObstacleFrequency,
   clearTilesAroundPosition,
   getCenterTile,
   detectTileUnderCursor,

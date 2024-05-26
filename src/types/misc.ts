@@ -15,7 +15,18 @@ type AccumulatedTime = {
   currentTime: number;
 };
 
+/**
+ * Indicates the possible obstacle frequencies for the map.
+ */
+enum ObstacleFrequency {
+  None = "None",
+  Low = "Low",
+  Medium = "Medium",
+  High = "High",
+}
+
 export {
   FrameValues,
   AccumulatedTime,
+  ObstacleFrequency,
 }

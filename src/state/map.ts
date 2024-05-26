@@ -1,4 +1,5 @@
 import PriorityQueue from "../misc/priority-queue";
+import { ObstacleFrequency } from "../types/misc";
 import {
   PathfindingAlgorithm,
   PathfindingData,
@@ -12,6 +13,7 @@ import { Tile } from "../types/tiles";
  */
 type MapState = {
   dimensions: Size;
+  obstacleFrequency: ObstacleFrequency,
   tiles: Tile[][];
   tileUnderCursor: Tile | null;
   pathfinding: PathfindingData;
@@ -29,6 +31,7 @@ function createMapState(): MapState {
       width: 100,
       height: 50,
     },
+    obstacleFrequency: ObstacleFrequency.Medium,
     tiles: Array() as Tile[][],
     tileUnderCursor: null,
     pathfinding: createPathfindingData(),

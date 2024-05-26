@@ -1,4 +1,5 @@
 import { DOMElements } from "./dom";
+import { changeObstacleFrequency, regenerateMap } from "./logic/map";
 import {
   allowPathfindingOptionChanges,
   changePathfindingAlgorithm,
@@ -58,8 +59,23 @@ function initializeButtons(domElements: DOMElements, state: GlobalState): void {
     }
   });
 
+  buttons.obstacleFrequency.addEventListener("click", function() {
+    if (allowPathfindingOptionChanges(state.map.pathfinding, state.character)) {
+      changeObstacleFrequency(state.map);
+      regenerateMap(state.map, state.character.position);
+      updateButtonValue(this, state.map.obstacleFrequency);
+    }
+  });
+
+  buttons.regenerateMap.addEventListener("click", function() {
+    if (allowPathfindingOptionChanges(state.map.pathfinding, state.character)) {
+      regenerateMap(state.map, state.character.position);
+    }
+  });
+
   updateButtonValue(buttons.algorithm, state.map.pathfinding.algorithm);
   updateButtonValue(buttons.calculation, state.map.pathfinding.style);
+  updateButtonValue(buttons.obstacleFrequency, state.map.obstacleFrequency);
 }
 
 /**
@@ -84,6 +100,8 @@ function updateUI(domElements: DOMElements, state: GlobalState): void {
 
   toggleEnabled(buttons.algorithm, enableOptions);
   toggleEnabled(buttons.calculation, enableOptions);
+  toggleEnabled(buttons.obstacleFrequency, enableOptions);
+  toggleEnabled(buttons.regenerateMap, enableOptions);
 }
 
 /**

@@ -13,8 +13,10 @@ type DOMElements = {
     toggle: HTMLElement;
     container: HTMLElement;
     buttons: {
-      algorithm: HTMLSpanElement;
-      calculation: HTMLSpanElement;
+      algorithm: HTMLElement;
+      calculation: HTMLElement;
+      obstacleFrequency: HTMLElement;
+      regenerateMap: HTMLElement;
     };
   };
 };
@@ -42,6 +44,8 @@ function getDOMElements(): DOMElements {
       buttons: {
         algorithm: document.getElementById("algorithm-option")!,
         calculation: document.getElementById("calculation-option")!,
+        obstacleFrequency: document.getElementById("obstacle-frequency-option")!,
+        regenerateMap: document.getElementById("regenerate-map-option")!,
       },
     },
   };
