@@ -4,7 +4,7 @@ import {
   PathfindingData,
   PathfindingStyle,
 } from "../types/pathfinding";
-import { Tile, TileType } from "../types/tiles";
+import { Tile } from "../types/tiles";
 import { getManhattanDistance, getTileNeighbours } from "./map";
 
 const TILE_DISTANCE_COST = 1;
@@ -74,7 +74,7 @@ function findPath(
     return;
   }
 
-  if (start === null || destination === null || destination.type === TileType.Impassable) {
+  if (start === null || destination === null || destination.impassable) {
     return;
   }
 
@@ -116,7 +116,7 @@ function findPath(
       let neighbours = getTileNeighbours(tiles, current);
       for (let i = 0; i < neighbours.length; i++) {
         const neighbourTile = neighbours[i];
-        if (neighbourTile.type === TileType.Impassable) {
+        if (neighbourTile.impassable) {
           continue;
         }
 

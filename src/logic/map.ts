@@ -8,7 +8,7 @@ import {
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
 import { findPath } from "./pathfinding";
-import { Tile, TileType } from "../types/tiles";
+import { Tile } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
 import {
   getRandomInteger,
@@ -57,7 +57,7 @@ function createTile(indexX: number, indexY: number): Tile {
   const centerY = HEXAGON_VERTICAL_DISTANCE * (indexY * 2 + indexX % 2);
 
   const random = getRandomInteger(0, 3);
-  const type = random == 0 ? TileType.Impassable : TileType.Passable;
+  const impassable = random == 0 ? true : false;
 
   return {
     index: {
@@ -68,7 +68,7 @@ function createTile(indexX: number, indexY: number): Tile {
       x: centerX,
       y: centerY,
     },
-    type: type,
+    impassable: impassable,
     path: {
       candidate: false,
       checked: false,
@@ -100,7 +100,7 @@ function clearTilesAroundPosition(
     tilesToClear.push(...getTileNeighbours(mapState.tiles, neighbour));
   });
 
-  tilesToClear.forEach(tile => tile.type = TileType.Passable);
+  tilesToClear.forEach(tile => tile.impassable = false);
 }
 
 /**

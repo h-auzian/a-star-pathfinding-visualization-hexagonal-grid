@@ -5,7 +5,7 @@ import {
   PathfindingData,
   PathfindingStyle,
 } from "../../src/types/pathfinding";
-import { Tile, TileType } from "../../src/types/tiles";
+import { Tile } from "../../src/types/tiles";
 
 /**
  * String representations for test hexagonal maps, which are read to create the
@@ -160,7 +160,7 @@ function getTilesFromStringRepresentation(representation: string): Tile[][] {
           x: currentColumn,
           y: currentRow,
         },
-        type: char == 'X' ? TileType.Impassable : TileType.Passable,
+        impassable: char == 'X' ? true : false,
         center: {
           x: 0,
           y: 0,

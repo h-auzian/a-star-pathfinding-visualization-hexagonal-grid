@@ -106,7 +106,6 @@ function renderTileBackground(
   assignedCharacterPath: boolean,
 ): void {
   let fillStyle;
-
   if (tile === currentTile) {
     fillStyle = HEXAGON_FILL_COLORS["current"];
   } else if (tile === hoveredTile) {
@@ -117,8 +116,10 @@ function renderTileBackground(
     fillStyle = HEXAGON_FILL_COLORS["candidate"];
   } else if (tile.path.checked && !assignedCharacterPath) {
     fillStyle = HEXAGON_FILL_COLORS["checked"];
+  } else if (tile.impassable) {
+    fillStyle = HEXAGON_FILL_COLORS["impassable"];
   } else {
-    fillStyle = HEXAGON_FILL_COLORS[tile.type];
+    fillStyle = HEXAGON_FILL_COLORS["passable"];
   }
   context.fillStyle = fillStyle;
 
@@ -139,7 +140,8 @@ function renderTileOutline(
   context: CanvasRenderingContext2D,
   tile: Tile,
 ): void {
-  context.lineWidth = HEXAGON_OUTLINE_WIDTHS[tile.type];
+  const tileType = tile.impassable ? "impassable" : "passable";
+  context.lineWidth = HEXAGON_OUTLINE_WIDTHS[tileType];
   context.strokeStyle = HEXAGON_OUTLINE_COLOR;
 
   const points = getHexagonPoints(tile.center);
