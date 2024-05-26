@@ -6,10 +6,45 @@
 </head>
 
 <body>
-	<div class="ui-container">
-		<span id="gear" class="icon enabled"> ⚙ </span>
+	<div class="ui-container limit-width">
+		<span id="info-icon" class="icon enabled"> ℹ </span>
+		<div id="info" class="ui-expandable padding-right hidden">
+			<p>Welcome to the <b>A-Star pathfinding visualization!</b></p>
 
-		<div id="options" class="ui-options hidden">
+			<p> Hold the <b>middle mouse button</b> and then move the cursor to move the camera, or use the <b>WASD</b> keys. Use the <b>mouse wheel</b> to zoom in and out.</p>
+
+			<p>With the mouse cursor, hover a tile and then press <b>left click</b> to move the character towards it while following the calculated path.</p>
+
+			<p>If using <b>step-by-step</b> calculation style, press <b>left click</b> to start calculating a path to the hovered tile, then press it again to advance through each step of the algorithm. <b>Hold left click</b> to advance steps quickly or press <b>Q</b> to immediately finish the path calculation.</p>
+
+			<p>Press the <b>gear</b> button at the bottom left corner to check different options, or press the <b>nerd</b> button at the upper right corner for an explanation of the algorithm steps.</p>
+
+			<p>Hopefully this visualization helps you understand the algorithm. Have fun!</b>
+		</div>
+	</div>
+
+	<div class="ui-container right limit-width">
+		<div id="explanation" class="ui-expandable padding-left hidden">
+			<p>This visualization allows you to check three algorithms: <b>Dijkstra's</b>, <b>Greedy</b> and <b>A-Star</b>, as they are very similar, working with <b>travel costs</b> and/or <b>heuristics</b>.</p>
+
+			<p>The <b>travel cost</b> indicates how many moves it took to reach the current tile from the origin, while the <b>heuristic</b> is an <b>approximation</b> of how many moves it would take to reach the destination from the current tile, without taking into account that there may be obstacles in the way.</p>
+
+			<p>For all three algorithms, the process starts by checking all neighbours of the current tile, calculating their travel cost and/or heuristic, and adding them to a list of <b>candidates</b>. Then the tile with the <b>lowest total cost</b> is removed from the candidates list and the process is repeated with said tile, adding its neighbours to the candidates list and then picking the one with the lowest cost, and so on, until hopefully reaching the destination. If the destination is reached, then the tiles are traversed backwards until getting back to the origin, and thus figuring out a path.</p>
+
+			<p><b>Dijkstra's</b> algorithm only takes the <b>travel cost</b> into account, so it checks in all directions until reaching the destination. It <b>guarantees</b> an optimal path.</p>
+
+			<p><b>Greedy</b> only takes the <b>heuristic</b> into account. It can reach the destination with fewer tiles checked in total, but it <b>doesn't guarantee</b> an optimal path. This is noticeable in cases where the destination is behind a wall.</p>
+
+			<p><b>A-Star</b> takes both the <b>travel cost</b> and the <b>heuristic</b> into account. Like <b>Dijkstra's</b>, it <b>guarantees</b> an optimal path, but thanks to the heuristic, it may reach the destination with fewer tiles checked in total.</p>
+
+			<p>In the tiles for this visualization, the two small numbers at the top represent the <b>travel cost</b> and the <b>heuristic</b>, respectively, while the big number at the center represents the <b>total cost</b>, which is simply the sum of both. The two smaller numbers at the bottom represent the <b>X and Y coordinates</b> of the hexagonal map.</p>
+		</div>
+		<span id="explanation-icon" class="icon-sm enabled right"> 🤓 </span>
+	</div>
+
+	<div class="ui-container bottom">
+		<span id="gear-icon" class="icon enabled align-bottom"> ⚙ </span>
+		<div id="options" class="ui-expandable hidden">
 			<div id="algorithm-option" class="ui-item enabled">
 				<span>Algorithm</span> <br>
 				<span class="ui-value"></span>

@@ -6,7 +6,7 @@ import { clearTilesAroundPosition, getCenterTile, initializeMap } from "./logic/
 import render from "./render";
 import { setCanvasAndCameraSize } from "./rendering/canvas";
 import { GlobalState, createGlobalState } from "./state/global";
-import { initializeUIEvents, updateUI } from "./ui";
+import { initializeUI, updateUI } from "./ui";
 import updateLogic from "./update";
 
 /**
@@ -27,7 +27,7 @@ function init(): void {
   });
 
   initializeGeneralEvents(domElements, state);
-  initializeUIEvents(domElements, state);
+  initializeUI(domElements, state);
 
   mainLoop(domElements, state);
 }

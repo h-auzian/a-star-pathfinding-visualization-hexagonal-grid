@@ -12,16 +12,38 @@ const DISABLED_CLASS = "disabled";
 const VALUE_CLASS = "ui-value";
 
 /**
- * Sets up the UI button events on click, and also updates the current values.
+ * Initializes the UI menus and buttons.
  */
-function initializeUIEvents(domElements: DOMElements, state: GlobalState): void {
-  const options = domElements.options;
-  const buttons = options.buttons;
+function initializeUI(domElements: DOMElements, state: GlobalState): void {
+  initializeExpandableMenus(domElements);
+  initializeButtons(domElements, state);
+}
 
-  options.toggle.addEventListener("click", function() {
-    options.container.classList.toggle(HIDDEN_CLASS);
+/**
+ * Initializes the button events for the expandable menus. Opening an
+ * expandable menu may close other opened menus of that same row.
+ */
+function initializeExpandableMenus(domElements: DOMElements): void {
+  domElements.info.toggle.addEventListener("click", function() {
+    domElements.info.container.classList.toggle(HIDDEN_CLASS);
+    domElements.explanation.container.classList.add(HIDDEN_CLASS);
   });
 
+  domElements.explanation.toggle.addEventListener("click", function() {
+    domElements.explanation.container.classList.toggle(HIDDEN_CLASS);
+    domElements.info.container.classList.add(HIDDEN_CLASS);
+  });
+
+  domElements.options.toggle.addEventListener("click", function() {
+    domElements.options.container.classList.toggle(HIDDEN_CLASS);
+  });
+}
+
+/**
+ * Initializes the button events for the options.
+ */
+function initializeButtons(domElements: DOMElements, state: GlobalState): void {
+  const buttons = domElements.options.buttons;
   buttons.algorithm.addEventListener("click", function() {
     if (allowPathfindingOptionChanges(state.map.pathfinding, state.character)) {
       changePathfindingAlgorithm(state.map.pathfinding);
@@ -78,6 +100,6 @@ function toggleEnabled(element: HTMLElement, enabled: boolean): void {
 }
 
 export {
-  initializeUIEvents,
+  initializeUI,
   updateUI,
 }

@@ -7,6 +7,8 @@ html, body {
 
 .ui-container {
 	position: absolute;
+	display: grid;
+	grid-template-columns: auto auto;
 	margin: 10px;
 	color: white;
 	background-color: #000C;
@@ -14,9 +16,14 @@ html, body {
 	user-select: none;
 }
 
-.ui-options {
-	padding: 15px;
+.ui-expandable {
+	font-size: 15px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
 	float: right;
+	text-align: justify;
 }
 
 .ui-item {
@@ -35,9 +42,22 @@ html, body {
 	padding: 5px;
 }
 
+.icon-sm {
+	font-size: 28px;
+	padding: 5px;
+}
+
 .enabled:hover {
 	color: #FF5;
 	cursor: pointer;
+}
+
+.limit-width {
+	max-width: 70%;
+}
+
+.align-bottom {
+	align-self: end;
 }
 
 .disabled {
@@ -46,4 +66,20 @@ html, body {
 
 .hidden {
 	display: none;
+}
+
+.bottom {
+	bottom: 0;
+}
+
+.right {
+	right: 0;
+}
+
+.padding-left {
+	padding-left: 40px;
+}
+
+.padding-right {
+	padding-right: 40px;
 }
