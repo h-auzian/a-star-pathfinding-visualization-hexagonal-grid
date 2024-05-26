@@ -1,10 +1,6 @@
 import { findPath } from "../../src/logic/pathfinding";
-import PriorityQueue from "../../src/misc/priority-queue";
-import {
-  PathfindingAlgorithm,
-  PathfindingData,
-  PathfindingStyle,
-} from "../../src/types/pathfinding";
+import { createPathfindingData } from "../../src/state/map";
+import { PathfindingData } from "../../src/types/pathfinding";
 import { Tile } from "../../src/types/tiles";
 
 /**
@@ -104,23 +100,7 @@ test.each([
   const map = MAP_REPRESENTATIONS[mapName];
   const tiles = getTilesFromStringRepresentation(map);
 
-  const data: PathfindingData = {
-    algorithm: PathfindingAlgorithm.AStar,
-    style: PathfindingStyle.Instant,
-    startingTile: null,
-    destinationTile: null,
-    pending: false,
-    destinationReached: false,
-    finished: false,
-    candidates: new PriorityQueue<Tile>(),
-    checkedTiles: [],
-    currentTile: null,
-    foundPath: [],
-    timeSinceLastStep: {
-      requiredTime: 0.015,
-      currentTime: 0,
-    },
-  };
+  const data: PathfindingData = createPathfindingData();
 
   const startTile = tiles[start[0]][start[1]];
   const destinationTile = tiles[destination[0]][destination[1]];

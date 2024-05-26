@@ -31,23 +31,7 @@ function createMapState(): MapState {
     },
     tiles: Array() as Tile[][],
     tileUnderCursor: null,
-    pathfinding: {
-      algorithm: PathfindingAlgorithm.AStar,
-      style: PathfindingStyle.Instant,
-      startingTile: null,
-      destinationTile: null,
-      pending: false,
-      destinationReached: false,
-      finished: false,
-      candidates: new PriorityQueue<Tile>(),
-      checkedTiles: [],
-      currentTile: null,
-      foundPath: [],
-      timeSinceLastStep: {
-        requiredTime: 0.015,
-        currentTime: 0,
-      },
-    },
+    pathfinding: createPathfindingData(),
     boundingBox: {
       left: 0,
       right: 0,
@@ -67,7 +51,28 @@ function createMapState(): MapState {
   };
 }
 
+function createPathfindingData(): PathfindingData {
+  return {
+    algorithm: PathfindingAlgorithm.AStar,
+    style: PathfindingStyle.Instant,
+    startingTile: null,
+    destinationTile: null,
+    pending: false,
+    destinationReached: false,
+    finished: false,
+    candidates: new PriorityQueue<Tile>(),
+    checkedTiles: [],
+    currentTile: null,
+    foundPath: [],
+    timeSinceLastStep: {
+      requiredTime: 0.015,
+      currentTime: 0,
+    },
+  };
+}
+
 export {
   MapState,
   createMapState,
+  createPathfindingData,
 }
