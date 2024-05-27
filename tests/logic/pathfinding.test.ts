@@ -134,13 +134,13 @@ function getTilesFromStringRepresentation(representation: string): Tile[][] {
   let currentRow = 0;
   for (let i = 0; i < representation.length; i++) {
     const char = representation.charAt(i);
-    if (char == '.' || char == 'X') {
+    if (char == "." || char == "X") {
       tiles[currentColumn][currentRow] = {
         index: {
           x: currentColumn,
           y: currentRow,
         },
-        impassable: char == 'X' ? true : false,
+        impassable: char == "X" ? true : false,
         center: {
           x: 0,
           y: 0,

@@ -35,27 +35,27 @@ function initializeGeneralEvents(
     setMouseInsideCanvas(state.input, true);
   });
 
-  domElements.canvas.addEventListener('mouseleave', function() {
+  domElements.canvas.addEventListener("mouseleave", function() {
     setMouseInsideCanvas(state.input, false);
   });
 
-  window.addEventListener('mousedown', function(event: MouseEvent) {
+  window.addEventListener("mousedown", function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, true);
   });
 
-  window.addEventListener('mouseup', function(event: MouseEvent) {
+  window.addEventListener("mouseup", function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, false);
   });
 
-  window.addEventListener('wheel', function(event: WheelEvent) {
+  window.addEventListener("wheel", function(event: WheelEvent) {
     setMouseWheelDirection(state.input, event.deltaY);
   });
 
-  window.addEventListener('keydown', function(event: KeyboardEvent) {
+  window.addEventListener("keydown", function(event: KeyboardEvent) {
     setRawKeyboardButton(state.input, event.code, true);
   });
 
-  window.addEventListener('keyup', function(event: KeyboardEvent) {
+  window.addEventListener("keyup", function(event: KeyboardEvent) {
     setRawKeyboardButton(state.input, event.code, false);
   });
 
