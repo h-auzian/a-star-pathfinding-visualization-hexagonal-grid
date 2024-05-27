@@ -11,15 +11,16 @@ import { Point } from "../types/primitives";
 import { Tile } from "../types/tiles";
 
 const HEXAGON_OUTLINE_COLOR = "#000";
-const HEXAGON_OUTLINE_WIDTHS = {
+const HEXAGON_OUTLINE_WIDTHS: { [key: string]: number } = {
   "passable": 1,
   "impassable": 5,
 };
-const HEXAGON_FILL_COLORS = {
+const HEXAGON_FILL_COLORS: { [key: string]: string } = {
   "passable": "#0F0",
   "impassable": "#F00",
   "hover": "#09D",
   "current": "#0A8",
+  "next": "#AFD",
   "candidate": "#FFF",
   "checked": "#CCC",
   "path": "#2BF",
@@ -62,6 +63,7 @@ function renderMap(
   const tiles = getVisibleTiles(mapState, cameraState.viewport);
   const hoveredTile = mapState.tileUnderCursor;
   const currentTile = mapState.pathfinding.currentTile;
+  const nextTile = mapState.pathfinding.nextTile;
   const startingTile = mapState.pathfinding.startingTile;
   const cameraScale = cameraState.scale.value;
   const assignedCharacterPath = characterState.assignedPath.hasPath;
@@ -71,6 +73,7 @@ function renderMap(
     tile,
     hoveredTile,
     currentTile,
+    nextTile,
     assignedCharacterPath,
   ));
 
@@ -103,25 +106,28 @@ function renderTileBackground(
   tile: Tile,
   hoveredTile: Tile | null,
   currentTile: Tile | null,
+  nextTile: Tile | null,
   assignedCharacterPath: boolean,
 ): void {
-  let fillStyle;
+  let fillStyle: string;
   if (tile === currentTile) {
-    fillStyle = HEXAGON_FILL_COLORS["current"];
+    fillStyle = "current";
+  } else if (tile === nextTile) {
+    fillStyle = "next";
   } else if (tile === hoveredTile) {
-    fillStyle = HEXAGON_FILL_COLORS["hover"];
+    fillStyle = "hover";
   } else if (tile.path.used) {
-    fillStyle = HEXAGON_FILL_COLORS["path"];
+    fillStyle = "path";
   } else if (tile.path.candidate && !assignedCharacterPath) {
-    fillStyle = HEXAGON_FILL_COLORS["candidate"];
+    fillStyle = "candidate";
   } else if (tile.path.checked && !assignedCharacterPath) {
-    fillStyle = HEXAGON_FILL_COLORS["checked"];
+    fillStyle = "checked";
   } else if (tile.impassable) {
-    fillStyle = HEXAGON_FILL_COLORS["impassable"];
+    fillStyle = "impassable";
   } else {
-    fillStyle = HEXAGON_FILL_COLORS["passable"];
+    fillStyle = "passable";
   }
-  context.fillStyle = fillStyle;
+  context.fillStyle = HEXAGON_FILL_COLORS[fillStyle];
 
   const points = getHexagonPoints(tile.center);
   context.beginPath();

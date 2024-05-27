@@ -30,7 +30,7 @@ const TILE_DISTANCE_COST = 1;
  * In some cases, a tile may be added as a candidate more than once if it can
  * be reached from a different path with a lower cost, and thus it can exist in
  * the priority queue multiple times with different priority values. When a
- * tile is removed from the queue, its "candidate" flag is removed, so if that
+ * tile is removed from the queue, its "candidate" flag is unset, so if that
  * same tile is fetched again from the queue with a higher cost, it can be
  * ignored. This is easier than avoiding the duplicate, as that requires
  * detecting and updating the previous value and then reordering the queue.
@@ -90,30 +90,26 @@ function findPath(
     start.path.candidate = true;
     start.path.checked = true;
     data.pending = true;
-    data.candidates.add(start, 0);
+    data.nextTile = start;
     data.checkedTiles.push(start);
   }
 
-  if (!data.destinationReached && data.candidates.length() > 0) {
-    while (data.candidates.length() > 0) {
-      data.currentTile = data.candidates.poll();
-
-      const current = data.currentTile;
-      if (current === null) {
+  if (!data.destinationReached && data.nextTile !== null) {
+    while (data.nextTile !== null) {
+      data.currentTile = data.nextTile;
+      if (data.currentTile === null) {
+        data.nextTile = null;
         break;
       }
 
-      if (current === destination) {
+      if (data.currentTile === destination) {
         data.destinationReached = true;
+        data.nextTile = null;
         break;
       }
 
-      if (!current.path.candidate) {
-        continue;
-      }
-
-      current.path.candidate = false;
-      let neighbours = getTileNeighbours(tiles, current);
+      data.currentTile.path.candidate = false;
+      let neighbours = getTileNeighbours(tiles, data.currentTile);
       for (let i = 0; i < neighbours.length; i++) {
         const neighbourTile = neighbours[i];
         if (neighbourTile.impassable) {
@@ -122,7 +118,7 @@ function findPath(
 
         let newCost = 0;
         if (usesCost) {
-          newCost = current.path.cost + TILE_DISTANCE_COST;
+          newCost = data.currentTile.path.cost + TILE_DISTANCE_COST;
         }
 
         if (!neighbourTile.path.checked || newCost < neighbourTile.path.cost) {
@@ -135,7 +131,7 @@ function findPath(
           }
 
           neighbourTile.path.cost = newCost;
-          neighbourTile.path.parent = current;
+          neighbourTile.path.parent = data.currentTile;
           const priority = newCost + neighbourTile.path.heuristic;
 
           neighbourTile.path.candidate = true;
@@ -146,6 +142,15 @@ function findPath(
             data.checkedTiles.push(neighbourTile);
           }
         }
+      }
+
+      // Getting a new candidate may return a tile that was already checked
+      // previously with a lower cost, and thus it's "candidate" flag will be
+      // false. If that's the case, that tile should be ignored, getting the
+      // subsequent one.
+      data.nextTile = data.candidates.poll();
+      while (data.nextTile && !data.nextTile.path.candidate) {
+        data.nextTile = data.candidates.poll();
       }
 
       if (stepByStep) {
@@ -161,14 +166,14 @@ function findPath(
   let finished = false;
   if (data.destinationReached) {
     while (data.currentTile !== null) {
-      const nextTile = data.currentTile.path.parent;
-      if (nextTile === null && (interruptOnLastIteration || forceInstantFinish)) {
+      const parentTile = data.currentTile.path.parent;
+      if (parentTile === null && (interruptOnLastIteration || forceInstantFinish)) {
         break;
       }
 
       data.foundPath.push(data.currentTile);
       data.currentTile.path.used = true;
-      data.currentTile = nextTile;
+      data.currentTile = parentTile;
 
       if (stepByStep) {
         break;
@@ -214,6 +219,7 @@ function clearPreviousPathData(data: PathfindingData): void {
   data.candidates.clear();
   data.checkedTiles = [];
   data.currentTile = null;
+  data.nextTile = null;
   data.foundPath = [];
 }
 

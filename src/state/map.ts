@@ -66,6 +66,7 @@ function createPathfindingData(): PathfindingData {
     candidates: new PriorityQueue<Tile>(),
     checkedTiles: [],
     currentTile: null,
+    nextTile: null,
     foundPath: [],
     timeSinceLastStep: {
       requiredTime: 0.015,

@@ -27,6 +27,7 @@ type PathfindingData = {
   candidates: PriorityQueue<Tile>;
   checkedTiles: Tile[];
   currentTile: Tile | null;
+  nextTile: Tile | null;
   foundPath: Tile[];
   timeSinceLastStep: AccumulatedTime,
 };
