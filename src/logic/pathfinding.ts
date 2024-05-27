@@ -70,11 +70,13 @@ function findPath(
     data.destinationTile = destination;
   }
 
-  if (data.finished) {
-    return;
-  }
+  const abort = data.finished
+    || start === null
+    || destination === null
+    || start === destination
+    || destination.impassable;
 
-  if (start === null || destination === null || destination.impassable) {
+  if (abort) {
     return;
   }
 
