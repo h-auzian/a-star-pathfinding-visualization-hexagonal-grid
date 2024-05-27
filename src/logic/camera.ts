@@ -64,36 +64,51 @@ function scrollCamera(
   mapState: MapState,
   deltaTime: number,
 ): void {
-  scrollCameraGeneralControls(cameraState, controlState, deltaTime);
-  scrollCameraDirectionalControls(cameraState, controlState, deltaTime);
+  const scrolled = scrollCameraGeneralControls(
+    cameraState,
+    controlState,
+    deltaTime,
+  );
+
+  if (!scrolled) {
+    scrollCameraDirectionalControls(cameraState, controlState, deltaTime);
+  }
+
   keepCameraCenterInsideBoundaries(cameraState, mapState);
   updateCameraViewport(cameraState);
 }
 
 /**
- * Scrolls the camera while the general scroll button is held.
+ * Scrolls the camera while the general scroll button is held. The greater the
+ * distance between the cursor initial position and the current position, the
+ * faster the scroll movement will be.
  *
- * The greater the distance between the cursor initial position and the current
- * position, the faster the scroll movement will be.
+ * Returns a boolean if the camera was scrolled, useful to disable other types
+ * of scrolling.
  */
 function scrollCameraGeneralControls(
   cameraState: CameraState,
   controlState: ControlState,
   deltaTime: number,
-): void {
+): boolean {
   const scrollControl = controlState.scroll.general;
   const cursorPosition = controlState.cursor.window;
   const scrollPosition = cameraState.scrollPosition;
 
+  let scrolled = false;
   if (justPressed(scrollControl)) {
     scrollPosition.x = cursorPosition.x;
     scrollPosition.y = cursorPosition.y;
+    scrolled = true;
   } else if (scrollControl.current) {
     const speed = GENERAL_SCROLL_SPEED * deltaTime / cameraState.scale.value;
     const center = cameraState.center;
     center.x = center.x + (cursorPosition.x - scrollPosition.x) * speed;
     center.y = center.y + (cursorPosition.y - scrollPosition.y) * speed;
+    scrolled = true;
   }
+
+  return scrolled;
 }
 
 /**
