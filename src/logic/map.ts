@@ -131,10 +131,12 @@ function detectTileUnderCursor(
     return;
   }
 
+  mapState.tileUnderCursor = null;
   if (controlState.cursor.insideCamera) {
-    mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
-  } else {
-    mapState.tileUnderCursor = null;
+    const tile = getTileByPoint(mapState, controlState.cursor.camera);
+    if (tile && !tile.impassable) {
+      mapState.tileUnderCursor = tile;
+    }
   }
 }
 
