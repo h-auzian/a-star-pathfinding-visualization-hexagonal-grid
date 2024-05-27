@@ -1,6 +1,8 @@
 import { findPath } from "../../src/logic/pathfinding";
-import { createPathfindingData } from "../../src/state/map";
-import { PathfindingData } from "../../src/types/pathfinding";
+import {
+  PathfindingData,
+  createPathfindingData,
+} from "../../src/types/pathfinding";
 import { Tile } from "../../src/types/tiles";
 
 /**

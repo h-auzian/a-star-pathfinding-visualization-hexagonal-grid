@@ -2,12 +2,18 @@ import PriorityQueue from "../misc/priority-queue";
 import { AccumulatedTime } from "./misc";
 import { Tile } from "./tiles";
 
+/**
+ * Available algorithms for pathfinding calculation.
+ */
 enum PathfindingAlgorithm {
   Dijkstra = "Dijkstra's",
   Greedy = "Greedy",
   AStar = "A-Star",
 }
 
+/**
+ * Available styles for pathfinding calculation.
+ */
 enum PathfindingStyle {
   Instant = "Instant",
   StepByStep = "Step by step",
@@ -44,9 +50,34 @@ type PathNode<Type> = {
   parent: Type | null;
 };
 
+/**
+ * Utility function to initialize the pathfinding data.
+ */
+function createPathfindingData(): PathfindingData {
+  return {
+    algorithm: PathfindingAlgorithm.AStar,
+    style: PathfindingStyle.Instant,
+    startingTile: null,
+    destinationTile: null,
+    pending: false,
+    destinationReached: false,
+    finished: false,
+    candidates: new PriorityQueue<Tile>(),
+    checkedTiles: [],
+    currentTile: null,
+    nextTile: null,
+    foundPath: [],
+    timeSinceLastStep: {
+      requiredTime: 0.015,
+      currentTime: 0,
+    },
+  };
+}
+
 export {
   PathfindingAlgorithm,
   PathfindingStyle,
   PathfindingData,
   PathNode,
+  createPathfindingData,
 }

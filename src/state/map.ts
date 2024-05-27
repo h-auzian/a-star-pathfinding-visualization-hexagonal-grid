@@ -1,10 +1,5 @@
-import PriorityQueue from "../misc/priority-queue";
 import { ObstacleFrequency } from "../types/misc";
-import {
-  PathfindingAlgorithm,
-  PathfindingData,
-  PathfindingStyle,
-} from "../types/pathfinding";
+import { PathfindingData, createPathfindingData } from "../types/pathfinding";
 import { Rectangle, Size } from "../types/primitives";
 import { Tile } from "../types/tiles";
 
@@ -54,29 +49,7 @@ function createMapState(): MapState {
   };
 }
 
-function createPathfindingData(): PathfindingData {
-  return {
-    algorithm: PathfindingAlgorithm.AStar,
-    style: PathfindingStyle.Instant,
-    startingTile: null,
-    destinationTile: null,
-    pending: false,
-    destinationReached: false,
-    finished: false,
-    candidates: new PriorityQueue<Tile>(),
-    checkedTiles: [],
-    currentTile: null,
-    nextTile: null,
-    foundPath: [],
-    timeSinceLastStep: {
-      requiredTime: 0.015,
-      currentTime: 0,
-    },
-  };
-}
-
 export {
   MapState,
   createMapState,
-  createPathfindingData,
 }
