@@ -13,6 +13,7 @@ type InputState = {
     wheel: {
       y: number;
     };
+    insideCanvas: boolean;
   };
   keyboard: {
     buttons: {
@@ -39,6 +40,7 @@ function createInputState(): InputState {
       wheel: {
         y: 0,
       },
+      insideCanvas: false,
     },
     keyboard: {
       buttons: {

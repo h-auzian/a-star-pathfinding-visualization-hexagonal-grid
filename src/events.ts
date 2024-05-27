@@ -1,6 +1,7 @@
 import { GlobalState } from "./state/global";
 import { DOMElements } from "./dom";
 import {
+  setMouseInsideCanvas,
   setMousePosition,
   setMouseWheelDirection,
   setRawKeyboardButton,
@@ -23,18 +24,26 @@ function initializeGeneralEvents(
     });
   });
 
-  domElements.canvas.addEventListener('mousemove', function(event: MouseEvent) {
+  window.addEventListener("mousemove", function(event: MouseEvent) {
     setMousePosition(state.input, {
       x: event.pageX,
       y: event.pageY,
     });
   });
 
-  domElements.canvas.addEventListener('mousedown', function(event: MouseEvent) {
+  domElements.canvas.addEventListener("mousemove", function() {
+    setMouseInsideCanvas(state.input, true);
+  });
+
+  domElements.canvas.addEventListener('mouseleave', function() {
+    setMouseInsideCanvas(state.input, false);
+  });
+
+  window.addEventListener('mousedown', function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, true);
   });
 
-  domElements.canvas.addEventListener('mouseup', function(event: MouseEvent) {
+  window.addEventListener('mouseup', function(event: MouseEvent) {
     setRawMouseButton(state.input, event.button, false);
   });
 

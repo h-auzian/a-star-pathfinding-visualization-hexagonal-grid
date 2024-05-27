@@ -9,6 +9,7 @@ type ControlState = {
   cursor: {
     window: Point;
     camera: Point;
+    insideCamera: boolean;
   };
   scroll: {
     general: FrameValues<boolean>;
@@ -36,6 +37,7 @@ function createControlState(): ControlState {
         x: 0,
         y: 0,
       },
+      insideCamera: false,
     },
     scroll: {
       general: {

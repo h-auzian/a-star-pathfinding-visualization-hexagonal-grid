@@ -57,6 +57,14 @@ function setMousePosition(inputState: InputState, position: Point): void {
 }
 
 /**
+ * Set whether the cursor is inside the canvas without being on top of any UI
+ * element.
+ */
+function setMouseInsideCanvas(inputState: InputState, value: boolean): void {
+  inputState.mouse.insideCanvas = value;
+}
+
+/**
  * Resets inputs that are not normally reset via events.
  */
 function resetInputs(inputState: InputState): void {
@@ -68,5 +76,6 @@ export {
   setRawMouseButton,
   setMouseWheelDirection,
   setMousePosition,
+  setMouseInsideCanvas,
   resetInputs,
 }

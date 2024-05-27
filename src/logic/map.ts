@@ -131,7 +131,11 @@ function detectTileUnderCursor(
     return;
   }
 
-  mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
+  if (controlState.cursor.insideCamera) {
+    mapState.tileUnderCursor = getTileByPoint(mapState, controlState.cursor.camera);
+  } else {
+    mapState.tileUnderCursor = null;
+  }
 }
 
 /**

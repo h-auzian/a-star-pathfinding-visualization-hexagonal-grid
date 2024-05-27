@@ -21,28 +21,39 @@ function updateControls(
   cameraState: CameraState,
   deltaTime: number,
 ): void {
-  updateCursorPositions(controlState, cameraState, inputState.mouse.position);
+  const mouse = inputState.mouse;
+  const keyboard = inputState.keyboard;
 
-  setFrameValue(controlState.scroll.general, inputState.mouse.buttons.middle);
-  setFrameValue(controlState.scroll.directional.up, inputState.keyboard.buttons.w);
-  setFrameValue(controlState.scroll.directional.left, inputState.keyboard.buttons.a);
-  setFrameValue(controlState.scroll.directional.down, inputState.keyboard.buttons.s);
-  setFrameValue(controlState.scroll.directional.right, inputState.keyboard.buttons.d);
-  setFrameValue(controlState.scale, inputState.mouse.wheel.y);
-  setFrameValue(controlState.followPath, inputState.mouse.buttons.left);
-  setFrameValue(controlState.finishPath, inputState.keyboard.buttons.q);
+  updateCursor(controlState, cameraState, mouse.position, mouse.insideCanvas);
 
-  updateAccumulatedTime(controlState.speedUpPath, inputState.mouse.buttons.left, deltaTime);
+  setFrameValue(controlState.scroll.general, mouse.buttons.middle);
+  setFrameValue(controlState.scroll.directional.up, keyboard.buttons.w);
+  setFrameValue(controlState.scroll.directional.left, keyboard.buttons.a);
+  setFrameValue(controlState.scroll.directional.down, keyboard.buttons.s);
+  setFrameValue(controlState.scroll.directional.right, keyboard.buttons.d);
+  setFrameValue(controlState.scale, mouse.wheel.y);
+  setFrameValue(controlState.followPath, mouse.buttons.left && mouse.insideCanvas);
+  setFrameValue(controlState.finishPath, keyboard.buttons.q);
+
+  updateAccumulatedTime(
+    controlState.speedUpPath,
+    mouse.buttons.left && mouse.insideCanvas,
+    deltaTime,
+  );
 }
 
 /**
- * Sets both the window and camera cursor positions. In the latter case, the
- * position is translated taking the camera position and scale into account.
+ * Sets both the window and camera cursor positions and if the cursor is inside
+ * the camera wihout being on top of any UI elements.
+ *
+ * The camera position is the window position translated to camera coordinates,
+ * taking the camera center and scale into account.
  */
-function updateCursorPositions(
+function updateCursor(
   controlState: ControlState,
   cameraState: CameraState,
   mousePosition: Point,
+  mouseInsideCanvas: boolean,
 ): void {
   const cursor = controlState.cursor;
   const cameraScale = cameraState.scale.value;
@@ -54,6 +65,8 @@ function updateCursorPositions(
 
   cursor.camera.x = cursor.window.x / cameraScale - cameraSize.width/2 + cameraCenter.x;
   cursor.camera.y = cursor.window.y / cameraScale - cameraSize.height/2 + cameraCenter.y;
+
+  cursor.insideCamera = mouseInsideCanvas;
 }
 
 export {
