@@ -1,7 +1,6 @@
-import { ObstacleFrequency } from "../types/misc";
 import { PathfindingData, createPathfindingData } from "../types/pathfinding";
 import { Rectangle, Size } from "../types/primitives";
-import { Tile } from "../types/tiles";
+import { ObstacleFrequency, Tile } from "../types/tiles";
 
 /**
  * Holds the representation of the hexagonal map.

@@ -8,7 +8,7 @@ import {
 import { MapState } from "../state/map";
 import { ControlState } from "../state/controls";
 import { clearPreviousPathData, findPath } from "./pathfinding";
-import { Tile } from "../types/tiles";
+import { ObstacleFrequency, Tile } from "../types/tiles";
 import { Point, Rectangle } from "../types/primitives";
 import {
   getRandomInteger,
@@ -20,7 +20,6 @@ import {
 } from "../misc/utils";
 import { PathfindingStyle } from "../types/pathfinding";
 import { justPressed } from "./controls";
-import { ObstacleFrequency } from "../types/misc";
 
 const NEIGHBOURS = {
   even: [

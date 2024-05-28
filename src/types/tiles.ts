@@ -12,6 +12,17 @@ type Tile = {
   path: PathNode<Tile>;
 };
 
+/**
+ * Indicates the possible obstacle frequencies for the tiles of the map.
+ */
+enum ObstacleFrequency {
+  None = "None",
+  Low = "Low",
+  Medium = "Medium",
+  High = "High",
+}
+
 export {
   Tile,
+  ObstacleFrequency,
 }
