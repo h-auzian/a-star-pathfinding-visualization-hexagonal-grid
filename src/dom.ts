@@ -17,6 +17,7 @@ type DOMElements = {
       calculation: HTMLElement;
       obstacleFrequency: HTMLElement;
       regenerateMap: HTMLElement;
+      theme: HTMLElement;
     };
   };
 };
@@ -46,6 +47,7 @@ function getDOMElements(): DOMElements {
         calculation: document.getElementById("calculation-option")!,
         obstacleFrequency: document.getElementById("obstacle-frequency-option")!,
         regenerateMap: document.getElementById("regenerate-map-option")!,
+        theme: document.getElementById("theme-option")!,
       },
     },
   };

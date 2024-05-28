@@ -1,34 +1,14 @@
-import {
-  HEXAGON_VERTICAL_DISTANCE,
-  getHexagonPoints,
-} from "../logic/hexagon";
+import { HEXAGON_VERTICAL_DISTANCE, getHexagonPoints } from "../logic/hexagon";
 import { getVisibleTiles } from "../logic/map";
 import { getAngleBetweenPoints, rotatePoints } from "../misc/math";
-import { CameraState } from "../state/camera";
-import { CharacterState } from "../state/character";
-import { MapState } from "../state/map";
+import { GlobalState } from "../state/global";
 import { Point } from "../types/primitives";
+import { TileThemeColors } from "../types/themes";
 import { Tile } from "../types/tiles";
-
-const HEXAGON_OUTLINE_COLOR = "#000";
-const HEXAGON_OUTLINE_WIDTHS: { [key: string]: number } = {
-  "passable": 1,
-  "impassable": 5,
-};
-const HEXAGON_FILL_COLORS: { [key: string]: string } = {
-  "passable": "#0F0",
-  "impassable": "#F00",
-  "hover": "#09D",
-  "current": "#0A8",
-  "next": "#AFD",
-  "candidate": "#FFF",
-  "checked": "#CCC",
-  "path": "#2BF",
-};
+import { getTileThemeColors } from "./themes";
 
 const FONT_SMALL = "12px helvetica";
 const FONT_BIG = "22px helvetica";
-const FONT_COLOR = "#000";
 const FONT_UPPER_PADDING = 10;
 const FONT_LOWER_PADDING = 12;
 const FONT_LOWER_EDGE_PADDING = HEXAGON_VERTICAL_DISTANCE - 1;
@@ -38,7 +18,6 @@ const FONT_BIG_SCALE_LIMIT = 0.35;
 const ARROW_SCALE_LIMIT = FONT_BIG_SCALE_LIMIT;
 const ARROW_NORMAL_WIDTH = 1;
 const ARROW_ALTERNATIVE_WIDTH = 5;
-const ARROW_COLOR = "#000";
 const ARROW_POINTS: Point[] = [
   { x: HEXAGON_VERTICAL_DISTANCE, y: 0 },
   { x: HEXAGON_VERTICAL_DISTANCE - 10, y: -4 },
@@ -47,6 +26,11 @@ const ARROW_POINTS: Point[] = [
   { x: HEXAGON_VERTICAL_DISTANCE - 15, y: 0 },
 ];
 
+const TILE_OUTLINE_WIDTHS: { [key: string]: number } = {
+  "passable": 1,
+  "impassable": 5,
+};
+
 /**
  * Renders the visible tiles of the hexagonal map.
  *
@@ -54,22 +38,19 @@ const ARROW_POINTS: Point[] = [
  * then all outlines, and so on, to avoid tile backgrounds covering adjacent
  * tiles outlines.
  */
-function renderMap(
-  context: CanvasRenderingContext2D,
-  mapState: MapState,
-  cameraState: CameraState,
-  characterState: CharacterState,
-): void {
-  const tiles = getVisibleTiles(mapState, cameraState.viewport);
-  const hoveredTile = mapState.tileUnderCursor;
-  const currentTile = mapState.pathfinding.currentTile;
-  const nextTile = mapState.pathfinding.nextTile;
-  const startingTile = mapState.pathfinding.startingTile;
-  const cameraScale = cameraState.scale.value;
-  const assignedCharacterPath = characterState.assignedPath.hasPath;
+function renderMap(context: CanvasRenderingContext2D, state: GlobalState): void {
+  const colors = getTileThemeColors(state.theme);
+  const tiles = getVisibleTiles(state.map, state.camera.viewport);
+  const hoveredTile = state.map.tileUnderCursor;
+  const currentTile = state.map.pathfinding.currentTile;
+  const nextTile = state.map.pathfinding.nextTile;
+  const startingTile = state.map.pathfinding.startingTile;
+  const cameraScale = state.camera.scale.value;
+  const assignedCharacterPath = state.character.assignedPath.hasPath;
 
   tiles.forEach(tile => renderTileBackground(
     context,
+    colors,
     tile,
     hoveredTile,
     currentTile,
@@ -79,11 +60,13 @@ function renderMap(
 
   tiles.forEach(tile => renderTileOutline(
     context,
+    colors,
     tile,
   ));
 
   tiles.forEach(tile => renderTileParentIndicator(
     context,
+    colors,
     tile,
     cameraScale,
     assignedCharacterPath,
@@ -91,6 +74,7 @@ function renderMap(
 
   tiles.forEach(tile => renderTilePathfindingInfo(
     context,
+    colors,
     tile,
     startingTile,
     cameraScale,
@@ -103,31 +87,28 @@ function renderMap(
  */
 function renderTileBackground(
   context: CanvasRenderingContext2D,
+  colors: TileThemeColors,
   tile: Tile,
   hoveredTile: Tile | null,
   currentTile: Tile | null,
   nextTile: Tile | null,
   assignedCharacterPath: boolean,
 ): void {
-  let fillStyle: string;
   if (tile === currentTile) {
-    fillStyle = "current";
+    context.fillStyle = colors.current;
   } else if (tile === nextTile) {
-    fillStyle = "next";
-  } else if (tile === hoveredTile) {
-    fillStyle = "hover";
-  } else if (tile.path.used) {
-    fillStyle = "path";
+    context.fillStyle = colors.next;
+  } else if (tile === hoveredTile || tile.path.used) {
+    context.fillStyle = colors.path;
   } else if (tile.path.candidate && !assignedCharacterPath) {
-    fillStyle = "candidate";
+    context.fillStyle = colors.candidate;
   } else if (tile.path.checked && !assignedCharacterPath) {
-    fillStyle = "checked";
+    context.fillStyle = colors.checked;
   } else if (tile.impassable) {
-    fillStyle = "impassable";
+    context.fillStyle = colors.impassable;
   } else {
-    fillStyle = "passable";
+    context.fillStyle = colors.passable;
   }
-  context.fillStyle = HEXAGON_FILL_COLORS[fillStyle];
 
   const points = getHexagonPoints(tile.center);
   context.beginPath();
@@ -144,11 +125,12 @@ function renderTileBackground(
  */
 function renderTileOutline(
   context: CanvasRenderingContext2D,
+  colors: TileThemeColors,
   tile: Tile,
 ): void {
   const tileType = tile.impassable ? "impassable" : "passable";
-  context.lineWidth = HEXAGON_OUTLINE_WIDTHS[tileType];
-  context.strokeStyle = HEXAGON_OUTLINE_COLOR;
+  context.lineWidth = TILE_OUTLINE_WIDTHS[tileType];
+  context.strokeStyle = colors.outline;
 
   const points = getHexagonPoints(tile.center);
   context.beginPath();
@@ -173,6 +155,7 @@ function renderTileOutline(
  */
 function renderTileParentIndicator(
   context: CanvasRenderingContext2D,
+  colors: TileThemeColors,
   tile: Tile,
   cameraScale: number,
   assignedCharacterPath: boolean,
@@ -184,8 +167,8 @@ function renderTileParentIndicator(
   const center = tile.center;
   const parentCenter = tile.path.parent.center;
 
-  context.strokeStyle = ARROW_COLOR;
-  context.fillStyle = ARROW_COLOR;
+  context.strokeStyle = colors.outline;
+  context.fillStyle = colors.outline;
 
   if (cameraScale > ARROW_SCALE_LIMIT) {
     const angle = getAngleBetweenPoints(center, parentCenter);
@@ -221,6 +204,7 @@ function renderTileParentIndicator(
  */
 function renderTilePathfindingInfo(
   context: CanvasRenderingContext2D,
+  colors: TileThemeColors,
   tile: Tile,
   startingTile: Tile | null,
   cameraScale: number,
@@ -232,7 +216,7 @@ function renderTilePathfindingInfo(
   const x = tile.center.x;
   const y = tile.center.y;
 
-  context.fillStyle = FONT_COLOR;
+  context.fillStyle = colors.text;
   context.textAlign = "center";
 
   if (tile === startingTile) {
@@ -257,6 +241,4 @@ function renderTilePathfindingInfo(
   }
 }
 
-export {
-  renderMap,
-}
+export default renderMap;

@@ -5,6 +5,7 @@ import {
   changePathfindingAlgorithm,
   changePathfindingStyle,
 } from "./logic/pathfinding";
+import { changeRenderingTheme } from "./rendering/themes";
 import { GlobalState } from "./state/global";
 
 const HIDDEN_CLASS = "hidden";
@@ -73,9 +74,15 @@ function initializeButtons(domElements: DOMElements, state: GlobalState): void {
     }
   });
 
+  buttons.theme.addEventListener("click", function() {
+    changeRenderingTheme(state);
+    updateButtonValue(buttons.theme, state.theme);
+  });
+
   updateButtonValue(buttons.algorithm, state.map.pathfinding.algorithm);
   updateButtonValue(buttons.calculation, state.map.pathfinding.style);
   updateButtonValue(buttons.obstacleFrequency, state.map.obstacleFrequency);
+  updateButtonValue(buttons.theme, state.theme);
 }
 
 /**

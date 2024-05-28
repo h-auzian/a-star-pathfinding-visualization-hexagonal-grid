@@ -1,3 +1,4 @@
+import { Theme } from "../types/themes";
 import { CameraState, createCameraState } from "./camera"
 import { CharacterState, createCharacterState } from "./character";
 import { ControlState, createControlState } from "./controls"
@@ -13,6 +14,7 @@ type GlobalState = {
   character: CharacterState,
   input: InputState;
   control: ControlState;
+  theme: Theme;
 };
 
 function createGlobalState(): GlobalState {
@@ -22,6 +24,7 @@ function createGlobalState(): GlobalState {
     character: createCharacterState(),
     input: createInputState(),
     control: createControlState(),
+    theme: Theme.Default,
   };
 }
 

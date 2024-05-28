@@ -12,6 +12,7 @@ import { HEXAGON_RADIUS } from "./hexagon";
 import { clearPreviousPathData } from "./pathfinding";
 
 const CHARACTER_RADIUS = HEXAGON_RADIUS / 2;
+const CHARACTER_OFFSET_Y = CHARACTER_RADIUS * 0.16;
 const BOUNDING_BOX_RADIUS = CHARACTER_RADIUS * 1.5;
 const BASE_MOVEMENT_SPEED = 300;
 const MAX_SPEED = BASE_MOVEMENT_SPEED * 3;
@@ -142,8 +143,7 @@ function setCharacterPosition(
  * inside a viewport before drawing.
  *
  * It's not a precise bounding box, as the character is rendered using several
- * shapes put together, so the bounding box is slightly bigger than the real
- * radious to compensate.
+ * shapes put together, so the rectangle is slightly bigger to compensate.
  */
 function updateCharacterBoundingBox(characterState: CharacterState): void {
   const pos = characterState.position;
@@ -151,12 +151,13 @@ function updateCharacterBoundingBox(characterState: CharacterState): void {
 
   box.left = pos.x - BOUNDING_BOX_RADIUS;
   box.right = pos.x + BOUNDING_BOX_RADIUS;
-  box.top = pos.y - BOUNDING_BOX_RADIUS;
-  box.bottom = pos.y + BOUNDING_BOX_RADIUS;
+  box.top = pos.y - BOUNDING_BOX_RADIUS - CHARACTER_OFFSET_Y;
+  box.bottom = pos.y + BOUNDING_BOX_RADIUS - CHARACTER_OFFSET_Y;
 }
 
 export {
   CHARACTER_RADIUS,
+  CHARACTER_OFFSET_Y,
   sendCharacterToSelectedPath,
   moveCharacterThroughPath,
   setCharacterPosition,
