@@ -36,14 +36,25 @@ html, body {
 	font-weight: bold;
 }
 
-.icon {
-	font-size: 35px;
-	padding: 5px;
+.icon-info {
+	font-size: 22px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 8px;
 }
 
-.icon-sm {
-	font-size: 28px;
-	padding: 5px;
+.icon-nerd {
+	font-size: 25px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 9px;
+	padding-bottom: 6px;
+}
+
+.icon-gear {
+	font-size: 35px;
+	padding-left: 8px;
+	padding-right: 8px;
 }
 
 .enabled:hover {
