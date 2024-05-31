@@ -31,6 +31,7 @@ function scaleCamera(
 ): void {
   const scale = cameraState.scale;
   const scaleControl = controlState.scale;
+  const insideCamera = controlState.cursor.insideCamera;
 
   if (scale.value != scale.destination) {
     if (getScaleDifference(cameraState) > scale.speed) {
@@ -39,7 +40,7 @@ function scaleCamera(
     } else {
       scale.value = scale.destination;
     }
-  } else if (justPressed(scaleControl)) {
+  } else if (justPressed(scaleControl) && insideCamera) {
     const direction = Math.sign(Number(scaleControl.current));
     if (direction == 1 && scale.destination > SCALE_LOWER_LIMIT) {
       scale.destination /= SCALE_MULTIPLIER;

@@ -6,9 +6,9 @@
 </head>
 
 <body>
-	<div class="ui-container limit-width">
+	<div class="ui-container limit-size">
 		<span id="info-icon" class="icon enabled"> ℹ </span>
-		<div id="info" class="ui-expandable padding-right hidden">
+		<div id="info" class="ui-expandable margin-right hidden">
 			<p>Welcome to the <b>A-Star pathfinding visualization!</b></p>
 
 			<p> Hold the <b>middle mouse button</b> and then move the cursor to move the camera, or use the <b>WASD</b> keys. Use the <b>mouse wheel</b> to zoom in and out.</p>
@@ -19,12 +19,12 @@
 
 			<p>Press the <b>gear</b> button at the bottom left corner to check different options, or press the <b>nerd</b> button at the upper right corner for an explanation of the algorithm steps.</p>
 
-			<p>Hopefully this visualization helps you understand the algorithm. Have fun!</b>
+			<p>Hopefully this visualization helps you understand the algorithm. Have fun!</p>
 		</div>
 	</div>
 
-	<div class="ui-container right limit-width">
-		<div id="explanation" class="ui-expandable padding-left hidden">
+	<div class="ui-container right limit-size">
+		<div id="explanation" class="ui-expandable margin-left hidden">
 			<p>This visualization allows you to check three algorithms: <b>Dijkstra's</b>, <b>Greedy</b> and <b>A-Star</b>, as they are very similar, working with <b>travel costs</b> and/or <b>heuristics</b>.</p>
 
 			<p>The <b>travel cost</b> indicates how many moves it took to reach the current tile from the origin, while the <b>heuristic</b> is an <b>approximation</b> of how many moves it would take to reach the destination from the current tile, without taking into account that there may be obstacles in the way.</p>
@@ -44,7 +44,7 @@
 
 	<div class="ui-container bottom">
 		<span id="gear-icon" class="icon enabled align-bottom"> ⚙ </span>
-		<div id="options" class="ui-expandable hidden">
+		<div id="options" class="ui-expandable vertical-padding hidden">
 			<div id="algorithm-option" class="ui-item enabled">
 				<span>Pathfinding Algorithm</span> <br>
 				<span class="ui-value"></span>

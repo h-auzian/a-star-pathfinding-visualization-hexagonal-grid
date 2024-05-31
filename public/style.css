@@ -7,8 +7,7 @@ html, body {
 
 .ui-container {
 	position: absolute;
-	display: grid;
-	grid-template-columns: auto auto;
+	display: flex;
 	margin: 10px;
 	color: white;
 	background-color: #000C;
@@ -17,13 +16,13 @@ html, body {
 }
 
 .ui-expandable {
-	font-size: 15px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 5px;
-	padding-right: 5px;
-	float: right;
+	font-size: 16px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
 	text-align: justify;
+	overflow: auto;
 }
 
 .ui-item {
@@ -52,8 +51,9 @@ html, body {
 	cursor: pointer;
 }
 
-.limit-width {
-	max-width: 70%;
+.limit-size {
+	max-width: 50%;
+	max-height: 60%;
 }
 
 .align-bottom {
@@ -76,10 +76,23 @@ html, body {
 	right: 0;
 }
 
-.padding-left {
-	padding-left: 40px;
+.margin-left {
+	margin-left: 40px;
 }
 
-.padding-right {
-	padding-right: 40px;
+.margin-right {
+	margin-right: 40px;
+}
+
+.vertical-padding {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+::-webkit-scrollbar {
+	width: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #777;
 }
