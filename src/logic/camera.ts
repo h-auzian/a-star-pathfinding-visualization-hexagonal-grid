@@ -7,7 +7,7 @@ import { keepBetweenValues } from "../misc/utils";
 
 const SCALE_SPEED = 3;
 const SCALE_MULTIPLIER = 2;
-const SCALE_LOWER_LIMIT = Math.pow(1/SCALE_MULTIPLIER, 2);
+const SCALE_LOWER_LIMIT = Math.pow(1/SCALE_MULTIPLIER, 3);
 const SCALE_UPPER_LIMIT = Math.pow(SCALE_MULTIPLIER, 2);
 const GENERAL_SCROLL_SPEED = 30;
 const DIRECTIONAL_SCROLL_SPEED = 900;
