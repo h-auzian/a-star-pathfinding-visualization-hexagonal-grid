@@ -8,6 +8,8 @@ import { TileThemeColors } from "../types/themes";
 import { Tile } from "../types/tiles";
 import { getTileThemeColors } from "./themes";
 
+const PASSABLE_OUTLINE_SCALE_LIMIT = 0.18;
+
 const FONT_SMALL = "12px helvetica";
 const FONT_BIG = "22px helvetica";
 const FONT_UPPER_PADDING = 10;
@@ -59,8 +61,8 @@ function renderMap(context: CanvasRenderingContext2D, state: GlobalState): void 
   renderTilesFillColor(context, colors, tiles, stateValues, colors.impassable);
   renderTilesFillColor(context, colors, tiles, stateValues, colors.passable);
 
-  renderTilesOutline(context, colors, tiles, false);
-  renderTilesOutline(context, colors, tiles, true);
+  renderTilesOutline(context, colors, tiles, stateValues.cameraScale, false);
+  renderTilesOutline(context, colors, tiles, stateValues.cameraScale, true);
 
   renderTilesParentIndicator(context, colors, tiles, stateValues);
   renderTilesPathfindingInfo(context, colors, tiles, stateValues);
@@ -116,13 +118,20 @@ function renderTilesFillColor(
 /**
  * Renders in a single draw call the outline of all the visible tiles that are
  * either passable or impassable, but not both, as they have different widths.
+ *
+ * It only draws the outline is the camera scale is within a limit.
  */
 function renderTilesOutline(
   context: CanvasRenderingContext2D,
   colors: TileThemeColors,
   tiles: Tile[],
+  cameraScale: number,
   impassable: boolean,
 ): void {
+  if (!impassable && cameraScale < PASSABLE_OUTLINE_SCALE_LIMIT) {
+    return;
+  }
+
   const tileType = impassable ? "impassable" : "passable";
 
   context.strokeStyle = colors.outline;
