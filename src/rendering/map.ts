@@ -3,7 +3,7 @@ import { getVisibleTiles } from "../logic/map";
 import { getAngleBetweenPoints, rotatePoints } from "../misc/math";
 import { GlobalState } from "../state/global";
 import { Point } from "../types/primitives";
-import { RenderingStateValues } from "../types/rendering";
+import { RenderingStateValues, RenderingTileType } from "../types/rendering";
 import { TileThemeColors } from "../types/themes";
 import { Tile } from "../types/tiles";
 import { getTileThemeColors } from "./themes";
@@ -40,6 +40,11 @@ const TILE_OUTLINE_WIDTHS: { [key: string]: number } = {
  * The tiles are rendered in multiple passes, first rendering all fill colors,
  * then all outlines, and so on, to avoid a tile's fill color covering the
  * outline of an adjacent tile, and also for performance sake.
+ *
+ * In the case of the most frequent visible tile type during the current frame,
+ * it doesn't draw its fill color in the canvas and instead just sets its color
+ * value to the HTML body background color, achieving the same result while
+ * improving performance if the camera is zoomed out.
  */
 function renderMap(context: CanvasRenderingContext2D, state: GlobalState): void {
   const colors = getTileThemeColors(state.theme);
@@ -52,20 +57,40 @@ function renderMap(context: CanvasRenderingContext2D, state: GlobalState): void 
     cameraScale: state.camera.scale.value,
     assignedCharacterPath: state.character.assignedPath.hasPath,
   };
+  const mostFrequentTileType = getMostFrequentTileType(tiles, stateValues);
+  const mostFrequentFillColor = getFillColorByTileType(colors, mostFrequentTileType);
+  setHTMLBodyBackgroundColor(mostFrequentFillColor);
 
   renderTilesFillColor(context, colors, tiles, stateValues, colors.current);
   renderTilesFillColor(context, colors, tiles, stateValues, colors.next);
   renderTilesFillColor(context, colors, tiles, stateValues, colors.path);
   renderTilesFillColor(context, colors, tiles, stateValues, colors.candidate);
-  renderTilesFillColor(context, colors, tiles, stateValues, colors.checked);
-  renderTilesFillColor(context, colors, tiles, stateValues, colors.impassable);
-  renderTilesFillColor(context, colors, tiles, stateValues, colors.passable);
+
+  if (mostFrequentTileType !== RenderingTileType.checked) {
+    renderTilesFillColor(context, colors, tiles, stateValues, colors.checked);
+  }
+
+  if (mostFrequentTileType !== RenderingTileType.impassable) {
+    renderTilesFillColor(context, colors, tiles, stateValues, colors.impassable);
+  }
+
+  if (mostFrequentTileType !== RenderingTileType.passable) {
+    renderTilesFillColor(context, colors, tiles, stateValues, colors.passable);
+  }
 
   renderTilesOutline(context, colors, tiles, stateValues.cameraScale, false);
   renderTilesOutline(context, colors, tiles, stateValues.cameraScale, true);
 
   renderTilesParentIndicator(context, colors, tiles, stateValues);
   renderTilesPathfindingInfo(context, colors, tiles, stateValues);
+}
+
+/**
+ * Sets the HTML body background color to the received value, to avoid drawing
+ * this fill color on the canvas each frame.
+ */
+function setHTMLBodyBackgroundColor(value: string): void {
+  document.body.style.backgroundColor = value;
 }
 
 /**
@@ -83,22 +108,8 @@ function renderTilesFillColor(
   context.beginPath();
 
   tiles.forEach(tile => {
-    let tileColor;
-    if (tile === stateValues.currentTile) {
-      tileColor = colors.current;
-    } else if (tile === stateValues.nextTile) {
-      tileColor = colors.next;
-    } else if (tile === stateValues.hoveredTile || tile.path.used) {
-      tileColor = colors.path;
-    } else if (tile.path.candidate && !stateValues.assignedCharacterPath) {
-      tileColor = colors.candidate;
-    } else if (tile.path.checked && !stateValues.assignedCharacterPath) {
-      tileColor = colors.checked;
-    } else if (tile.impassable) {
-      tileColor = colors.impassable;
-    } else {
-      tileColor = colors.passable;
-    }
+    const tileType = getRenderingTileType(tile, stateValues);
+    const tileColor = getFillColorByTileType(colors, tileType);
 
     if (tileColor !== color) {
       return;
@@ -261,6 +272,95 @@ function renderTilesPathfindingInfo(
       }
     }
   });
+}
+
+/**
+ * Returns the tile type for rendering purposes according to the tile and
+ * overall state values.
+ *
+ * A type for rendering sake may not be necessarily the same as in the internal
+ * logic. For instance, a tile may only be considered as "checked" for
+ * rendering if the character is not traveling through the calculated path,
+ * even if for logic purposes the tile is actually marked as "checked"
+ * internally.
+ */
+function getRenderingTileType(
+  tile: Tile,
+  stateValues: RenderingStateValues,
+): RenderingTileType {
+  if (tile === stateValues.currentTile) {
+    return RenderingTileType.current;
+  } else if (tile === stateValues.nextTile) {
+    return RenderingTileType.next;
+  } else if (tile === stateValues.hoveredTile || tile.path.used) {
+    return RenderingTileType.path;
+  } else if (tile.path.candidate && !stateValues.assignedCharacterPath) {
+    return RenderingTileType.candidate;
+  } else if (tile.path.checked && !stateValues.assignedCharacterPath) {
+    return RenderingTileType.checked;
+  } else if (tile.impassable) {
+    return RenderingTileType.impassable;
+  } else {
+    return RenderingTileType.passable;
+  }
+}
+
+/**
+ * Returns a tile's fill color depending of its rendering type.
+ */
+function getFillColorByTileType(
+  colors: TileThemeColors,
+  tileType: RenderingTileType,
+): string {
+  if (tileType === RenderingTileType.current) {
+    return colors.current;
+  } else if (tileType === RenderingTileType.next) {
+    return colors.next;
+  } else if (tileType === RenderingTileType.path) {
+    return colors.path;
+  } else if (tileType === RenderingTileType.candidate) {
+    return colors.candidate;
+  } else if (tileType === RenderingTileType.checked) {
+    return colors.checked;
+  } else if (tileType === RenderingTileType.impassable) {
+    return colors.impassable;
+  } else {
+    return colors.passable;
+  }
+}
+
+/**
+ * Returns which tile type is the most frequent for a given tile array.
+ *
+ * It only considers passable, impassable and checked tiles, as they are always
+ * the most frequent at any given moment.
+ */
+function getMostFrequentTileType(
+  tiles: Tile[],
+  stateValues: RenderingStateValues,
+): RenderingTileType {
+  let passable = 0;
+  let impassable = 0;
+  let checked = 0;
+
+  tiles.forEach(tile => {
+    const tileType = getRenderingTileType(tile, stateValues);
+    if (tileType === RenderingTileType.passable) {
+      passable++;
+    } else if (tileType === RenderingTileType.impassable) {
+      impassable++;
+    } else if (tileType === RenderingTileType.checked) {
+      checked++;
+    }
+  });
+
+  if (passable > impassable && passable > checked) {
+    return RenderingTileType.passable;
+  } else if (impassable > passable && impassable > checked) {
+    return RenderingTileType.impassable;
+  } else {
+    return RenderingTileType.checked;
+  }
 }
 
 export default renderMap;
