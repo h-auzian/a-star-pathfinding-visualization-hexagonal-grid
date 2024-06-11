@@ -49,38 +49,25 @@ function renderCircle(
 }
 
 /**
- * Renders an ellipse.
- *
- * The multiplier parameter multiplies the radius either for the width or the
- * height.
+ * Renders an ellipse, which has a different horizontal and vertical radius.
  *
  * The start and end angles are useful to only draw a section of the ellipse.
  */
 function renderEllipse(
   context: CanvasRenderingContext2D,
   center: Point,
-  radius: number,
-  multiplier: number,
-  multiplierOnWidth: boolean,
+  horizontalRadius: number,
+  verticalRadius: number,
   rotation: number = 0,
   startAngle: number = 0,
   endAngle: number = 360,
 ): void {
-  let width = radius;
-  let height = radius;
-
-  if (multiplierOnWidth) {
-    width *= multiplier;
-  } else {
-    height *= multiplier;
-  }
-
   context.beginPath();
   context.ellipse(
     center.x,
     center.y,
-    width,
-    height,
+    horizontalRadius,
+    verticalRadius,
     rotation * RADIANS,
     startAngle * RADIANS,
     endAngle * RADIANS,

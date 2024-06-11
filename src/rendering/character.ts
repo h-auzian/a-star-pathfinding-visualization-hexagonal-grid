@@ -13,45 +13,51 @@ import {
 import { getCharacterThemeColors } from "./themes";
 
 const BODY_LINE_WIDTH = 3;
-const BODY_WIDTH_MULTIPLIER = 0.9;
+const BODY_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.9;
+const BODY_VERTICAL_RADIUS = CHARACTER_RADIUS;
 
 const BLANKET_RECT_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.9;
 const BLANKET_RECT_TOP_OFFSET = CHARACTER_RADIUS * 0.1;
 const BLANKET_RECT_BOTTOM_OFFSET = CHARACTER_RADIUS * 0.85;
-const BLANKET_RADIUS = CHARACTER_RADIUS * 0.3;
-const BLANKET_WIDTH_MULTIPLIER = 1.3;
+const BLANKET_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.3;
+const BLANKET_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.4;
 const BLANKET_SEPARATION = CHARACTER_RADIUS * 0.6;
 
-const HAND_RADIUS = CHARACTER_RADIUS * 0.2;
-const HAND_WIDTH_MULTIPLIER = 2;
-const HAND_OFFSET_X = CHARACTER_RADIUS * 0.95;
-const HAND_OFFSET_Y = CHARACTER_RADIUS * 0.1;
+const HAND_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.4;
+const HAND_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.2;
+const HAND_LEFT_ROTATION = 45;
+const HAND_RIGHT_ROTATION = 135;
+const HAND_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.95;
+const HAND_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.1;
 
-const FEET_RADIUS = CHARACTER_RADIUS * 0.2;
-const FEET_WIDTH_MULTIPLIER = 2;
-const FEET_OFFSET_X = CHARACTER_RADIUS * 0.5;
-const FEET_OFFSET_Y = CHARACTER_RADIUS;
+const FEET_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.4;
+const FEET_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.2;
+const FEET_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.5;
+const FEET_VERTICAL_OFFSET = CHARACTER_RADIUS;
 
 const EYE_LINE_WIDTH = 1;
 const EYE_COLOR = "#FFF";
-const EYE_OFFSET_X = CHARACTER_RADIUS * 0.25;
-const EYE_OFFSET_Y = CHARACTER_RADIUS * 0.33;
-const EYE_RADIUS = CHARACTER_RADIUS * 0.33;
-const EYE_WIDTH_MULTIPLIER = 0.7;
+const EYE_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.25;
+const EYE_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.33;
+const EYE_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.23;
+const EYE_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.33;
+const EYE_RATIO = EYE_HORIZONTAL_RADIUS / EYE_VERTICAL_RADIUS;
 const EYE_TRACKING_DISTANCE = 20;
 
-const PUPIL_RADIUS = EYE_RADIUS * 0.25;
-const PUPIL_LIMIT = EYE_RADIUS - PUPIL_RADIUS;
+const PUPIL_HORIZONTAL_RADIUS = EYE_HORIZONTAL_RADIUS * 0.25;
+const PUPIL_VERTICAL_RADIUS = EYE_VERTICAL_RADIUS * 0.25;
+const PUPIL_LIMIT = EYE_VERTICAL_RADIUS - PUPIL_VERTICAL_RADIUS;
 
 const MOUTH_OFFSET_Y = CHARACTER_RADIUS * 0.3;
-const MOUTH_RADIUS = CHARACTER_RADIUS * 0.1;
-const MOUTH_WIDTH_MULTIPLIER = 1.5;
+const MOUTH_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.15;
+const MOUTH_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.1;
 
-const TOP_HAT_TOP_RADIUS = CHARACTER_RADIUS * 0.7;
-const TOP_HAT_BOTTOM_RADIUS = CHARACTER_RADIUS * 1.1;
+const TOP_HAT_TOP_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.7;
+const TOP_HAT_TOP_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.15;
+const TOP_HAT_BOTTOM_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 1.1;
+const TOP_HAT_BOTTOM_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.22;
 const TOP_HAT_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.8;
 const TOP_HAT_HEIGHT = CHARACTER_RADIUS * 0.5;
-const TOP_HAT_HEIGHT_MULTIPLIER = 0.2;
 
 const MOUSTACHE_LINE_WIDTH = 6;
 const MOUSTACHE_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.05;
@@ -62,14 +68,14 @@ const MOUSTACHE_VERTICAL_STEP = CHARACTER_RADIUS * 0.4;
 const MONOCLE_LINE_WIDTH = 1;
 const MONOCLE_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.30;
 const MONOCLE_VERTICAL_OFFSET = - CHARACTER_RADIUS * 0.08;
-const MONOCLE_RADIUS = EYE_RADIUS * 0.6;
+const MONOCLE_RADIUS = EYE_VERTICAL_RADIUS * 0.6;
 
-const SAILOR_CAP_TOP_RADIUS = CHARACTER_RADIUS * 0.7;
-const SAILOR_CAP_MIDDLE_RADIUS = CHARACTER_RADIUS * 1.0;
-const SAILOR_CAP_BOTTOM_RADIUS = CHARACTER_RADIUS * 0.8;
-const SAILOR_CAP_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.9;
+const SAILOR_CAP_TOP_WIDTH = CHARACTER_RADIUS * 2.0;
+const SAILOR_CAP_BOTTOM_WIDTH = CHARACTER_RADIUS * 1.6;
 const SAILOR_CAP_HEIGHT = CHARACTER_RADIUS * 0.5;
-const SAILOR_CAP_HEIGHT_MULTIPLIER = 0.3;
+const SAILOR_CAP_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.9;
+const SAILOR_CAP_HORIZONTAL_RADIUS = CHARACTER_RADIUS * 0.7;
+const SAILOR_CAP_VERTICAL_RADIUS = CHARACTER_RADIUS * 0.21;
 
 const CARAVEL_VERTICAL_OFFSET = CHARACTER_RADIUS * 0.8;
 const CARAVEL_TOP_WIDTH = CHARACTER_RADIUS * 3;
@@ -137,26 +143,23 @@ function renderCharacterFeet(
   context.lineWidth = BODY_LINE_WIDTH;
   context.fillStyle = colors.feet;
 
-  const multiplierOnWidth = true;
   const feetPosition = {
-    x: characterPosition.x - FEET_OFFSET_X,
-    y: characterPosition.y + FEET_OFFSET_Y,
+    x: characterPosition.x - FEET_HORIZONTAL_OFFSET,
+    y: characterPosition.y + FEET_VERTICAL_OFFSET,
   };
   renderEllipse(
     context,
     feetPosition,
-    FEET_RADIUS,
-    FEET_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    FEET_HORIZONTAL_RADIUS,
+    FEET_VERTICAL_RADIUS
   );
 
-  feetPosition.x = characterPosition.x + FEET_OFFSET_X;
+  feetPosition.x = characterPosition.x + FEET_HORIZONTAL_OFFSET;
   renderEllipse(
     context,
     feetPosition,
-    FEET_RADIUS,
-    FEET_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    FEET_HORIZONTAL_RADIUS,
+    FEET_VERTICAL_RADIUS,
   );
 }
 
@@ -175,30 +178,25 @@ function renderCharacterHands(
   context.lineWidth = BODY_LINE_WIDTH;
   context.fillStyle = colors.hands;
 
-  const multiplierOnWidth = true;
   const handPosition = {
-    x: characterPosition.x - HAND_OFFSET_X,
-    y: characterPosition.y + HAND_OFFSET_Y,
+    x: characterPosition.x - HAND_HORIZONTAL_OFFSET,
+    y: characterPosition.y + HAND_VERTICAL_OFFSET,
   };
-  let rotation = 45;
   renderEllipse(
     context,
     handPosition,
-    HAND_RADIUS,
-    HAND_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
-    rotation,
+    HAND_HORIZONTAL_RADIUS,
+    HAND_VERTICAL_RADIUS,
+    HAND_LEFT_ROTATION,
   );
 
-  handPosition.x = characterPosition.x + HAND_OFFSET_X;
-  rotation = 135;
+  handPosition.x = characterPosition.x + HAND_HORIZONTAL_OFFSET;
   renderEllipse(
     context,
     handPosition,
-    HAND_RADIUS,
-    HAND_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
-    rotation,
+    HAND_HORIZONTAL_RADIUS,
+    HAND_VERTICAL_RADIUS,
+    HAND_RIGHT_ROTATION,
   );
 }
 
@@ -217,13 +215,11 @@ function renderCharacterBody(
   context.lineWidth = BODY_LINE_WIDTH;
   context.fillStyle = colors.body;
 
-  const multiplierOnWidth = true;
   renderEllipse(
     context,
     characterPosition,
-    CHARACTER_RADIUS,
-    BODY_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    BODY_HORIZONTAL_RADIUS,
+    BODY_VERTICAL_RADIUS
   );
 }
 
@@ -253,22 +249,19 @@ function renderCharacterBlanket(
     rect,
   );
 
-  let multiplierOnWidth = true;
   const rotation = 0;
   let startAngle = 180;
   let endAngle = 360;
   renderEllipse(
     context,
     characterPosition,
-    CHARACTER_RADIUS,
-    BODY_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    BODY_HORIZONTAL_RADIUS,
+    BODY_VERTICAL_RADIUS,
     rotation,
     startAngle,
     endAngle,
   );
 
-  multiplierOnWidth = false;
   startAngle = 0;
   endAngle = 180;
   for (let i = 0; i < 3; i++) {
@@ -279,9 +272,8 @@ function renderCharacterBlanket(
     renderEllipse(
       context,
       position,
-      BLANKET_RADIUS,
-      BLANKET_WIDTH_MULTIPLIER,
-      multiplierOnWidth,
+      BLANKET_HORIZONTAL_RADIUS,
+      BLANKET_VERTICAL_RADIUS,
       rotation,
       startAngle,
       endAngle,
@@ -299,12 +291,12 @@ function renderCharacterEyes(
   focus: Point,
 ): void {
   const eyePosition = {
-    x: characterPosition.x - EYE_OFFSET_X,
-    y: characterPosition.y - EYE_OFFSET_Y,
+    x: characterPosition.x - EYE_HORIZONTAL_OFFSET,
+    y: characterPosition.y - EYE_VERTICAL_OFFSET,
   };
   renderCharacterEye(context, colors, eyePosition, focus);
 
-  eyePosition.x = characterPosition.x + EYE_OFFSET_X;
+  eyePosition.x = characterPosition.x + EYE_HORIZONTAL_OFFSET;
   renderCharacterEye(context, colors, eyePosition, focus);
 }
 
@@ -322,7 +314,7 @@ function renderCharacterEye(
 
   const angle = getAngleBetweenPoints(eyePosition, focus);
 
-  const trackingX = PUPIL_LIMIT * EYE_WIDTH_MULTIPLIER * EYE_TRACKING_DISTANCE;
+  const trackingX = PUPIL_LIMIT * EYE_TRACKING_DISTANCE * EYE_RATIO;
   const trackingY = PUPIL_LIMIT * EYE_TRACKING_DISTANCE;
 
   const focusDeltaX = Math.abs(focus.x - eyePosition.x);
@@ -336,22 +328,19 @@ function renderCharacterEye(
     y: translatePoint(limitY, angle, eyePosition).y,
   };
 
-  const multiplierOnWidth = true;
   renderEllipse(
     context,
     eyePosition,
-    EYE_RADIUS,
-    EYE_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    EYE_HORIZONTAL_RADIUS,
+    EYE_VERTICAL_RADIUS,
   );
 
   context.fillStyle = colors.outline;
   renderEllipse(
     context,
     pupilCenter,
-    PUPIL_RADIUS,
-    EYE_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    PUPIL_HORIZONTAL_RADIUS,
+    PUPIL_VERTICAL_RADIUS,
   );
 }
 
@@ -371,13 +360,11 @@ function renderCharacterMouth(
     x: characterPosition.x,
     y: characterPosition.y + MOUTH_OFFSET_Y,
   };
-  const multiplierOnWidth = false;
   renderEllipse(
     context,
     mouthPosition,
-    MOUTH_RADIUS,
-    MOUTH_WIDTH_MULTIPLIER,
-    multiplierOnWidth,
+    MOUTH_VERTICAL_RADIUS,
+    MOUTH_HORIZONTAL_RADIUS,
   );
 }
 
@@ -397,8 +384,8 @@ function renderCharacterTopHat(
   context.fillStyle = colors.topHat;
 
   const rectangle = {
-    left: characterPosition.x - TOP_HAT_TOP_RADIUS,
-    right: characterPosition.x + TOP_HAT_TOP_RADIUS,
+    left: characterPosition.x - TOP_HAT_TOP_HORIZONTAL_RADIUS,
+    right: characterPosition.x + TOP_HAT_TOP_HORIZONTAL_RADIUS,
     top: characterPosition.y - TOP_HAT_VERTICAL_OFFSET - TOP_HAT_HEIGHT,
     bottom: characterPosition.y - TOP_HAT_VERTICAL_OFFSET,
   };
@@ -408,22 +395,19 @@ function renderCharacterTopHat(
     x: characterPosition.x,
     y: rectangle.top,
   };
-  const multiplierOnWidth = false;
   renderEllipse(
     context,
     center,
-    TOP_HAT_TOP_RADIUS,
-    TOP_HAT_HEIGHT_MULTIPLIER,
-    multiplierOnWidth,
+    TOP_HAT_TOP_HORIZONTAL_RADIUS,
+    TOP_HAT_TOP_VERTICAL_RADIUS,
   );
 
   center.y = rectangle.bottom;
   renderEllipse(
     context,
     center,
-    TOP_HAT_BOTTOM_RADIUS,
-    TOP_HAT_HEIGHT_MULTIPLIER,
-    multiplierOnWidth,
+    TOP_HAT_BOTTOM_HORIZONTAL_RADIUS,
+    TOP_HAT_BOTTOM_VERTICAL_RADIUS,
   );
 }
 
@@ -521,12 +505,11 @@ function renderCharacterSailorCap(
   renderTrapezium(
     context,
     center,
-    SAILOR_CAP_MIDDLE_RADIUS * 2,
-    SAILOR_CAP_BOTTOM_RADIUS * 2,
+    SAILOR_CAP_TOP_WIDTH,
+    SAILOR_CAP_BOTTOM_WIDTH,
     SAILOR_CAP_HEIGHT,
   );
 
-  const multiplierOnWidth = false;
   const rotation = 0;
   const startAngle = 180;
   const endAngle = 360;
@@ -534,9 +517,8 @@ function renderCharacterSailorCap(
   renderEllipse(
     context,
     center,
-    SAILOR_CAP_TOP_RADIUS,
-    SAILOR_CAP_HEIGHT_MULTIPLIER,
-    multiplierOnWidth,
+    SAILOR_CAP_HORIZONTAL_RADIUS,
+    SAILOR_CAP_VERTICAL_RADIUS,
     rotation,
     startAngle,
     endAngle,
