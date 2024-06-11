@@ -188,8 +188,8 @@ function renderTilesParentIndicator(
 
   const drawArrow = stateValues.cameraScale > ARROW_SCALE_LIMIT;
 
-  context.strokeStyle = colors.outline;
-  context.fillStyle = colors.outline;
+  context.strokeStyle = colors.text;
+  context.fillStyle = colors.text;
   context.lineWidth = drawArrow ? ARROW_NORMAL_WIDTH : ARROW_ALTERNATIVE_WIDTH;
   context.beginPath();
 

@@ -4,6 +4,7 @@
 enum Theme {
   Default = "Default",
   OldSchool = "Old School",
+  Spooky = "Spooky",
 }
 
 /**
@@ -26,8 +27,11 @@ type TileThemeColors = {
  */
 type CharacterThemeColors = {
   outline: string;
-  body: string;
-  feet: string;
+  body?: string;
+  blanket?: string;
+  hands?: string;
+  feet?: string;
+  mouth?: string;
   hat?: string;
   moustache?: string;
   monocle?: string;

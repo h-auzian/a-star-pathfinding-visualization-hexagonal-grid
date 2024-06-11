@@ -9,6 +9,18 @@ import { getCharacterThemeColors } from "./themes";
 const BODY_LINE_WIDTH = 3;
 const BODY_WIDTH_MULTIPLIER = 0.9;
 
+const BLANKET_RECT_HORIZONTAL_OFFSET = CHARACTER_RADIUS * 0.9;
+const BLANKET_RECT_TOP_OFFSET = CHARACTER_RADIUS * 0.1;
+const BLANKET_RECT_BOTTOM_OFFSET = CHARACTER_RADIUS * 0.85;
+const BLANKET_RADIUS = CHARACTER_RADIUS * 0.3;
+const BLANKET_WIDTH_MULTIPLIER = 1.3;
+const BLANKET_SEPARATION = CHARACTER_RADIUS * 0.6;
+
+const HAND_RADIUS = CHARACTER_RADIUS * 0.2;
+const HAND_WIDTH_MULTIPLIER = 2;
+const HAND_OFFSET_X = CHARACTER_RADIUS * 0.95;
+const HAND_OFFSET_Y = CHARACTER_RADIUS * 0.1;
+
 const FEET_RADIUS = CHARACTER_RADIUS * 0.2;
 const FEET_WIDTH_MULTIPLIER = 2;
 const FEET_OFFSET_X = CHARACTER_RADIUS * 0.5;
@@ -24,6 +36,10 @@ const EYE_TRACKING_DISTANCE = 20;
 
 const PUPIL_RADIUS = EYE_RADIUS * 0.25;
 const PUPIL_LIMIT = EYE_RADIUS - PUPIL_RADIUS;
+
+const MOUTH_OFFSET_Y = CHARACTER_RADIUS * 0.3;
+const MOUTH_RADIUS = CHARACTER_RADIUS * 0.1;
+const MOUTH_WIDTH_MULTIPLIER = 1.5;
 
 const HAT_TOP_RADIUS = CHARACTER_RADIUS * 0.7;
 const HAT_BOTTOM_RADIUS = CHARACTER_RADIUS * 1.1;
@@ -68,8 +84,14 @@ function renderCharacter(
   context.strokeStyle = colors.outline;
 
   renderCharacterFeet(context, colors, characterPosition);
+  renderCharacterHands(context, colors, characterPosition);
+
   renderCharacterBody(context, colors, characterPosition);
+  renderCharacterBlanket(context, colors, characterPosition);
+
   renderCharacterEyes(context, colors, characterPosition, eyeFocus);
+  renderCharacterMouth(context, colors, characterPosition);
+
   renderCharacterHat(context, colors, characterPosition);
   renderCharacterMoustache(context, colors, characterPosition);
   renderCharacterMonocle(context, colors, characterPosition);
@@ -83,6 +105,10 @@ function renderCharacterFeet(
   colors: CharacterThemeColors,
   characterPosition: Point,
 ): void {
+  if (!colors.feet) {
+    return;
+  }
+
   context.lineWidth = BODY_LINE_WIDTH;
   context.fillStyle = colors.feet;
 
@@ -110,6 +136,48 @@ function renderCharacterFeet(
 }
 
 /**
+ * Renders the character's tiny hands.
+ */
+function renderCharacterHands(
+  context: CanvasRenderingContext2D,
+  colors: CharacterThemeColors,
+  characterPosition: Point,
+): void {
+  if (!colors.hands) {
+    return;
+  }
+
+  context.lineWidth = BODY_LINE_WIDTH;
+  context.fillStyle = colors.hands;
+
+  const multiplierOnWidth = true;
+  const handPosition = {
+    x: characterPosition.x - HAND_OFFSET_X,
+    y: characterPosition.y + HAND_OFFSET_Y,
+  };
+  let rotation = 45;
+  renderEllipse(
+    context,
+    handPosition,
+    HAND_RADIUS,
+    HAND_WIDTH_MULTIPLIER,
+    multiplierOnWidth,
+    rotation,
+  );
+
+  handPosition.x = characterPosition.x + HAND_OFFSET_X;
+  rotation = 135;
+  renderEllipse(
+    context,
+    handPosition,
+    HAND_RADIUS,
+    HAND_WIDTH_MULTIPLIER,
+    multiplierOnWidth,
+    rotation,
+  );
+}
+
+/**
  * Renders the character's body and... uuh, face?
  */
 function renderCharacterBody(
@@ -117,6 +185,10 @@ function renderCharacterBody(
   colors: CharacterThemeColors,
   characterPosition: Point,
 ): void {
+  if (!colors.body) {
+    return;
+  }
+
   context.lineWidth = BODY_LINE_WIDTH;
   context.fillStyle = colors.body;
 
@@ -128,6 +200,68 @@ function renderCharacterBody(
     BODY_WIDTH_MULTIPLIER,
     multiplierOnWidth,
   );
+}
+
+/**
+ * Renders the character's spooky blanket, which replaces its usual body.
+ */
+function renderCharacterBlanket(
+  context: CanvasRenderingContext2D,
+  colors: CharacterThemeColors,
+  characterPosition: Point,
+): void {
+  if (!colors.blanket) {
+    return;
+  }
+
+  context.lineWidth = BODY_LINE_WIDTH;
+  context.fillStyle = colors.blanket;
+
+  const rect = {
+    left: characterPosition.x - BLANKET_RECT_HORIZONTAL_OFFSET,
+    right: characterPosition.x + BLANKET_RECT_HORIZONTAL_OFFSET,
+    top: characterPosition.y - BLANKET_RECT_TOP_OFFSET,
+    bottom: characterPosition.y + BLANKET_RECT_BOTTOM_OFFSET,
+  };
+  renderRectangle(
+    context,
+    rect,
+  );
+
+  let multiplierOnWidth = true;
+  const rotation = 0;
+  let startAngle = 180;
+  let endAngle = 360;
+  renderEllipse(
+    context,
+    characterPosition,
+    CHARACTER_RADIUS,
+    BODY_WIDTH_MULTIPLIER,
+    multiplierOnWidth,
+    rotation,
+    startAngle,
+    endAngle,
+  );
+
+  multiplierOnWidth = false;
+  startAngle = 0;
+  endAngle = 180;
+  for (let i = 0; i < 3; i++) {
+    const position = {
+      x: characterPosition.x - CHARACTER_RADIUS * 0.6 + BLANKET_SEPARATION * i,
+      y: characterPosition.y + CHARACTER_RADIUS * 0.73,
+    };
+    renderEllipse(
+      context,
+      position,
+      BLANKET_RADIUS,
+      BLANKET_WIDTH_MULTIPLIER,
+      multiplierOnWidth,
+      rotation,
+      startAngle,
+      endAngle,
+    );
+  }
 }
 
 /**
@@ -192,6 +326,32 @@ function renderCharacterEye(
     pupilCenter,
     PUPIL_RADIUS,
     EYE_WIDTH_MULTIPLIER,
+    multiplierOnWidth,
+  );
+}
+
+/**
+ * Renders the character's mouth.
+ */
+function renderCharacterMouth(
+  context: CanvasRenderingContext2D,
+  colors: CharacterThemeColors,
+  characterPosition: Point,
+): void {
+  if (!colors.mouth) {
+    return;
+  }
+
+  const mouthPosition = {
+    x: characterPosition.x,
+    y: characterPosition.y + MOUTH_OFFSET_Y,
+  };
+  const multiplierOnWidth = false;
+  renderEllipse(
+    context,
+    mouthPosition,
+    MOUTH_RADIUS,
+    MOUTH_WIDTH_MULTIPLIER,
     multiplierOnWidth,
   );
 }
@@ -317,8 +477,10 @@ function renderCharacterMonocle(
 /**
  * Renders an ellipse.
  *
- * The multiplier parameter multiplies the radius, either for the width or the
+ * The multiplier parameter multiplies the radius either for the width or the
  * height.
+ *
+ * The start and end angles are useful to only draw a section of the ellipse.
  */
 function renderEllipse(
   context: CanvasRenderingContext2D,
@@ -326,11 +488,10 @@ function renderEllipse(
   radius: number,
   multiplier: number,
   multiplierOnWidth: boolean,
+  rotation: number = 0,
+  startAngle: number = 0,
+  endAngle: number = 360,
 ): void {
-  const rotation = 0;
-  const startAngle = 0;
-  const endAngle = 360 * RADIANS;
-
   let width = radius;
   let height = radius;
 
@@ -346,9 +507,9 @@ function renderEllipse(
     center.y,
     width,
     height,
-    rotation,
-    startAngle,
-    endAngle,
+    rotation * RADIANS,
+    startAngle * RADIANS,
+    endAngle * RADIANS,
   );
 
   context.fill();
