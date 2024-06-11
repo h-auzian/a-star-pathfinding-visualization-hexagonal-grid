@@ -89,8 +89,40 @@ function renderEllipse(
   context.stroke();
 }
 
+/**
+ * Renders a trapezium at a given center.
+ */
+function renderTrapezium(
+  context: CanvasRenderingContext2D,
+  center: Point,
+  topWidth: number,
+  bottomWidth: number,
+  height: number,
+): void {
+  context.beginPath();
+
+  let x = center.x - topWidth / 2;
+  let y = center.y - height / 2;
+  context.moveTo(x, y);
+
+  x += topWidth;
+  context.lineTo(x, y);
+
+  x = center.x + bottomWidth / 2;
+  y += height;
+  context.lineTo(x, y);
+
+  x -= bottomWidth;
+  context.lineTo(x, y);
+
+  context.closePath();
+  context.fill();
+  context.stroke();
+}
+
 export {
   renderRectangle,
   renderCircle,
   renderEllipse,
+  renderTrapezium,
 }

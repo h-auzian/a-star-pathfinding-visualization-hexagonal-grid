@@ -35,6 +35,17 @@ const TILE_COLORS: { [key: string]: TileThemeColors } = {
     outline: "#707",
     text: "#FFF",
   },
+  "Explorer": {
+    passable: "#00F",
+    impassable: "#0C0",
+    current: "#FA5",
+    next: "#FDA",
+    candidate: "#DDF",
+    checked: "#AAD",
+    path: "#F85",
+    outline: "#000",
+    text: "#000",
+  },
 };
 
 const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
@@ -47,7 +58,7 @@ const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
     outline: "#563A1D",
     body: "#FFD6AD",
     feet: "#563A10",
-    hat: "#563A10",
+    topHat: "#563A10",
     moustache: "#563A10",
     monocle: "#563A10",
   },
@@ -56,6 +67,12 @@ const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
     blanket: "#FFF",
     hands: "#FFF",
     mouth: "#000",
+  },
+  "Explorer": {
+    outline: "#000",
+    body: "#FD0",
+    sailorCap: "#FFF",
+    caravel: "#D50",
   },
 };
 
@@ -82,6 +99,8 @@ function changeRenderingTheme(state: GlobalState) {
   } else if (state.theme === Theme.OldSchool) {
     state.theme = Theme.Spooky;
   } else if (state.theme === Theme.Spooky) {
+    state.theme = Theme.Explorer;
+  } else if (state.theme === Theme.Explorer) {
     state.theme = Theme.Default;
   }
 }

@@ -5,6 +5,7 @@ enum Theme {
   Default = "Default",
   OldSchool = "Old School",
   Spooky = "Spooky",
+  Explorer = "Explorer",
 }
 
 /**
@@ -32,9 +33,11 @@ type CharacterThemeColors = {
   hands?: string;
   feet?: string;
   mouth?: string;
-  hat?: string;
+  topHat?: string;
   moustache?: string;
   monocle?: string;
+  sailorCap?: string;
+  caravel?: string;
 }
 
 export {
