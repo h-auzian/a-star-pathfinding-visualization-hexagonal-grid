@@ -6,6 +6,7 @@ enum Theme {
   OldSchool = "Old School",
   Spooky = "Spooky",
   Explorer = "Explorer",
+  Heck = "Heck",
 }
 
 /**
@@ -29,15 +30,17 @@ type TileThemeColors = {
 type CharacterThemeColors = {
   outline: string;
   body?: string;
-  blanket?: string;
-  hands?: string;
   feet?: string;
-  mouth?: string;
   topHat?: string;
   moustache?: string;
   monocle?: string;
+  blanket?: string;
+  hands?: string;
+  mouth?: string;
   sailorCap?: string;
   caravel?: string;
+  horns?: string;
+  tail?: string;
 }
 
 export {

@@ -2,6 +2,33 @@ import { RADIANS } from "../misc/math";
 import { Point, Rectangle } from "../types/primitives";
 
 /**
+ * Renders a triangle pointing upwards.
+ */
+function renderTriangle(
+  context: CanvasRenderingContext2D,
+  center: Point,
+  width: number,
+  height: number,
+): void {
+  context.beginPath();
+
+  let x = center.x - width / 2;
+  let y = center.y + height / 2;
+  context.moveTo(x, y);
+
+  x += width;
+  context.lineTo(x, y);
+
+  x -= width / 2;
+  y -= height;
+  context.lineTo(x, y);
+
+  context.closePath();
+  context.fill();
+  context.stroke();
+}
+
+/**
  * Render a rectangle at a given center.
  */
 function renderRectangle(
@@ -61,6 +88,7 @@ function renderEllipse(
   rotation: number = 0,
   startAngle: number = 0,
   endAngle: number = 360,
+  fill: boolean = true,
 ): void {
   context.beginPath();
   context.ellipse(
@@ -72,7 +100,9 @@ function renderEllipse(
     startAngle * RADIANS,
     endAngle * RADIANS,
   );
-  context.fill();
+  if (fill) {
+    context.fill();
+  }
   context.stroke();
 }
 
@@ -108,6 +138,7 @@ function renderTrapezium(
 }
 
 export {
+  renderTriangle,
   renderRectangle,
   renderCircle,
   renderEllipse,

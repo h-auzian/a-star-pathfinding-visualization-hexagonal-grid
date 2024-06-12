@@ -10,6 +10,7 @@ import {
   renderCharacterCaravel,
   renderCharacterSailorCap,
 } from "./character/explorer";
+import { renderCharacterHorns, renderCharacterTail } from "./character/heck";
 import {
   renderCharacterMonocle,
   renderCharacterMoustache,
@@ -50,6 +51,8 @@ function renderCharacter(
   renderCharacterFeet(context, colors, characterPosition);
   renderCharacterHands(context, colors, characterPosition);
 
+  renderCharacterHorns(context, colors, characterPosition);
+  renderCharacterTail(context, colors, characterPosition);
   renderCharacterBody(context, colors, characterPosition);
   renderCharacterBlanket(context, colors, characterPosition);
 

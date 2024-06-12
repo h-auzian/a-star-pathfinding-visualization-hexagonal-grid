@@ -46,6 +46,17 @@ const TILE_COLORS: { [key: string]: TileThemeColors } = {
     outline: "#000",
     text: "#000",
   },
+  "Heck": {
+    passable: "#F50",
+    impassable: "#D00",
+    current: "#5D5",
+    next: "#CDB",
+    candidate: "#FBB",
+    checked: "#F99",
+    path: "#88F",
+    outline: "#500",
+    text: "#500",
+  },
 };
 
 const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
@@ -74,6 +85,13 @@ const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
     sailorCap: "#FFF",
     caravel: "#D50",
   },
+  "Heck": {
+    outline: "#000",
+    body: "#F0F",
+    feet: "#F0F",
+    horns: "#F0F",
+    tail: "#F0F",
+  },
 };
 
 /**
@@ -101,6 +119,8 @@ function changeRenderingTheme(state: GlobalState) {
   } else if (state.theme === Theme.Spooky) {
     state.theme = Theme.Explorer;
   } else if (state.theme === Theme.Explorer) {
+    state.theme = Theme.Heck;
+  } else if (state.theme === Theme.Heck) {
     state.theme = Theme.Default;
   }
 }
