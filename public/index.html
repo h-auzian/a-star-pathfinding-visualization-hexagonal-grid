@@ -8,7 +8,7 @@
 <body>
 	<div class="ui-container limit-size">
 		<span id="info-icon" class="icon-info enabled"> 🛈 </span>
-		<div id="info" class="ui-expandable margin-right hidden">
+		<div id="info" class="ui-expandable margin-right-lg hidden">
 			<p>Welcome to the <b>A-Star pathfinding visualization!</b></p>
 
 			<p> Hold the <b>middle mouse button</b> and then move the cursor to move the camera, or use the <b>WASD</b> keys. Use the <b>mouse wheel</b> to zoom in and out.</p>
@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="ui-container right limit-size">
-		<div id="explanation" class="ui-expandable margin-left hidden">
+		<div id="explanation" class="ui-expandable margin-left-lg hidden">
 			<p>This visualization allows you to check three algorithms: <b>Dijkstra's</b>, <b>Greedy</b> and <b>A-Star</b>, as they are very similar, working with <b>travel costs</b> and/or <b>heuristics</b>.</p>
 
 			<p>The <b>travel cost</b> indicates how many moves it took to reach the current tile from the origin, while the <b>heuristic</b> is an <b>approximation</b> of how many moves it would take to reach the destination from the current tile, without taking into account that there may be obstacles in the way.</p>
@@ -44,28 +44,28 @@
 
 	<div class="ui-container bottom">
 		<span id="gear-icon" class="icon-gear enabled align-bottom"> ⚙ </span>
-		<div id="options" class="ui-expandable vertical-padding hidden">
-			<div id="algorithm-option" class="ui-item enabled">
-				<span>Pathfinding Algorithm</span> <br>
+		<div id="options" class="ui-expandable vertical-padding margin-right-sm hidden">
+			<div id="algorithm-option" class="ui-item min-width-md enabled">
+				<span>Algorithm</span> <br>
 				<span class="ui-value"></span>
 			</div>
 
-			<div id="calculation-option" class="ui-item enabled">
-				<span>Calculation Style</span> <br>
+			<div id="calculation-option" class="ui-item min-width-lg enabled">
+				<span>Calculation</span> <br>
 				<span class="ui-value"></span>
 			</div>
 
-			<div id="obstacle-frequency-option" class="ui-item enabled">
-				<span>Obstacle frequency</span> <br>
+			<div id="obstacle-frequency-option" class="ui-item min-width-md enabled">
+				<span>Obstacles</span> <br>
 				<span class="ui-value"></span>
 			</div>
 
-			<div id="regenerate-map-option" class="ui-item enabled">
+			<div id="regenerate-map-option" class="ui-item min-width-md enabled">
 				<span>Regenerate <br> map</span>
 			</div>
 
-			<div id="theme-option" class="ui-item enabled">
-				<span>Visualization Theme</span> <br>
+			<div id="theme-option" class="ui-item min-width-sm enabled">
+				<span>Theme</span> <br>
 				<span class="ui-value"></span>
 			</div>
 		</div>

@@ -27,8 +27,6 @@ html, body {
 
 .ui-item {
 	text-align: center;
-	margin-left: 15px;
-	margin-right: 15px;
 	float: left;
 }
 
@@ -87,17 +85,33 @@ html, body {
 	right: 0;
 }
 
-.margin-left {
+.margin-left-lg {
 	margin-left: 40px;
 }
 
-.margin-right {
+.margin-right-sm {
+	margin-right: 20px;
+}
+
+.margin-right-lg {
 	margin-right: 40px;
 }
 
 .vertical-padding {
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.min-width-sm {
+	min-width: 110px;
+}
+
+.min-width-md {
+	min-width: 140px;
+}
+
+.min-width-lg {
+	min-width: 160px;
 }
 
 ::-webkit-scrollbar {
