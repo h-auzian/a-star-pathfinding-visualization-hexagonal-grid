@@ -3,12 +3,12 @@ import { CharacterThemeColors, Theme, TileThemeColors } from "../types/themes";
 
 const TILE_COLORS: { [key: string]: TileThemeColors } = {
   "Default": {
-    passable: "#0F0",
-    impassable: "#F00",
+    passable: "#EEE",
+    impassable: "#666",
     current: "#0A8",
     next: "#AFD",
-    candidate: "#FFF",
-    checked: "#CCC",
+    candidate: "#DDF",
+    checked: "#AAC",
     path: "#2BF",
     outline: "#000",
     text: "#000",
