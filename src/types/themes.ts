@@ -10,7 +10,7 @@ enum Theme {
 }
 
 /**
- * Tile colors for an specific theme.
+ * Tile colors for a specific theme.
  */
 type TileThemeColors = {
   passable: string;
@@ -25,7 +25,7 @@ type TileThemeColors = {
 };
 
 /**
- * Character colors for an specific theme.
+ * Character colors for a specific theme.
  */
 type CharacterThemeColors = {
   outline: string;

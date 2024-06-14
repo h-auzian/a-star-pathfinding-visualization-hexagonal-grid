@@ -10,7 +10,7 @@ import { getManhattanDistance, getTileNeighbours } from "./map";
 const TILE_DISTANCE_COST = 1;
 
 /**
- * Finds a path between two tiles in an hexagonal map using different search
+ * Finds a path between two tiles in a hexagonal map using different search
  * algorithms:
  *
  * - Dijkstra's: Travel cost only.
@@ -52,7 +52,7 @@ const TILE_DISTANCE_COST = 1;
  *
  * In an ideal implementation, a pathfinding function would receive an abstract
  * graph so that the algorithm would work regardless of the actual map layout,
- * be it a square grid, an hexagonal grid, or just any type of graph, but in
+ * be it a square grid, a hexagonal grid, or just any type of graph, but in
  * this case the function just receives the tiles as-is and knows that the map
  * is hexagonal, as that is the focus of this application.
  */

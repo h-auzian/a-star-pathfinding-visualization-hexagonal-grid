@@ -22,7 +22,7 @@ const HEXAGON_TRIANGLE_POINT: Point = {
 };
 
 /**
- * Returns the 6 vertices from an hexagon with a given center.
+ * Returns the 6 vertices from a hexagon with a given center.
  *
  * The hexagon is represented in "flat top" orientation, that is, the pointy
  * sides are at the left and right sides of the hexagon.
@@ -39,7 +39,7 @@ function getHexagonPoints(center: Point): Point[] {
 }
 
 /**
- * Returns whether a point is inside an hexagon.
+ * Returns whether a point is inside a hexagon.
  *
  * Before any checks, the point is translated into the hexagon's local
  * coordinates, with (0, 0) being the center of the hexagon.

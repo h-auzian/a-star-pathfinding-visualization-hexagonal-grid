@@ -40,7 +40,7 @@ const OBSTACLE_FREQUENCIES = {
 /**
  * Initializes the map data as a two dimensional array of hexagonal tiles.
  *
- * There are many ways to represent an hexagonal map. In this case, "offset"
+ * There are many ways to represent a hexagonal map. In this case, "offset"
  * coordinates are used with odd columns shoved down.
  */
 function initializeMap(mapState: MapState): void {

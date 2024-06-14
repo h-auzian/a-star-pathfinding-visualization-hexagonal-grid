@@ -95,14 +95,14 @@ const CHARACTER_COLORS: { [key: string]: CharacterThemeColors } = {
 };
 
 /**
- * Returns the tile colors for an specific theme.
+ * Returns the tile colors for a specific theme.
  */
 function getTileThemeColors(theme: Theme): TileThemeColors {
   return TILE_COLORS[theme];
 }
 
 /**
- * Returns the character colors for an specific theme.
+ * Returns the character colors for a specific theme.
  */
 function getCharacterThemeColors(theme: Theme): CharacterThemeColors {
   return CHARACTER_COLORS[theme];
