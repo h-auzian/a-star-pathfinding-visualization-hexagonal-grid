@@ -5,6 +5,10 @@ html, body {
 	font-family: "monospace";
 }
 
+a {
+	color: #FF5;
+}
+
 .ui-container {
 	position: absolute;
 	display: flex;
