@@ -2,6 +2,8 @@
 
 Silly application to visualize different pathfinding algorithms, mainly A* (A-star), on a hexagonal grid. Written in TypeScript and rendered on a HTML Canvas.
 
+You can play around with it here: http://h-auzian.github.io/a-star-pathfinding-visualization-hexagonal-grid
+
 https://github.com/h-auzian/a-star-pathfinding-visualization-hexagonal-grid/assets/5781534/a064bf5b-2a36-4e8c-9d89-556d5ef5e984
 
 Initially this was supposed to only work with A*, but over time it was adapted to show the following three algorithms, as they are very similar:
