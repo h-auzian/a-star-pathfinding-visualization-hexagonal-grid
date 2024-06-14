@@ -9,7 +9,7 @@
 	<div class="ui-container limit-size">
 		<span id="info-icon" class="icon-info enabled"> 🛈 </span>
 		<div id="info" class="ui-expandable margin-right-lg hidden">
-			<p>Welcome to the <b>A-Star pathfinding visualization!</b></p>
+			<p>Welcome to the <b>A* (A-star) pathfinding visualization!</b></p>
 
 			<p> Hold the <b>middle mouse button</b> and then move the cursor to move the camera, or use the <b>WASD</b> keys. Use the <b>mouse wheel</b> to zoom in and out.</p>
 
@@ -25,7 +25,7 @@
 
 	<div class="ui-container right limit-size">
 		<div id="explanation" class="ui-expandable margin-left-lg hidden">
-			<p>This visualization allows you to check three algorithms: <b>Dijkstra's</b>, <b>Greedy</b> and <b>A-Star</b>, as they are very similar, working with <b>travel costs</b> and/or <b>heuristics</b>.</p>
+			<p>This visualization allows you to check three algorithms: <b>Dijkstra's</b>, <b>Greedy</b> and <b>A* (A-star)</b>, as they are very similar, working with <b>travel costs</b> and/or <b>heuristics</b>.</p>
 
 			<p>The <b>travel cost</b> indicates how many moves it took to reach the current tile from the origin, while the <b>heuristic</b> is an <b>approximation</b> of how many moves it would take to reach the destination from the current tile, without taking into account that there may be obstacles in the way.</p>
 
@@ -35,7 +35,7 @@
 
 			<p><b>Greedy</b> only takes the <b>heuristic</b> into account. It can reach the destination with fewer tiles checked in total, but it <b>doesn't guarantee</b> an optimal path. This is noticeable in cases where the destination is behind a wall.</p>
 
-			<p><b>A-Star</b> takes both the <b>travel cost</b> and the <b>heuristic</b> into account. Like <b>Dijkstra's</b>, it <b>guarantees</b> an optimal path, but thanks to the heuristic, it may reach the destination with fewer tiles checked in total.</p>
+			<p><b>A*</b> takes both the <b>travel cost</b> and the <b>heuristic</b> into account. Like <b>Dijkstra's</b>, it <b>guarantees</b> an optimal path, but thanks to the heuristic, it may reach the destination with fewer tiles checked in total.</p>
 
 			<p>In the tiles for this visualization, the two small numbers at the top represent the <b>travel cost</b> and the <b>heuristic</b>, respectively, while the big number at the center represents the <b>total cost</b>, which is simply the sum of both. The two smaller numbers at the bottom represent the <b>X and Y coordinates</b> of the hexagonal map.</p>
 		</div>

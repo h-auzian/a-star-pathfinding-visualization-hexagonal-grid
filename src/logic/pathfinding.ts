@@ -15,7 +15,7 @@ const TILE_DISTANCE_COST = 1;
  *
  * - Dijkstra's: Travel cost only.
  * - Greedy: Heuristic only.
- * - A-Star: Travel cost plus heuristic.
+ * - A*: Travel cost plus heuristic.
  *
  * In all three cases the steps are the same: a priority queue of candidate
  * tiles is kept, always ordered from lowest to highest movement cost. The

@@ -8,7 +8,7 @@ import { Tile } from "./tiles";
 enum PathfindingAlgorithm {
   Dijkstra = "Dijkstra's",
   Greedy = "Greedy",
-  AStar = "A-Star",
+  AStar = "A*",
 }
 
 /**
